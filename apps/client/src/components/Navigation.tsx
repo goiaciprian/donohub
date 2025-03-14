@@ -1,6 +1,6 @@
 import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
-import { SignUpButton } from './buttons/SignUpButton';
-import { SignInButton } from './buttons/SignInButton';
+import { SignUpButton } from '@/components/buttons/SignUpButton';
+import { SignInButton } from '@/components/buttons/SignInButton';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 export const Navigation = () => {

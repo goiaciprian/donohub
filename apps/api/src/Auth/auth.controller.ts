@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Inject, NotFoundException, Post } from "@nestjs/common";
-import { IsPublic } from "../Common/Decorators/public.decorator";
 import { type ClerkClient } from "@clerk/backend";
-import { CLERK_CLIENT } from "./clerk.provider";
+import { CLERK_CLIENT } from "@/Auth/clerk.provider";
 import { LoginBodyDto } from "@donohub/shared";
+import { IsPublic } from '@/Common/Decorators/public.decorator';
 
 /**
  * TODO see to generate a token
@@ -33,11 +33,11 @@ export class AuthController {
             throw new BadRequestException();
         }
 
-        const _token = await this.clerkClient.signInTokens.createSignInToken({
+        return await this.clerkClient.signInTokens.createSignInToken({
             userId: correctUser.id,
             expiresInSeconds: 3600,
         });
 
-        return this.clerkClient.sessions.getToken(Date.now().toString(), 'test')        
+        // return this.clerkClient.sessions.getToken(Date.now().toString(), 'test')        
     }
 }

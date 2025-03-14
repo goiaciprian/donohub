@@ -1,5 +1,5 @@
 import React from "react";
-import { useProvideI18nContext } from "../hooks/useProvideI18nContext"
+import { useProvideI18nContext } from "@/hooks/useProvideI18nContext"
 import { useParams } from "react-router-dom";
 
 export const Providers = ({ children }: { children: React.ReactNode[] | React.ReactNode}) => {

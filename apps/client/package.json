@@ -2,5 +2,8 @@
   "name": "@donohub/client",
   "version": "0.0.1",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@radix-ui/react-slot": "^1.1.2"
+  }
 }
