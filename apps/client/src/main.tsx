@@ -1,9 +1,11 @@
 import { StrictMode } from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { RouterProvider } from 'react-router-dom';
 import * as ReactDOM from 'react-dom/client';
-import App from './app/app';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ClerkProvider } from '@clerk/clerk-react';
+import { dark } from '@clerk/themes';
+import { router } from './support';
+import './support/i18n.config';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,20 +16,21 @@ const queryClient = new QueryClient({
 });
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById('root') as HTMLElement,
 );
 
 root.render(
   <StrictMode>
     <ClerkProvider
+      appearance={{
+        baseTheme: dark,
+      }}
       publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}
       afterSignOutUrl="/"
     >
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <RouterProvider router={router} />
       </QueryClientProvider>
     </ClerkProvider>
-  </StrictMode>
+  </StrictMode>,
 );

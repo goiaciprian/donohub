@@ -4,6 +4,7 @@ import { AppModule } from './app/app.module';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { apiReference } from '@scalar/nestjs-api-reference';
+import { patchNestjsSwagger } from '@anatine/zod-nestjs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,9 +20,11 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
 
+  patchNestjsSwagger()
+
   const document = SwaggerModule.createDocument(app, documentConfig);
 
-  app.use('/reference', apiReference({
+  app.use('/api/ref', apiReference({
     spec: {
       content: document
     }

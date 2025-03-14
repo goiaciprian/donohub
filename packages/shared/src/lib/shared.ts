@@ -3,7 +3,7 @@ import { extendApi } from '@anatine/zod-openapi'
 import { createZodDto } from '@anatine/zod-nestjs';
 
 export const TestSchema = extendApi(z.object({
-  'message': z.string()
+  'message': z.string().nonempty()
 }));
 
 export class TestDto extends createZodDto(TestSchema) {};

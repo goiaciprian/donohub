@@ -1,15 +1,10 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getTestRequest, postTestRequest } from '../support';
 import {
-  SignedOut,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  UserButton,
   useAuth,
 } from '@clerk/clerk-react';
 import { useAuthRequest } from '../hooks/useAuthRequest';
-import { PostTestDto } from '../../../../packages/shared/src/lib/shared';
+import { PostTestDto } from '@donohub/shared';
 
 export function App() {
 
@@ -30,20 +25,7 @@ export function App() {
   return (
     <>
       <div >{testQuery.data?.message} <button onClick={() => testQuery.refetch()}>Refetch</button></div>
-      <div className='flex w-full bg-red-400'>
-        <SignedOut>
-          <div>
-            <SignInButton />
-            <SignUpButton />
-          </div>
-        </SignedOut>
-        <SignedIn>
-          <div>
-            <UserButton />
-          </div>
-        </SignedIn>
-      </div>
-      <div>
+      <div className='bg-mint-500'>
         <form onSubmit={(e) => {
           e.preventDefault()
           const message = e.currentTarget.elements?.message?.value
@@ -55,6 +37,9 @@ export function App() {
           </div>
           <button type='submit'>SEnd</button>
         </form>
+      </div>
+      <div>
+        {postTestMutation.data?.message} from post response 
       </div>
     </>
   );
