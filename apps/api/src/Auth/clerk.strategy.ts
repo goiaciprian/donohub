@@ -2,7 +2,7 @@ import { verifyToken, type ClerkClient, type User } from '@clerk/backend';
 import { Inject, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-custom';
-import { CLERK_CLIENT } from './clerk.provider';
+import { CLERK_CLIENT } from '@/Auth/clerk.provider';
 import { ConfigService } from '@nestjs/config';
 import express from 'express';
 

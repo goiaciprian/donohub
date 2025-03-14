@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
+import { createBrowserRouter, Outlet } from 'react-router-dom';
 import { Providers } from '../components/Providers';
 import { ErrorPage } from '../components/ErrorPage';
 import App from '../app/App';

@@ -1,14 +1,14 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppController } from '@/App/app.controller';
+import { AppService } from '@/App/app.service';
 import { WinstonModule } from 'nest-winston';
-import { loggerFactory } from './Core/Logger';
-import { LoggerMiddleware } from './Core/Middleware/logger.middleware';
+import { loggerFactory } from '@/Core/Logger';
+import { LoggerMiddleware } from '../Core/Middleware/logger.middleware';
 import { ConfigModule } from '@nestjs/config';
-import { load } from './Common/Config';
-import { AuthModule } from './Auth/auth.module';
+import { load } from '@/Common/Config';
+import { AuthModule } from '@/Auth/auth.module';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
-import { ClerkAuthGuard } from './Common/Guards/auth.guard';
+import { ClerkAuthGuard } from '@/Common/Guards/auth.guard';
 import { ZodValidationPipe } from '@anatine/zod-nestjs';
 
 @Module({

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { getErrorMessage } from '../utils';
+import { getErrorMessage } from '@/utils';
 import React from 'react';
 
 export const ErrorPage = ({ status }: { status: number }) => {
