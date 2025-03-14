@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { getTestRequest, postTestRequest } from '../support';
+import { getTestRequest, postTestRequest } from '@/support';
 import {
   useAuth,
 } from '@clerk/clerk-react';

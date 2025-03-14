@@ -1,6 +1,6 @@
 import { useAuth } from '@clerk/clerk-react';
 import { AxiosError, AxiosResponse } from 'axios';
-import { RequestVars } from '../utils';
+import { RequestVars } from '@/utils';
 import React from 'react';
 
 export const useAuthRequest = <TResp, TBody = object, TParams = object>(

@@ -1,11 +1,11 @@
 import { Controller, Get, Post } from '@nestjs/common';
-import { AppService } from './app.service';
-import { CurrentUser } from './Common/Decorators/user.decorator';
+import { AppService } from '@/App/app.service';
+import { CurrentUser } from '@/Common/Decorators/user.decorator';
 import { type User } from '@clerk/backend';
 import { Body } from '@nestjs/common';
 import { PostTestDto, TestDto } from '@donohub/shared';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { EndpointResponse } from './Common/Decorators/endpoint.response';
+// import { EndpointResponse } from '@/Common/Decorators/endpoint.response';
 
 @Controller()
 @ApiBearerAuth()
