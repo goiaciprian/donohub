@@ -7,6 +7,8 @@
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "moduleResolution": "bundler",
+    "module": "ES2015",
     "target": "es2021",
     "baseUrl": ".",
     "paths": {
