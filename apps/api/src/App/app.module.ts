@@ -10,6 +10,7 @@ import { AuthModule } from '@/Auth/auth.module';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ClerkAuthGuard } from '@/Common/Guards/auth.guard';
 import { ZodValidationPipe } from '@anatine/zod-nestjs';
+import { HealthModule } from '@/Health/health.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ZodValidationPipe } from '@anatine/zod-nestjs';
       load: [load]
     }),
     AuthModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [
@@ -39,6 +41,6 @@ import { ZodValidationPipe } from '@anatine/zod-nestjs';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*splat')
+    consumer.apply(LoggerMiddleware).forRoutes('*')
   }
 }
