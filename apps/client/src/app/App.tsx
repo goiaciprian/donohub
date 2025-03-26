@@ -1,40 +1,40 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { getTestRequest, postTestRequest } from '@/support';
+// import { getTestRequest, postTestRequest } from '@/support';
 import { useAuth } from '@clerk/clerk-react';
 import { useAuthRequest } from '../hooks/useAuthRequest';
-import { PostTestDto } from '@donohub/shared';
+// import { PostTestDto } from '@donohub/shared';
 import { useAppForm } from '@/support/form';
 import { Label } from '@/components/ui/label';
 
 export function App() {
   const { isSignedIn } = useAuth();
 
-  const getTestFn = useAuthRequest(getTestRequest);
-  const testQuery = useQuery({
-    queryFn: () => getTestFn({}),
-    queryKey: ['test', isSignedIn],
-    enabled: isSignedIn,
-  });
+  // const getTestFn = useAuthRequest(getTestRequest);
+  // const testQuery = useQuery({
+  //   queryFn: () => getTestFn({}),
+  //   queryKey: ['test', isSignedIn],
+  //   enabled: isSignedIn,
+  // });
 
-  const postTestFn = useAuthRequest(postTestRequest);
-  const postTestMutation = useMutation({
-    mutationFn: (body: PostTestDto) => postTestFn({ body }),
-  });
+  // const postTestFn = useAuthRequest(postTestRequest);
+  // const postTestMutation = useMutation({
+  //   mutationFn: (body: PostTestDto) => postTestFn({ body }),
+  // });
 
   const form = useAppForm({
     defaultValues: {
       message: '',
     },
     onSubmit: ({ value }) => {
-      postTestMutation.mutate({ message: value.message });
+      // postTestMutation.mutate({ message: value.message });
     },
   });
 
   return (
     <>
       <div>
-        {testQuery.data?.message}{' '}
-        <button onClick={() => testQuery.refetch()}>Refetch</button>
+        {/* {testQuery.data?.message}{' '} */}
+        {/* <button onClick={() => testQuery.refetch()}>Refetch</button> */}
       </div>
       <div>
         <form
@@ -60,7 +60,7 @@ export function App() {
           </form.AppForm>
         </form>
       </div>
-      <div>{postTestMutation.data?.message} from post response</div>
+      {/* <div>{postTestMutation.data?.message} from post response</div> */}
     </>
   );
 }

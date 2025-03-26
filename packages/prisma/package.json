@@ -1,0 +1,61 @@
+{
+  "name": "@donohub/prisma",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "nx": {
+    "name": "@donohub/prisma",
+    "targets": {
+      "prisma": {
+        "command": "prisma",
+        "options": {
+          "cwd": "packages/prisma"
+        }
+      },
+      "generate": {
+        "command": "prisma generate",
+        "options": {
+          "cwd": "packages/prisma"
+        }
+      },
+      "migrate": {
+        "command": "prisma migrate",
+        "options": {
+          "cwd": "packages/prisma",
+          "args": [
+            "deploy"
+          ]
+        },
+        "configurations": {
+          "development": {
+            "args": [
+              "dev"
+            ]
+          }
+        }
+      },
+      "seed": {
+        "command": "ts-node",
+        "options": {
+          "cwd": "packages/prisma",
+          "args": [
+            "prisma/seed.ts"
+          ]
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@prisma/client": "^6.5.0"
+  }
+}

@@ -1,0 +1,96 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
+}
+
+model Category {
+    id       String     @id @default(uuid())
+    name     String
+    Donation Donation[]
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@map("Category")
+}
+
+model Location {
+    id          String     @id @default(uuid())
+    street      String?
+    number      String?
+    city        String
+    county      String
+    postal_code String?
+    Donation    Donation[]
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@map("location")
+}
+
+model UserInfo {
+    id          String  @id @default(uuid())
+    clerkUserId String  @map("clerk_user_id")
+    rating      Decimal
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    Donation Donation[]
+
+    @@index([clerkUserId])
+    @@map("user_info")
+}
+
+model Donation {
+    id          String  @id @default(uuid())
+    title       String
+    description String
+    quantity    String?
+    phone       String?
+
+    clerkUserId String @map("clerk_user_id")
+
+    categoryId String   @map("category_id")
+    category   Category @relation(fields: [categoryId], references: [id])
+
+    locationId String   @map("location_id")
+    location   Location @relation(fields: [locationId], references: [id])
+
+    comments Comment[]
+
+    rating Int @db.SmallInt
+
+    userInfo   UserInfo @relation(fields: [userInfoId], references: [id])
+    userInfoId String   @map("user_info_id")
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    status String
+
+    @@index([clerkUserId])
+    @@map("donation")
+}
+
+model Comment {
+    id          String @id @default(uuid())
+    clerkUserId String @map("clerk_user_id")
+    full_name   String
+    text        String
+
+    Donation   Donation @relation(fields: [donationId], references: [id])
+    donationId String   @map("donation_id")
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@index([clerkUserId])
+    @@map("comment")
+}

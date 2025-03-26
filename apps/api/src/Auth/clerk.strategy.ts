@@ -1,22 +1,60 @@
-import { verifyToken, type ClerkClient, type User } from '@clerk/backend';
-import { Inject, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { User, verifyToken, type ClerkClient } from '@clerk/backend';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-custom';
 import { CLERK_CLIENT } from '@/Auth/clerk.provider';
 import { ConfigService } from '@nestjs/config';
 import express from 'express';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from '@/Prisma/prisma.service';
 
+export type UserType = User & {
+  userInfo: Prisma.UserInfoGetPayload<{
+    select: {
+      clerkUserId: true;
+      createdAt: true;
+      id: true;
+      rating: true;
+      updatedAt: true;
+    };
+  }>;
+};
 @Injectable()
 export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
   constructor(
     @Inject(CLERK_CLIENT)
     private readonly clerkClient: ClerkClient,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly prismaService: PrismaService,
   ) {
     super();
   }
 
-  async validate(req: express.Request): Promise<User> {
+  async validate(req: express.Request): Promise<UserType> {
+    const isAuthDisabled = this.configService.get<boolean>('authDisabled');
+    if (isAuthDisabled) {
+      Logger.warn('Auth is disabled this should be done only in development');
+      const user = {
+        id: '5d11a128-f6c1-4a11-9648-a267fcda0283',
+        firstName: 'dev',
+        lastName: 'name',
+        fullName: 'dev name',
+        userInfo: {
+          id: '6f2ecf31-3226-4c4b-a642-e82292d5db72',
+          clerkUserId: '5d11a128-f6c1-4a11-9648-a267fcda0283',
+          raging: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      } as unknown as UserType;
+      return user;
+    }
+
     const token = req.headers.authorization?.split(' ').pop();
 
     if (!token) {
@@ -29,11 +67,33 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
       });
 
       const user = await this.clerkClient.users.getUser(tokenPayload.sub);
+      if (!user) {
+        throw new UnauthorizedException();
+      }
 
-      return user;
+      try {
+        const userInfo = await this.prismaService.userInfo.findFirstOrThrow({
+          where: { clerkUserId: user.id },
+        });
+        return {
+          ...user,
+          userInfo,
+        } as UserType;
+      } catch (_e) {
+        const userInfo = await this.prismaService.userInfo.create({
+          data: {
+            clerkUserId: user.id,
+            rating: 0,
+          },
+        });
+        return {
+          ...user,
+          userInfo,
+        }as UserType;
+      }
     } catch (error) {
-      Logger.error(error)
-      throw new UnauthorizedException('Invalid token');
+      Logger.error(error);
+      throw new UnauthorizedException();
     }
   }
 }

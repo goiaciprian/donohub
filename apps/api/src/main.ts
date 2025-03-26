@@ -20,21 +20,24 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
 
-  patchNestjsSwagger()
+  patchNestjsSwagger();
 
   const document = SwaggerModule.createDocument(app, documentConfig);
-
-  app.use('/api/ref', apiReference({
-    spec: {
-      content: document
-    }
-  }))
+  SwaggerModule.setup('/api/swagger', app, () => document);
+  app.use(
+    '/api/ref',
+    apiReference({
+      spec: {
+        content: document,
+      },
+    }),
+  );
 
   const port = process.env.PORT_BE || 3001;
   await app.listen(port);
 
   Logger.log(
-    `Application is running on: http://localhost:${port}/${globalPrefix}`
+    `Application is running on: http://localhost:${port}/${globalPrefix}`,
   );
 }
 
