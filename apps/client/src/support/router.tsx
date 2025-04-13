@@ -1,10 +1,11 @@
 import { createBrowserRouter, Outlet } from 'react-router-dom';
 import { Providers } from '../components/Providers';
 import { ErrorPage } from '../components/ErrorPage';
-import App from '../app/App';
 import { Navigation } from '../components/Navigation';
 import { InitialRedirect } from '../components/InitialRedirect';
 import { Protect } from '@clerk/clerk-react';
+import { HomePage } from '@/components/pages/HomePage';
+import { Footer } from '@/components/Footer';
 
 export const router = createBrowserRouter([
   {
@@ -20,12 +21,13 @@ export const router = createBrowserRouter([
           <Providers>
             <Navigation />
             <Outlet />
+            <Footer />
           </Providers>
         ),
         children: [
           {
             path: '',
-            element: <App />,
+            element: <HomePage />,
           },
           {
             path: 'donor',

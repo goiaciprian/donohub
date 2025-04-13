@@ -1,6 +1,7 @@
 import React from 'react';
 import { useProvideI18nContext } from '@/hooks/useProvideI18nContext';
 import { useParams } from 'react-router-dom';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export const Providers = ({
   children,
@@ -14,5 +15,10 @@ export const Providers = ({
     setLang(lang);
   }, [lang, setLang]);
 
-  return children;
+  return (
+    <>
+      {children}
+      <ReactQueryDevtools position="right" />
+    </>
+  );
 };

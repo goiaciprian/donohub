@@ -13,3 +13,9 @@ target "client" {
     dockerfile = "client.Dockerfile"
     tags = ["goiac/donohub-client"]
 }
+
+target "base" {
+    context = "."
+    dockerfile = "base.Dockerfile"
+    tags = [ "goiac/donohub-base" ]
+}

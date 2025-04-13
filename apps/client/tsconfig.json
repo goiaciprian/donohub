@@ -9,6 +9,9 @@
   "include": [],
   "references": [
     {
+      "path": "../../packages/shared"
+    },
+    {
       "path": "./tsconfig.app.json"
     }
   ],

@@ -7,6 +7,8 @@ import {
   Logger,
   Param,
   ParseFilePipeBuilder,
+  ParseIntPipe,
+  ParseUUIDPipe,
   Post,
   Query,
   UnprocessableEntityException,
@@ -28,7 +30,7 @@ import { DonationDto, PostDonationDto } from '@donohub/shared';
 import { type UserType } from '@/Auth/clerk.strategy';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
-const acceptMimeType = ['image/png', 'image/jpg', 'image/jpeg']
+const acceptMimeType = ['image/png', 'image/jpg', 'image/jpeg'];
 
 @Controller('donations')
 @ApiTags('donations')
@@ -56,7 +58,9 @@ export class DonationController {
   @EndpointResponse({
     type: DonationDto,
   })
-  async getDonationById(@Param('id') id: string) {
+  async getDonationById(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ) {
     return this.donationService.getDonationById(id);
   }
 
@@ -71,14 +75,19 @@ export class DonationController {
   @UseInterceptors(
     FileFieldsInterceptor([{ name: 'attachements', maxCount: 4 }], {
       limits: {
-        fileSize: 1000 * 25,
+        fileSize: 1000 * 1000 * 5, //5 mb
       },
       fileFilter: (_, file, cb) => {
-        if (acceptMimeType.includes(file.mimetype)){
+        if (acceptMimeType.includes(file.mimetype)) {
           cb(null, true);
-          return
-        };
-        cb(new UnprocessableEntityException(`type should be one of ${acceptMimeType.join(', ')}`), false)
+          return;
+        }
+        cb(
+          new UnprocessableEntityException(
+            `type should be one of ${acceptMimeType.join(', ')}`,
+          ),
+          false,
+        );
       },
     }),
   )
@@ -91,7 +100,6 @@ export class DonationController {
     if (!attachements || attachements.length === 0) {
       throw new BadRequestException();
     }
-    attachements.forEach((file) => console.log(file.mimetype, file.size));
     return await this.donationService.createDonation(
       donation,
       user.id,
@@ -105,6 +113,7 @@ export class DonationController {
     type: DonationDto,
   })
   async getDonations(@Query() pagination: PaginationQueryDto) {
+    // await new Promise((resolve) => setTimeout(() => resolve(null), 5000));
     return await this.donationService.listDonation(
       pagination.page,
       pagination.size,

@@ -116,7 +116,8 @@
 }
 
 @theme {
-    --color-mint-500: oklch(0.72 0.11 178);
+  --color-mint-500: oklch(0.72 0.11 178);
+  --color-bluegray-100: hsl(217, 21%, 37%);
 }
 
 @layer base {

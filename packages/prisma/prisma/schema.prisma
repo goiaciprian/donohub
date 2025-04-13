@@ -16,7 +16,7 @@ model Category {
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
-    @@map("Category")
+    @@map("category")
 }
 
 model Location {
@@ -75,6 +75,8 @@ model Donation {
 
     status String
 
+    images Image[]
+
     @@index([clerkUserId])
     @@map("donation")
 }
@@ -93,4 +95,17 @@ model Comment {
 
     @@index([clerkUserId])
     @@map("comment")
+}
+
+model Image {
+    filename    String
+    hash        String
+    contentType String    @map("content_type")
+    size        BigInt
+    clerkUserId String    @map("clerk_user_id")
+    Donation    Donation? @relation(fields: [donationId], references: [id])
+    donationId  String?
+
+    @@id([filename, hash])
+    @@map("image")
 }
