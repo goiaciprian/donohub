@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), ['VITE_', ''] );
+  const env = loadEnv(mode, process.cwd(), ['VITE_', '']);
 
   return {
     root: __dirname,
@@ -16,13 +16,13 @@ export default defineConfig(({ mode }) => {
       proxy: {
         '/api': env.API_URL || 'http://localhost:3001',
       },
-      allowedHosts:[
-        "donohub.onrender.com"
-      ]
     },
     preview: {
       port: parseInt(env.PORT || '4300'),
       host: '0.0.0.0',
+      proxy: {
+        '/api': env.API_URL || 'http://localhost:3001',
+      },
     },
     plugins: [react(), tailwindcss()],
     // Uncomment this if you are using workers.
