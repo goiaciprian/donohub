@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
       proxy: {
         '/api': env.API_URL || 'http://localhost:3001',
       },
-      allowedHosts: ['donohub-production.up.railway.app']
+      allowedHosts: ['donohub.srv-lab.work']
     },
     preview: {
       port: parseInt(env.PORT || '4300'),
@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
       proxy: {
         '/api': env.API_URL || 'http://localhost:3001',
       },
-      allowedHosts: ['donohub-production.up.railway.app'],
+      allowedHosts: ['donohub.srv-lab.work'],
     },
     plugins: [react(), tailwindcss()],
     // Uncomment this if you are using workers.
