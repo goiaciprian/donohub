@@ -1,20 +1,32 @@
-export interface Confguration {
-    clerkPublishableKey: string;
-    clerkSecretKey: string;
-}
+import { z } from 'zod';
 
-let config: Confguration | null = null;
+export const ConfigurationSchema = z.object({
+  clerkPublishableKey: z.string(),
+  clerkSecretKey: z.string(),
+  databaseUrl: z.string(),
+  authDisabled: z.boolean(),
+  supabaseUrl: z.string(),
+  supabaseApiKey: z.string(),
+});
 
-const getConfig = () => {
-    return {
-        clerkPublishableKey: process.env.CLERK_PUBLISHABLE_KEY,
-        clerkSecretKey: process.env.CLERK_SECRET_KEY,
-    }
-}
+export type Configuration = z.infer<typeof ConfigurationSchema>;
+
+let config: Configuration | null = null;
+
+const getConfig = (): Configuration => {
+  return {
+    clerkPublishableKey: process.env.CLERK_PUBLISHABLE_KEY,
+    clerkSecretKey: process.env.CLERK_SECRET_KEY,
+    databaseUrl: process.env.DATABASE_URL,
+    authDisabled: process.env.AUTH_DISABLED ? true : false,
+    supabaseUrl: process.env.SUPABASE_URL,
+    supabaseApiKey: process.env.SUPABASE_API_KEY,
+  };
+};
 
 export const load = () => {
-    if (config === null) {
-        config = getConfig();
-    }
-    return config;
-}
+  if (config === null) {
+    config = getConfig();
+  }
+  return config;
+};

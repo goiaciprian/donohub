@@ -5,21 +5,24 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd());
+  const env = loadEnv(mode, process.cwd(), ['VITE_', '']);
 
   return {
     root: __dirname,
     cacheDir: '../../node_modules/.vite/apps/client',
     server: {
       port: parseInt(env.PORT || '4200'),
-      host: 'localhost',
+      host: '0.0.0.0',
       proxy: {
-        '/api': 'http://localhost:3001',
+        '/api': env.API_URL || 'http://localhost:3001',
       },
     },
     preview: {
       port: parseInt(env.PORT || '4300'),
-      host: 'localhost',
+      host: '0.0.0.0',
+      proxy: {
+        '/api': env.API_URL || 'http://localhost:3001',
+      },
     },
     plugins: [react(), tailwindcss()],
     // Uncomment this if you are using workers.

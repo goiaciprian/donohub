@@ -6,8 +6,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 export const Navigation = () => {
   const navigate = useNavigate();
   return (
-    <nav>
-      <div className="flex w-full py-5 px-7 justify-end items-center bg-gray-800 text-white flex-row">
+    <nav className="w-full fixed h-[80px] z-[100]">
+      <div className=" flex w-full py-5 px-7 justify-end items-center bg-gray-800 text-white flex-row">
         <div className="mr-auto">
           <h1
             onClick={() => navigate('')}
@@ -16,12 +16,12 @@ export const Navigation = () => {
             DonoHUB
           </h1>
         </div>
-        <SignedOut>
+        {/* <SignedOut>
           <div>
             <SignInButton />
             <SignUpButton />
           </div>
-        </SignedOut>
+        </SignedOut> */}
         <SignedIn>
           <div className="flex flex-row gap-5 items-center">
             <NavLink to={'donor'} className={'font-bold hover:underline'}>

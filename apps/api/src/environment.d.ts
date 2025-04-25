@@ -5,6 +5,9 @@ declare global {
       PORT?: string;
       CLERK_PUBLISHABLE_KEY: string;
       CLERK_SECRET_KEY: string;
+      DATABASE_URL: string;
+      SUPABASE_URL: string;
+      SUPABASE_API_KEY: string;
     }
   }
 }

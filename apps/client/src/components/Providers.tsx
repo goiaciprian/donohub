@@ -1,19 +1,24 @@
-import React from "react";
-import { useProvideI18nContext } from "@/hooks/useProvideI18nContext"
-import { useParams } from "react-router-dom";
+import React from 'react';
+import { useProvideI18nContext } from '@/hooks/useProvideI18nContext';
+import { useParams } from 'react-router-dom';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-export const Providers = ({ children }: { children: React.ReactNode[] | React.ReactNode}) => {
-    const { setLang } = useProvideI18nContext();
-    const params = useParams();
+export const Providers = ({
+  children,
+}: {
+  children: React.ReactNode[] | React.ReactNode;
+}) => {
+  const { setLang } = useProvideI18nContext();
+  const { lang } = useParams();
 
-    React.useEffect(() => {
-        setLang(params['lang'])        
-    }, [params, setLang]);
+  React.useEffect(() => {
+    setLang(lang);
+  }, [lang, setLang]);
 
-    return (
-        // eslint-disable-next-line react/jsx-no-useless-fragment
-        <>
-            {children}
-        </>
-    )
-}
+  return (
+    <>
+      {children}
+      <ReactQueryDevtools position="right" />
+    </>
+  );
+};

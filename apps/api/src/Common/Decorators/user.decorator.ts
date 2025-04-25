@@ -1,8 +1,9 @@
+import { UserType } from '@/Auth/clerk.strategy';
 import { createParamDecorator, type ExecutionContext } from '@nestjs/common';
 
 export const CurrentUser = createParamDecorator(
   (data: never, context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest();
-    return request.user;
+    return request.user as UserType;
   },
 );
