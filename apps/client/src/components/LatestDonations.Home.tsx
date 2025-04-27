@@ -1,12 +1,12 @@
 import { useAuthRequest } from '@/hooks/useAuthRequest';
-import { getLatestDonations } from '@/support';
+import { getDonations } from '@/support';
 import { PaginatedDonationDto } from '@donohub/shared';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { DonationCard } from './DonationCard';
 import { NavLink } from 'react-router-dom';
 
 const LatestDonationsHome = () => {
-  const getLatestDonationsFn = useAuthRequest(getLatestDonations);
+  const getLatestDonationsFn = useAuthRequest(getDonations);
   const latestDonationsQuery = useSuspenseQuery<PaginatedDonationDto>({
     queryKey: ['home', 'latest-donations'],
     queryFn: () => getLatestDonationsFn({ params: { size: 5, page: 1 } }),
@@ -33,7 +33,7 @@ const LatestDonationsHome = () => {
         ))}
       </div>
       <div className="w-full text-center pt-30">
-        <NavLink to="donations">
+        <NavLink to="donations" viewTransition>
           <button className="text-4xl rounded-2xl border-gray-800 bg-gray-800 text-white border-1 px-8 py-4 cursor-pointer hover:text-black hover:bg-white">
             See all
           </button>

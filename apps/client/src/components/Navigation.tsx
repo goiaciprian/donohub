@@ -1,12 +1,13 @@
 import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 import { SignUpButton } from '@/components/buttons/SignUpButton';
 import { SignInButton } from '@/components/buttons/SignInButton';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 
 export const Navigation = () => {
   const navigate = useNavigate();
+  const location = useLocation().pathname;
   return (
-    <nav className="w-full fixed h-[80px] z-[100]">
+    <nav className="w-full">
       <div className=" flex w-full py-5 px-7 justify-end items-center bg-gray-800 text-white flex-row">
         <div className="mr-auto">
           <h1
@@ -16,18 +17,28 @@ export const Navigation = () => {
             DonoHUB
           </h1>
         </div>
-        {/* <SignedOut>
-          <div>
-            <SignInButton />
-            <SignUpButton />
-          </div>
-        </SignedOut> */}
+        {location !== '/en' && location !== '/ro' && (
+          <SignedOut>
+            <div>
+              <SignInButton />
+              <SignUpButton />
+            </div>
+          </SignedOut>
+        )}
         <SignedIn>
           <div className="flex flex-row gap-5 items-center">
-            <NavLink to={'donor'} className={'font-bold hover:underline'}>
+            <NavLink
+              to={'donor'}
+              className={'font-bold hover:underline'}
+              viewTransition
+            >
               Donor
             </NavLink>
-            <NavLink to={'donations'} className={'font-bold hover:underline'}>
+            <NavLink
+              to={'donations'}
+              className={'font-bold hover:underline'}
+              viewTransition
+            >
               Donations
             </NavLink>
             <UserButton

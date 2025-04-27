@@ -55,6 +55,7 @@ export class PostDonationDto extends createZodDto(PostDonationSchema) {}
 export class DonationDto extends createZodDto(
   DonationSchema.extend({
     category: z.string(),
+    clerkUserId: z.string(),
     location: LocationSchema.omit({
       id: true,
       createdAt: true,

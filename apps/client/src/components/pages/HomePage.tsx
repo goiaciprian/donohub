@@ -1,5 +1,5 @@
 import { useAuthRequest } from '@/hooks/useAuthRequest';
-import { getLatestDonations } from '@/support';
+import { getDonations } from '@/support';
 import { usePrefetchQuery } from '@tanstack/react-query';
 import { Page } from './Page';
 import { SignInButton } from '../buttons/SignInButton';
@@ -7,7 +7,7 @@ import { SignUpButton } from '../buttons/SignUpButton';
 import LatestDonationsHome from '../LatestDonations.Home';
 
 export const HomePage = () => {
-  const getLatestDonationsFn = useAuthRequest(getLatestDonations);
+  const getLatestDonationsFn = useAuthRequest(getDonations);
   usePrefetchQuery({
     queryKey: ['home', 'latest-donations'],
     queryFn: () => getLatestDonationsFn({ params: { page: 1, size: 5 } }),

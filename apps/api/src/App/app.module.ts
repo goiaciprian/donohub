@@ -19,6 +19,7 @@ import { DonationModule } from '@/Donation/donation.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { LocationModule } from '@/Location/location.module';
+import { UserInfoModule } from '@/UserInfo/userinfo.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { LocationModule } from '@/Location/location.module';
     GeneralModule,
     DonationModule,
     LocationModule,
+    UserInfoModule,
   ],
   controllers: [],
   providers: [

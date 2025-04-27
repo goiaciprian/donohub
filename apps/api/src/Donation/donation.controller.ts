@@ -29,6 +29,7 @@ import { EndpointResponse } from '@/Common/Decorators/endpoint.response';
 import { DonationDto, PostDonationDto } from '@donohub/shared';
 import { type UserType } from '@/Auth/clerk.strategy';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { DonationFilterSortDto } from './Dtos/donation-filter-sort.dto';
 
 const acceptMimeType = ['image/png', 'image/jpg', 'image/jpeg'];
 
@@ -54,7 +55,7 @@ export class DonationController {
     );
   }
 
-  @Get('{id}')
+  @Get(':id')
   @EndpointResponse({
     type: DonationDto,
   })
@@ -112,11 +113,16 @@ export class DonationController {
   @EndpointResponse({
     type: DonationDto,
   })
-  async getDonations(@Query() pagination: PaginationQueryDto) {
-    // await new Promise((resolve) => setTimeout(() => resolve(null), 5000));
+  async getDonations(
+    @Query() pagination: PaginationQueryDto,
+    @Query() filterSort: DonationFilterSortDto,
+  ) {
     return await this.donationService.listDonation(
       pagination.page,
       pagination.size,
+      filterSort.category || undefined,
+      filterSort.location || undefined,
+      filterSort.q || undefined,
     );
   }
 }

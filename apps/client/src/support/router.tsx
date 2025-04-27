@@ -6,6 +6,8 @@ import { InitialRedirect } from '../components/InitialRedirect';
 import { Protect } from '@clerk/clerk-react';
 import { HomePage } from '@/components/pages/HomePage';
 import { Footer } from '@/components/Footer';
+import { DonationsPage } from '@/components/pages/DonationsPage';
+import { DonationPage } from '@/components/pages/DonationPage';
 
 export const router = createBrowserRouter([
   {
@@ -19,9 +21,11 @@ export const router = createBrowserRouter([
         path: '',
         element: (
           <Providers>
-            <Navigation />
-            <Outlet />
-            <Footer />
+            <div className="flex flex-col min-h-screen ">
+              <Navigation />
+              <Outlet />
+              <Footer />
+            </div>
           </Providers>
         ),
         children: [
@@ -39,11 +43,18 @@ export const router = createBrowserRouter([
           },
           {
             path: 'donations',
-            element: (
-              <Protect fallback={<ErrorPage status={401} />}>
-                <h1 className="text-5xl">Donations</h1>
-              </Protect>
-            ),
+            element: <Outlet />,
+            errorElement: <ErrorPage status={404} />,
+            children: [
+              {
+                path: '',
+                element: <DonationsPage />,
+              },
+              {
+                path: ':donationId',
+                element: <DonationPage />,
+              },
+            ],
           },
         ],
       },

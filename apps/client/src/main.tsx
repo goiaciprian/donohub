@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ClerkProvider } from '@clerk/clerk-react';
 import { dark } from '@clerk/themes';
+import { PostHogProvider } from 'posthog-js/react';
 import { router } from './support';
 import './support/i18n.config';
 
@@ -21,16 +22,24 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <StrictMode>
-    <ClerkProvider
-      appearance={{
-        baseTheme: dark,
+    <PostHogProvider
+      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+      options={{
+        api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+        debug: import.meta.env.MODE === 'development',
       }}
-      publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}
-      afterSignOutUrl="/"
     >
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </ClerkProvider>
+      <ClerkProvider
+        appearance={{
+          baseTheme: dark,
+        }}
+        publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}
+        afterSignOutUrl="/"
+      >
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </ClerkProvider>
+    </PostHogProvider>
   </StrictMode>,
 );

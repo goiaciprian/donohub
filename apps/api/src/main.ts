@@ -23,7 +23,9 @@ async function bootstrap() {
   patchNestjsSwagger();
 
   const document = SwaggerModule.createDocument(app, documentConfig);
-  SwaggerModule.setup('/api/swagger', app, () => document);
+  SwaggerModule.setup('/api/swagger', app, () => document, {
+    customSiteTitle: 'DonoHUB Api',
+  });
   app.use(
     '/api/ref',
     apiReference({
