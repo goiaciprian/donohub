@@ -5,11 +5,11 @@ const prisamClient = new PrismaClient({
 });
 
 const categories: string[] = [
-    "Imbracaminte",
-    "Incaltaminte",
-    "Mobilier",
-    "Electrocasnice",
-    "Papetarie",
+  'CLOTHING',
+  'FOOTWEAR',
+  'FURNITURE',
+  'HOME_APPLIANCES',
+  'STATIONERY',
 ];
 
 async function seedCategories() {

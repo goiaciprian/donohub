@@ -53,7 +53,7 @@ export const QueriedDonations = ({
         ))}
       </div>
       <div>
-        <div>
+        <div className="pb-10">
           <Pagination>
             <PaginationContent className="gap-15">
               {donationsData.hasPrev && (

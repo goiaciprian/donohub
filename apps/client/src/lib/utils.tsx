@@ -1,3 +1,4 @@
+import { LocationDto } from '@donohub/shared';
 import clsx, { ClassValue } from 'clsx';
 import {
   Armchair,
@@ -15,17 +16,27 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getCategoryIcon(category: string) {
   switch (category) {
-    case 'Electrocasnice':
+    case 'HOME_APPLIANCES':
       return <WashingMachine />;
-    case 'Mobilier':
+    case 'FURNITURE':
       return <Armchair />;
-    case 'Incaltaminte':
+    case 'FOOTWEAR':
       return <Footprints />;
-    case 'Papetarie':
+    case 'STATIONERY':
       return <Layers />;
-    case 'Imbracaminte':
+    case 'CLOTHING':
       return <Shirt />;
     default:
       return <CircleEllipsis />;
   }
+}
+
+export function displayLocation(
+  location: Omit<LocationDto, 'id' | 'createdAt' | 'updatedAt'>,
+) {
+  const hasValue = (value: string | null, showCharater = true) => {
+    return value ? `${showCharater ? ', ' : ''} ${value}` : '';
+  };
+
+  return `${hasValue(location.county, false)}${hasValue(location.city)}${hasValue(location.street)}${hasValue(location.number)}${hasValue(location.postalCode)}`;
 }

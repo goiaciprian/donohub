@@ -8,6 +8,7 @@ import { HomePage } from '@/components/pages/HomePage';
 import { Footer } from '@/components/Footer';
 import { DonationsPage } from '@/components/pages/DonationsPage';
 import { DonationPage } from '@/components/pages/DonationPage';
+import { AddDonationPage } from '@/components/pages/AddDonationPage';
 
 export const router = createBrowserRouter([
   {
@@ -37,7 +38,7 @@ export const router = createBrowserRouter([
             path: 'donor',
             element: (
               <Protect fallback={<ErrorPage status={401} />}>
-                <h1 className="text-5xl">Donor</h1>
+                <AddDonationPage />
               </Protect>
             ),
           },

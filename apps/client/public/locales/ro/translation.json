@@ -8,6 +8,88 @@
 
   "internal": {
     "signInButton": "Logare",
-    "signUpButton": "Inregistrare"
+    "signUpButton": "Inregistrare",
+    "submit": "Salveaza",
+    "close": "Inchide",
+    "create": "Creat",
+    "error": "Eroare la creare"
+  },
+  "navigation": {
+    "donations": "Cauta o donatie",
+    "create": "Adauga o donatie"
+  },
+  "home": {
+    "banner1": "Da mai departe ce nu folosesti",
+    "banner2": "Transforma lucrurile de care nu mai ai nevoie în oportunitati pentru altii. Doneaza, primeste si construieste o comunitate mai buna.",
+    "banner3": "Logheaza-te si doneaza acum",
+    "or": "sau",
+    "latestDonation": {
+      "title": "Ultimele 5 donatii",
+      "seeAll": "Vezi toate",
+      "noData": "Nu sunt date",
+      "error": "A aparut o eroare cand incarcam donatiile"
+    },
+    "4steps": {
+      "title": "Cum functioneaza?",
+      "subtitle": "4 pasi simpli",
+      "step1": "Te conectezi sau iti faci un cont",
+      "step2": "Adaugi o donatie",
+      "step3": "Astepti o notificare de la noi cand cineva este intersesat",
+      "step4": "Stabileste modul de livrare"
+    },
+    "cta": {
+      "title": "Gaseste bucuria de a darui si primi gratuit"
+    }
+  },
+  "donations": {
+    "title": "Donatii",
+    "subtitle": "Aici pot sa gasesti ce ai nevoie. Poti cauta dupa cuvinte cheie, sau sa filtrezi pe baza unei categorii si a unei locatii",
+    "keywords": "Cuvinte cheie",
+    "category": "Categorie",
+    "location": "Locatie",
+    "pageSize": "Marimea paginii"
+  },
+
+  "donationCard": {
+    "details": "Detalii"
+  },
+  "footer": {
+    "terms": "Termeni si conditii"
+  },
+  "categories": {
+    "CLOTHING": "Imbracaminte",
+    "FOOTWEAR": "Incaltaminte",
+    "FURNITURE": "Mobilier",
+    "HOME_APPLIANCES": "Electrocasnice",
+    "STATIONERY": "Papetarie"
+  },
+  "donation": {
+    "user": "Utilizator",
+    "comments": "Comentarii",
+    "comment": "Comentariu",
+    "post": "Posteaza"
+  },
+  "addDonation": {
+    "addLocation": "Adauga locatie",
+    "title": "Titlu",
+    "description": "Descriere",
+    "quantity": "Cantitate",
+    "phone": "Telefon",
+    "attachements": "Atasamente"
+  },
+  "location": {
+    "title": "Creaza Locatie",
+    "county": "Judet",
+    "city": "Oras",
+    "street": "Strada",
+    "number": "Numar",
+    "postalCode": "Cod Postal"
+  },
+
+  "toast": {
+    "copyLink": {
+      "success": "Link copiat",
+      "error": "A aparut o problema la copiere"
+    }
   }
 }
