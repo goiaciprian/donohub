@@ -1,4 +1,5 @@
 import { PrismaService } from '@/Prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import {
   DonationDto,
@@ -49,9 +50,8 @@ export class DonationService {
         },
       },
     });
-    const attachementsUrls = await this.supabaseService.uploadAndGetPubliUrl(
-      attachements,
-    );
+    const attachementsUrls =
+      await this.supabaseService.uploadAndGetPubliUrl(attachements);
     return {
       ...createdDonation,
       status: createdDonation.status as unknown as DonationStatusEnum,
@@ -145,14 +145,19 @@ export class DonationService {
         images: {
           select: {
             filename: true,
-          }
-        }
+          },
+        },
       },
     });
-    const linkAttachements = await Promise.all(donation.images.map(async (img) => await this.supabaseService.getPublicUrl(img.filename)));
+    const linkAttachements = await Promise.all(
+      donation.images.map(
+        async (img) => await this.supabaseService.getPublicUrl(img.filename),
+      ),
+    );
     return {
       ...donation,
       attachements: linkAttachements,
+      clerkUserId: donation.clerkUserId,
       category: donation.category.name,
       status: donation.status as DonationStatusEnum,
       location: {
@@ -168,16 +173,46 @@ export class DonationService {
   async listDonation(
     page: number,
     size: number,
+    category?: string,
+    location?: string,
+    q?: string,
   ): Promise<PaginatedDonationDto> {
     const take = size;
     const skip = (page - 1) * size;
+    // county, city, street
+    const locationParts =
+      location?.split(',').map((part) => part || undefined) ?? [];
+
+    const where: Prisma.DonationWhereInput = {
+      status: DonationStatus.Enum.LISTED,
+      categoryId: category,
+      ...(locationParts.length !== 0
+        ? {
+            location: {
+              county: locationParts[0],
+              city: locationParts[1],
+              street: locationParts[2],
+            },
+          }
+        : {}),
+      ...(q
+        ? {
+            OR: [
+              {
+                title: { contains: q, mode: 'insensitive' },
+              },
+              {
+                description: { contains: q, mode: 'insensitive' },
+              },
+            ],
+          }
+        : {}),
+    };
 
     const [items, count] = await this.prismaService.$transaction(async (tx) => {
       return await Promise.all([
         tx.donation.findMany({
-          where: {
-            status: DonationStatus.Enum.LISTED,
-          },
+          where,
           take,
           skip,
           include: {
@@ -191,9 +226,7 @@ export class DonationService {
           },
         }),
         tx.donation.count({
-          where: {
-            status: DonationStatus.Enum.LISTED,
-          },
+          where,
         }),
       ]);
     });

@@ -8,8 +8,15 @@ import {
   CardTitle,
 } from './ui/card';
 import { Carousel, CarouselContent, CarouselItem } from './ui/carousel';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import { Button } from './ui/button';
+import { toast } from 'sonner';
+import { MapPin } from 'lucide-react';
+import { getCategoryIcon } from '@/lib/utils';
 
 export const DonationCard = ({ donation }: { donation: DonationDto }) => {
+  const navigate = useNavigate();
+  const { lang } = useParams();
   return (
     <Card className="w-[800px] p-5">
       <div className="flex flex-row h-full">
@@ -47,9 +54,15 @@ export const DonationCard = ({ donation }: { donation: DonationDto }) => {
             <CardTitle className="text-3xl">{donation.title}</CardTitle>
             <CardDescription className="w-max">
               <div className="flex flex-row gap-5 w-fit">
-                <h5 className="text-xl">{donation.category}</h5>
-                <h5 className="text-xl">
-                  {Object.values(donation.location).join(' ')}
+                <h5 className="text-xl flex items=-center gap-2">
+                  {getCategoryIcon(donation.category)}
+                  {donation.category}
+                </h5>
+                <h5 className="text-xl flex items-center gap-2">
+                  <MapPin />
+                  {Object.values(donation.location)
+                    .filter((item) => !!item)
+                    .join(', ')}
                 </h5>
               </div>
             </CardDescription>
@@ -59,8 +72,22 @@ export const DonationCard = ({ donation }: { donation: DonationDto }) => {
           </CardContent>
           <CardFooter className="self-end justify-self-end mt-auto">
             <div className="flex flex-row gap-2">
-              <button>See details</button>
-              <button>Copy</button>
+              <NavLink to={`/${lang}/donations/${donation.id}`} viewTransition>
+                <Button className="cursor-pointer text-xl">See details</Button>
+              </NavLink>
+              <Button
+                className="cursor-pointer text-xl"
+                onClick={() =>
+                  navigator.clipboard
+                    .writeText(
+                      `${window.location.origin}/${lang}/donations/${donation.id}`,
+                    )
+                    .then(() => toast.success('Linked copied'))
+                    .catch(() => toast.error('Error copying the link'))
+                }
+              >
+                Copy
+              </Button>
             </div>
           </CardFooter>
         </div>

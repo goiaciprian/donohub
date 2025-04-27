@@ -18,6 +18,25 @@ export class LocationController {
     return await this.locationService.getLocations();
   }
 
+  @Get('dropdown')
+  async getLocationDropdown() {
+    const locations = await this.locationService.getLocations();
+    return locations.flatMap((location) => {
+      const formatedArr = [
+        location.county,
+        `${location.county},${location.city}`,
+      ];
+
+      if (location.street) {
+        formatedArr.push(
+          `${location.county},${location.city},${location.street}`,
+        );
+      }
+
+      return formatedArr;
+    });
+  }
+
   @Post()
   @EndpointResponse({
     type: LocationDto,

@@ -10,12 +10,14 @@ interface PageProps {
   staticFirst?: React.ReactNode;
   staticSecond?: React.ReactNode;
   dynamicComponent?: React.ReactNode;
+  className?: string;
 }
 
 export const Page = ({
   staticFirst,
   staticSecond,
   dynamicComponent,
+  className = '',
 }: PageProps) => {
   const spinnerContainer = () => {
     return (
@@ -28,7 +30,7 @@ export const Page = ({
   };
 
   return (
-    <main className="h-full pt-[80px]">
+    <main className={'h-full ' + className}>
       {staticFirst}
       {/* {render()} */}
       <React.Suspense fallback={spinnerContainer()}>
