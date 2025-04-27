@@ -6,6 +6,7 @@ import { usePrefetchQuery } from '@tanstack/react-query';
 import { getCategories, getLocationsDropdown } from '@/support';
 import { useAuthRequest } from '@/hooks/useAuthRequest';
 import { Toaster } from './ui/sonner';
+import moment from 'moment';
 
 export const Providers = ({
   children,
@@ -17,6 +18,7 @@ export const Providers = ({
 
   React.useEffect(() => {
     setLang(lang);
+    moment.locale(lang);
   }, [lang, setLang]);
 
   const getCategoriesFn = useAuthRequest(getCategories);

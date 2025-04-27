@@ -13,6 +13,7 @@ export class LocationController {
   @Get()
   @EndpointResponse({
     type: LocationDto,
+    isArray: true,
   })
   async getLocations() {
     return await this.locationService.getLocations();

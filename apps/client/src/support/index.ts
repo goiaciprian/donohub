@@ -1,7 +1,10 @@
 import {
   CategoryDto,
   DonationDto,
+  LocationDto,
   PaginatedDonationDto,
+  PostDonationDto,
+  PostLocationDto,
   UserInfoDto,
 } from '@donohub/shared';
 
@@ -27,6 +30,25 @@ export const getLocationsDropdown = createRequest<string[]>(
   'GET',
 );
 
-export const getUserInfoByClerkId = createRequest<UserInfoDto>('/api/userInfo/:id/clerk', 'GET');
+export const getLocations = createRequest<LocationDto[]>(
+  '/api/locations',
+  'GET',
+);
+
+export const getUserInfoByClerkId = createRequest<UserInfoDto>(
+  '/api/userInfo/:id/clerk',
+  'GET',
+);
+
+export const postDonations = createRequest<
+  DonationDto,
+  object,
+  FormData
+>('/api/donations', 'POST');
+
+export const postLocation = createRequest<LocationDto, object, PostLocationDto>(
+  '/api/locations',
+  'POST',
+);
 
 export * from './router';

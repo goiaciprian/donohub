@@ -10,23 +10,27 @@ import {
 } from '../ui/select';
 import { Input } from '../ui/input';
 import React from 'react';
-import { useDebouncedCallback } from 'use-debounce';
+import { useDebounce } from 'use-debounce';
 import { QueriedDonations } from '../QueriedDonations.Donations';
 import { useSearchParams } from 'react-router-dom';
 import { useAuthRequest } from '@/hooks/useAuthRequest';
 import { getCategories, getLocationsDropdown } from '@/support';
+import { useTranslation } from 'react-i18next';
 
-interface State {
+interface StateReducer {
   query?: string;
   location?: string;
   category?: string;
   pageSize?: string;
   page?: string;
+  all: Omit<StateReducer, 'all'>;
 }
 
-interface Payload<T extends keyof State> {
+type State = Omit<StateReducer, 'all'>;
+
+interface Payload<T extends keyof StateReducer> {
   key: T;
-  value: State[T];
+  value: StateReducer[T];
 }
 
 const initialState: State = {
@@ -37,9 +41,14 @@ const initialState: State = {
   query: undefined,
 };
 
-const reducerFunc = (state: State, payload: Payload<keyof State>) => {
+const reducerFunc = (state: State, payload: Payload<keyof StateReducer>) => {
   const newState = { ...state };
   const { key, value } = payload;
+  if (key === 'all') {
+    return {
+      ...(value as State),
+    };
+  }
 
   if (key !== 'page') {
     newState.page = '1';
@@ -52,6 +61,7 @@ const reducerFunc = (state: State, payload: Payload<keyof State>) => {
 };
 
 export const DonationsPage = () => {
+  const { t } = useTranslation();
   const [searchParams, setSearchParms] = useSearchParams();
 
   const [{ category, location, page, pageSize, query }, dispatchRaw] =
@@ -62,6 +72,19 @@ export const DonationsPage = () => {
       page: searchParams.get('page') ?? initialState.page,
       pageSize: searchParams.get('pageSize') ?? initialState.pageSize,
     }));
+
+  React.useEffect(() => {
+    dispatchRaw({
+      key: 'all',
+      value: {
+        category: searchParams.get('category') ?? initialState.category,
+        location: searchParams.get('location') ?? initialState.location,
+        query: searchParams.get('q') ?? initialState.query,
+        page: searchParams.get('page') ?? initialState.page,
+        pageSize: searchParams.get('pageSize') ?? initialState.pageSize,
+      },
+    });
+  }, [searchParams]);
 
   const dispatch = (
     payload: Payload<keyof State>,
@@ -95,31 +118,37 @@ export const DonationsPage = () => {
   const categories = categoriesQuery.data ?? [];
   const locationsDropdown = dropdownLocationsQuery.data ?? [];
 
-  const debounceQuery = useDebouncedCallback((value) => {
-    dispatch({ key: 'query', value }, 'q', !!value);
-  }, 500);
+  const [debounceQuery] = useDebounce(query, 600);
 
   return (
     <Page
-      className="lg:md:mx-[15%]"
+      className="mx-[5%]"
       staticFirst={
         <div>
           <div className="py-5">
-            <h1 className="font-bold text-4xl">Donations</h1>
-            <h3 className="text-2xl">
-              Here you can search for what you need. You can search for specific
-              key word, or filter based on the category and the location
-            </h3>
+            <h1 className="font-bold text-4xl">{t('donations.title')}</h1>
+            <h3 className="text-2xl">{t('donations.subtitle')}</h3>
           </div>
           <div className="flex w-full items-end py-5 gap-8 *:last:ml-auto">
             <div>
+              <label htmlFor="query" className="font-semibold">
+                {t('donations.keywords')}
+              </label>
               <Input
+                id="query"
                 value={query}
                 placeholder="Search"
-                onChange={(event) => debounceQuery(event.target.value)}
+                onChange={(event) =>
+                  dispatch(
+                    { key: 'query', value: event.target.value },
+                    'q',
+                    !!event.target.value,
+                  )
+                }
               />
             </div>
             <div>
+              <label className="font-semibold">{t('donations.category')}</label>
               <Select
                 onValueChange={(c) => {
                   const value = c === 'clear' ? undefined : c;
@@ -134,13 +163,14 @@ export const DonationsPage = () => {
                   <SelectItem value="clear">All</SelectItem>
                   {categories.map((category) => (
                     <SelectItem key={category.id} value={category.id}>
-                      {category.name}
+                      {t(`categories.${category.name}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div>
+              <label className="font-semibold">{t('donations.location')}</label>
               <Select
                 onValueChange={(l) => {
                   const value = l === 'clear' ? undefined : l;
@@ -162,6 +192,7 @@ export const DonationsPage = () => {
               </Select>
             </div>
             <div>
+              <label className="font-semibold">{t('donations.pageSize')}</label>
               <Select
                 onValueChange={(value) => {
                   dispatch(
@@ -192,7 +223,7 @@ export const DonationsPage = () => {
         <QueriedDonations
           category={category}
           location={location}
-          q={query}
+          q={debounceQuery}
           size={pageSize}
           page={page}
           updatePage={(page) => {

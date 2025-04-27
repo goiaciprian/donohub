@@ -40,13 +40,13 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
     if (isAuthDisabled) {
       Logger.warn('Auth is disabled this should be done only in development');
       const user = {
-        id: '5d11a128-f6c1-4a11-9648-a267fcda0283',
+        id: 'user_2u29ppkZlAPMSACYPpsLEFGox5k',
         firstName: 'dev',
         lastName: 'name',
         fullName: 'dev name',
         userInfo: {
           id: '6f2ecf31-3226-4c4b-a642-e82292d5db72',
-          clerkUserId: '5d11a128-f6c1-4a11-9648-a267fcda0283',
+          clerkUserId: 'user_2u29ppkZlAPMSACYPpsLEFGox5k',
           raging: 0,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -89,7 +89,7 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
         return {
           ...user,
           userInfo,
-        }as UserType;
+        } as UserType;
       }
     } catch (error) {
       Logger.error(error);

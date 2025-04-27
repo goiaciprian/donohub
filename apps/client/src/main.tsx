@@ -7,6 +7,7 @@ import { dark } from '@clerk/themes';
 import { PostHogProvider } from 'posthog-js/react';
 import { router } from './support';
 import './support/i18n.config';
+import 'moment/dist/locale/ro';
 
 const queryClient = new QueryClient({
   defaultOptions: {
