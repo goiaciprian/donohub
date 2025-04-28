@@ -7,6 +7,7 @@ import { getCategories, getLocationsDropdown } from '@/support';
 import { useAuthRequest } from '@/hooks/useAuthRequest';
 import { Toaster } from './ui/sonner';
 import moment from 'moment';
+import { PostHogPageView } from '@/app/PostHogPageView';
 
 export const Providers = ({
   children,
@@ -39,6 +40,7 @@ export const Providers = ({
       {children}
       <ReactQueryDevtools position="right" />
       <Toaster />
+      <PostHogPageView />
     </>
   );
 };

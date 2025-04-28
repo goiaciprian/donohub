@@ -28,6 +28,7 @@ root.render(
       options={{
         api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
         debug: import.meta.env.MODE === 'development',
+        capture_pageview: false,
       }}
     >
       <ClerkProvider
