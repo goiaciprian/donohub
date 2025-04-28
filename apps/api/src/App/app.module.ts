@@ -53,10 +53,10 @@ import { UserInfoModule } from '@/UserInfo/userinfo.module';
   ],
   controllers: [],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: ClerkAuthGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: ClerkAuthGuard,
+    // },
     {
       provide: APP_PIPE,
       useClass: ZodValidationPipe,

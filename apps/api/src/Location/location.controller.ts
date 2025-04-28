@@ -2,11 +2,11 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { LocationService } from './Service/location.service';
 import { EndpointResponse } from '@/Common/Decorators/endpoint.response';
 import { LocationDto, PostLocationDto } from '@donohub/shared';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
+import { HasAuth } from '@/Common/Decorators/hasAuth.decorator';
 
 @Controller('locations')
 @ApiTags('locations')
-@ApiBearerAuth()
 export class LocationController {
   constructor(private readonly locationService: LocationService) {}
 
@@ -22,7 +22,7 @@ export class LocationController {
   @Get('dropdown')
   async getLocationDropdown() {
     const locations = await this.locationService.getLocations();
-    return locations.flatMap((location) => {
+    const flattenLocations = locations.flatMap((location) => {
       const formatedArr = [
         location.county,
         `${location.county},${location.city}`,
@@ -36,9 +36,11 @@ export class LocationController {
 
       return formatedArr;
     });
+    return [...new Set(flattenLocations)]
   }
 
   @Post()
+  @HasAuth()
   @EndpointResponse({
     type: LocationDto,
   })

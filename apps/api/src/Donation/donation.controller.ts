@@ -30,12 +30,12 @@ import { DonationDto, PostDonationDto } from '@donohub/shared';
 import { type UserType } from '@/Auth/clerk.strategy';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { DonationFilterSortDto } from './Dtos/donation-filter-sort.dto';
+import { HasAuth } from '@/Common/Decorators/hasAuth.decorator';
 
 const acceptMimeType = ['image/png', 'image/jpg', 'image/jpeg'];
 
 @Controller('donations')
 @ApiTags('donations')
-@ApiBearerAuth()
 export class DonationController {
   constructor(private readonly donationService: DonationService) {}
 
@@ -73,6 +73,7 @@ export class DonationController {
     true,
   )
   @ApiConsumes('multipart/form-data')
+  @HasAuth()
   @UseInterceptors(
     FileFieldsInterceptor([{ name: 'attachements', maxCount: 4 }], {
       limits: {
