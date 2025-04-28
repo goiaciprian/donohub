@@ -9,7 +9,6 @@ import { EndpointResponse } from '@/Common/Decorators/endpoint.response';
 
 @Controller()
 @ApiTags('general')
-@ApiBearerAuth()
 export class GeneralController {
   constructor(
     private readonly supabaseService: SupabaseService,
@@ -26,10 +25,10 @@ export class GeneralController {
     return merge(keppAlive, this.sseService.observable$);
   }
 
-  @Get('/content/:id')
-  async getBuckets(@Param('id') id: string) {
-    return this.supabaseService.getMediaContent(id);
-  }
+  // @Get('/content/:id')
+  // async getBuckets(@Param('id') id: string) {
+  //   return this.supabaseService.getMediaContent(id);
+  // }
 
   @Get('/categories')
   @EndpointResponse({
