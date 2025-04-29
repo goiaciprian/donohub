@@ -64,7 +64,10 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
     try {
       const tokenPayload = await verifyToken(token, {
         secretKey: this.configService.get('clerkSecretKey'),
-        authorizedParties: ['https://donohub.srv-lab.work']
+        authorizedParties: [
+          'https://donohub.srv-lab.work',
+          'https://donohub.srv-lab.work',
+        ],
       });
 
       const user = await this.clerkClient.users.getUser(tokenPayload.sub);
@@ -72,26 +75,26 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
         throw new UnauthorizedException();
       }
 
-      try {
-        const userInfo = await this.prismaService.userInfo.findFirstOrThrow({
-          where: { clerkUserId: user.id },
-        });
-        return {
-          ...user,
-          userInfo,
-        } as UserType;
-      } catch (_e) {
-        const userInfo = await this.prismaService.userInfo.create({
-          data: {
-            clerkUserId: user.id,
-            rating: 0,
-          },
-        });
-        return {
-          ...user,
-          userInfo,
-        } as UserType;
-      }
+      // try {
+      const userInfo = await this.prismaService.userInfo.findFirstOrThrow({
+        where: { clerkUserId: user.id },
+      });
+      return {
+        ...user,
+        userInfo,
+      } as UserType;
+      // } catch (_e) {
+      //   const userInfo = await this.prismaService.userInfo.create({
+      //     data: {
+      //       clerkUserId: user.id,
+      //       rating: 0,
+      //     },
+      //   });
+      //   return {
+      //     ...user,
+      //     userInfo,
+      //   } as UserType;
+      // }
     } catch (error) {
       Logger.error(error);
       throw new UnauthorizedException();

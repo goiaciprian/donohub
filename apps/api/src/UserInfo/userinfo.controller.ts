@@ -1,27 +1,51 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { UserInfoService } from './Service/userinfo.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { EndpointResponse } from '@/Common/Decorators/endpoint.response';
 import { UserInfoDto } from '@donohub/shared';
+import { UserCreatedEvent } from '@/Common/Dtos/usercreated.event';
+import { UserDeletedEvent } from '@/Common/Dtos/userdeleted.event';
+import {
+  WebhookDeleteGuard,
+  WebhookRegisterGuard,
+} from '@/Common/Guards/webhook.guard';
 
-@Controller('userInfo/:id')
+@Controller('userInfo')
 @ApiTags('userInfo')
 export class UserInfoController {
   constructor(private readonly userInfoService: UserInfoService) {}
 
-  @Get('clerk')
+  @Get(':id/clerk')
   @EndpointResponse({
     type: UserInfoDto,
   })
-  async getUserInfoByClerkId(@Param('id') id: string): Promise<UserInfoDto> {
+  async getUserInfoByClerkId(@Param('id') id: string) {
     return await this.userInfoService.getUserInfoByClerkId(id);
   }
 
-  @Get('info')
+  @Get(':id/info')
   @EndpointResponse({
     type: UserInfoDto,
   })
   async getUserInfoById(@Param('id') id: string): Promise<UserInfoDto> {
     return await this.userInfoService.getUserInfoById(id);
+  }
+
+  @Post('complete')
+  @ApiBody({
+    type: UserCreatedEvent,
+  })
+  @UseGuards(WebhookRegisterGuard)
+  async completeRegister(@Body() body: UserCreatedEvent) {
+    await this.userInfoService.completeRegister(body.data.id);
+  }
+
+  @Post('delete')
+  @ApiBody({
+    type: UserDeletedEvent,
+  })
+  @UseGuards(WebhookDeleteGuard)
+  async completeDeletion(@Body() body: UserDeletedEvent) {
+    await this.userInfoService.completeDeletion(body.data.id);
   }
 }

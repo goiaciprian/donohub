@@ -12,7 +12,9 @@
     "@nestjs/platform-express": "^10.4.15",
     "@nestjs/swagger": "^7.4.2",
     "@nestjs/terminus": "^11.0.0",
+    "@scalar/nestjs-api-reference": "^0.3.189",
     "@supabase/supabase-js": "^2.49.1",
+    "express": "^4.21.2",
     "multer": "^1.4.5-lts.2",
     "nest-winston": "^1.10.2",
     "openapi3-ts": "^4.4.0",
@@ -20,21 +22,23 @@
     "passport-custom": "^1.1.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "winston": "^3.17.0",
-    "@scalar/nestjs-api-reference": "^0.3.189",
-    "express": "^4.21.2"
+    "svix": "^1.64.1",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@nestjs/schematics": "^10.2.3",
     "@nestjs/testing": "^10.4.15",
+    "@nx/webpack": "20.5.0",
     "@types/express": "^5.0.1",
     "@types/multer": "^1.4.12",
     "@types/node": "22.13.10",
-    "webpack-cli": "^6.0.1",
-    "@nx/webpack": "20.5.0"
+    "webpack-cli": "^6.0.1"
   },
   "nx": {
     "targets": {
+      "ngrok": {
+        "command": "./apps/api/forward.sh"
+      },
       "build": {
         "executor": "nx:run-commands",
         "options": {
@@ -51,23 +55,27 @@
           }
         }
       },
-      "serve": {
+      "serve:development": {
         "executor": "@nx/js:node",
         "defaultConfiguration": "development",
+        "dependsOn": [
+          "build",
+          "ngrok"
+        ],
+        "options": {
+          "buildTarget": "@donohub/api:build:development",
+          "runBuildTargetDependencies": false
+        }
+      },
+      "serve:production": {
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "production",
         "dependsOn": [
           "build"
         ],
         "options": {
-          "buildTarget": "@donohub/api:build",
+          "buildTarget": "@donohub/api:build:production",
           "runBuildTargetDependencies": false
-        },
-        "configurations": {
-          "development": {
-            "buildTarget": "@donohub/api:build:development"
-          },
-          "production": {
-            "buildTarget": "@donohub/api:build:production"
-          }
         }
       }
     }

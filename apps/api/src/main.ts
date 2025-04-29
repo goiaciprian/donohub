@@ -7,7 +7,7 @@ import { apiReference } from '@scalar/nestjs-api-reference';
 import { patchNestjsSwagger } from '@anatine/zod-nestjs';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { rawBody: true });
 
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
