@@ -1,7 +1,8 @@
 import { CLERK_CLIENT } from '@/Auth/clerk.provider';
 import { PrismaService } from '@/Prisma/prisma.service';
 import { type ClerkClient } from '@clerk/backend';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { error } from 'console';
 
 @Injectable()
 export class UserInfoService {
@@ -36,14 +37,38 @@ export class UserInfoService {
       this.prismaService.userInfo.findFirstOrThrow({
         where: { clerkUserId: id },
       }),
-    ]);
+    ]).catch(error => {
+      Logger.error(error);
+      return [null, null]
+    });
 
     return {
-      fullName: clerkUser.fullName,
-      email: clerkUser.primaryEmailAddress?.emailAddress ?? null,
-      lastActiveAt: clerkUser.lastActiveAt,
-      avatar: clerkUser.imageUrl,
-      rating: userInfo.rating.toNumber(),
+      fullName: clerkUser?.fullName ?? '',
+      email: clerkUser?.primaryEmailAddress?.emailAddress ?? null,
+      lastActiveAt: clerkUser?.lastActiveAt,
+      avatar: clerkUser?.imageUrl,
+      rating: userInfo?.rating?.toNumber(),
     };
+  }
+
+  async completeRegister(clerkId: string) {
+    await this.prismaService.userInfo.create({
+      data: {
+        clerkUserId: clerkId,
+        rating: 0,
+      },
+    });
+  }
+
+  async completeDeletion(clerkId: string) {
+    await this.prismaService.donation.deleteMany({
+      where: { clerkUserId: clerkId },
+    });
+
+    await this.prismaService.userInfo.deleteMany({
+      where: {
+        clerkUserId: clerkId,
+      },
+    });
   }
 }

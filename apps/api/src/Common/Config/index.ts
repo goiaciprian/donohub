@@ -7,6 +7,8 @@ export const ConfigurationSchema = z.object({
   authDisabled: z.boolean(),
   supabaseUrl: z.string(),
   supabaseApiKey: z.string(),
+  deleteWebhookKey: z.string(),
+  createWebhookKey:z.string(), 
 });
 
 export type Configuration = z.infer<typeof ConfigurationSchema>;
@@ -21,6 +23,8 @@ const getConfig = (): Configuration => {
     authDisabled: process.env.AUTH_DISABLED ? true : false,
     supabaseUrl: process.env.SUPABASE_URL,
     supabaseApiKey: process.env.SUPABASE_API_KEY,
+    createWebhookKey: process.env.CREATE_WEBHOOK_KEY,
+    deleteWebhookKey: process.env.DELETE_WEBHOOK_KEY,
   };
 };
 
