@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Page } from './Page';
 import { CategoryDto } from '@donohub/shared';
 import {
@@ -12,10 +12,19 @@ import { Input } from '../ui/input';
 import React from 'react';
 import { useDebounce } from 'use-debounce';
 import { QueriedDonations } from '../QueriedDonations.Donations';
-import { useSearchParams } from 'react-router-dom';
+import { URLSearchParamsInit, useSearchParams } from 'react-router-dom';
 import { useAuthRequest } from '@/hooks/useAuthRequest';
 import { getCategories, getLocationsDropdown } from '@/support';
 import { useTranslation } from 'react-i18next';
+import { CopyButton } from '../buttons/CopyButton';
+import { Button } from '../ui/button';
+import { X } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../ui/tooltip';
 
 interface StateReducer {
   query?: string;
@@ -28,9 +37,15 @@ interface StateReducer {
 
 type State = Omit<StateReducer, 'all'>;
 
-interface Payload<T extends keyof StateReducer> {
+type AllowedKeys = keyof StateReducer | 'reset';
+
+interface Payload<T = AllowedKeys> {
   key: T;
-  value: StateReducer[T];
+  value: T extends keyof StateReducer
+    ? StateReducer[T]
+    : T extends 'reset'
+      ? never
+      : never;
 }
 
 const initialState: State = {
@@ -41,13 +56,17 @@ const initialState: State = {
   query: undefined,
 };
 
-const reducerFunc = (state: State, payload: Payload<keyof StateReducer>) => {
+const reducerFunc = (state: State, payload: Payload) => {
   const newState = { ...state };
   const { key, value } = payload;
   if (key === 'all') {
     return {
       ...(value as State),
     };
+  }
+
+  if (key === 'reset') {
+    return { ...initialState };
   }
 
   if (key !== 'page') {
@@ -87,20 +106,24 @@ export const DonationsPage = () => {
   }, [searchParams]);
 
   const dispatch = (
-    payload: Payload<keyof State>,
+    payload: Payload,
     searchKey: string,
     condition: boolean,
     resetPage = true,
   ) => {
     dispatchRaw(payload);
-    setSearchParms((prev) => {
-      if (condition) prev.set(searchKey, payload.value as string);
-      else prev.delete(searchKey);
+    if (payload.key === 'reset') {
+      setSearchParms({});
+    } else {
+      setSearchParms((prev) => {
+        if (condition) prev.set(searchKey, payload.value as string);
+        else prev.delete(searchKey);
 
-      if (resetPage) prev.delete('page');
+        if (resetPage) prev.delete('page');
 
-      return prev;
-    });
+        return prev;
+      });
+    }
   };
 
   const getCategoriesFn = useAuthRequest(getCategories);
@@ -122,11 +145,16 @@ export const DonationsPage = () => {
 
   return (
     <Page
-      className="mx-[5%]"
+      className="mx-[5%] select-none"
       staticFirst={
         <div>
           <div className="py-5">
-            <h1 className="font-bold text-4xl">{t('donations.title')}</h1>
+            <div className="flex gap-4 items-center">
+              <div>
+                <CopyButton url={window.location.href} size={80} />
+              </div>
+              <h1 className="font-bold text-4xl">{t('donations.title')}</h1>
+            </div>
             <h3 className="text-2xl">{t('donations.subtitle')}</h3>
           </div>
           <div className="flex w-full items-end py-5 gap-8 *:last:ml-auto">
@@ -136,7 +164,7 @@ export const DonationsPage = () => {
               </label>
               <Input
                 id="query"
-                value={query}
+                value={query ?? ''}
                 placeholder="Search"
                 onChange={(event) =>
                   dispatch(
@@ -191,6 +219,33 @@ export const DonationsPage = () => {
                 </SelectContent>
               </Select>
             </div>
+            <div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="icon"
+                      onClick={() =>
+                        setSearchParms((prev) => {
+                          const paramsState: Record<string, string> = {};
+                          const pageSize = prev.get('pageSize');
+                          if (pageSize) {
+                            paramsState['pageSize'] = pageSize;
+                          }
+                          return paramsState;
+                        })
+                      }
+                    >
+                      <X />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{t('tooltip.clearFilters')}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+
             <div>
               <label className="font-semibold">{t('donations.pageSize')}</label>
               <Select

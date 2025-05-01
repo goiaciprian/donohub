@@ -36,3 +36,5 @@ export const getErrorMessage = (
       return t('notFound');
   }
 };
+
+export const DATE_FORMAT = 'MMMM DD, yyyy HH:MM';

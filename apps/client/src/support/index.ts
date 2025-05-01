@@ -1,9 +1,11 @@
 import {
   CategoryDto,
+  CommentDto,
+  CommentPaginatedDto,
+  CommentPostDto,
   DonationDto,
   LocationDto,
   PaginatedDonationDto,
-  PostDonationDto,
   PostLocationDto,
   UserInfoDto,
 } from '@donohub/shared';
@@ -40,14 +42,22 @@ export const getUserInfoByClerkId = createRequest<UserInfoDto>(
   'GET',
 );
 
-export const postDonations = createRequest<
-  DonationDto,
-  object,
-  FormData
->('/api/donations', 'POST');
+export const postDonations = createRequest<DonationDto, object, FormData>(
+  '/api/donations',
+  'POST',
+);
 
 export const postLocation = createRequest<LocationDto, object, PostLocationDto>(
   '/api/locations',
+  'POST',
+);
+
+export const getComments = createRequest<CommentPaginatedDto>(
+  '/api/comments/:donationId',
+  'GET',
+);
+export const postComment = createRequest<CommentDto, object, CommentPostDto>(
+  '/api/comments/:donationId',
   'POST',
 );
 

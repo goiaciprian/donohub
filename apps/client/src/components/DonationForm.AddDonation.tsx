@@ -1,37 +1,21 @@
 import { useAuthRequest } from '@/hooks/useAuthRequest';
-import {
-  getCategories,
-  getLocations,
-  postDonations,
-  postLocation,
-} from '@/support';
+import { getCategories, getLocations, postDonations } from '@/support';
 import { useAppForm } from '@/support/form';
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from '@tanstack/react-query';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
-import { CategoryDto, PostLocationDto } from '@donohub/shared';
+import { CategoryDto } from '@donohub/shared';
 import { Button } from './ui/button';
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from './ui/sheet';
 import React from 'react';
 import { toast } from 'sonner';
 import { useNavigate, useParams } from 'react-router-dom';
+import { AddLocation } from './AddLocation.AddDonation';
+import { UploadCloud, X } from 'lucide-react';
 
 export const AddDonationForm = () => {
   const { t } = useTranslation();
   const { lang } = useParams();
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const [sheetOpen, setSheetOpen] = React.useState(false);
@@ -103,30 +87,21 @@ export const AddDonationForm = () => {
     },
   });
 
-  const postLocationFn = useAuthRequest(postLocation);
-  const locationMutation = useMutation({
-    mutationKey: ['location'],
-    mutationFn: (body: PostLocationDto) => postLocationFn({ body }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['locations'] });
-      setSheetOpen(false);
-      toast.success(t('internal.create'));
-    },
-    onError: () => toast.error(t('internal.error')),
-  });
+  const preventDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
-  const locationForm = useAppForm({
-    defaultValues: {
-      city: '',
-      county: '',
-      street: null as null | string,
-      number: null as null | string,
-      postalCode: null as null | string,
-    },
-    onSubmit: ({ value }) => {
-      locationMutation.mutate(value);
-    },
-  });
+  const selectFirst4 = (fileList: FileList | null): FileList | null => {
+    if (!fileList) {
+      return null;
+    }
+    if (fileList.length > 4) {
+      // @ts-expect-error cannot remove items from filelist in an ok way this works
+      return Array.prototype.slice.call(fileList, 0, 4);
+    }
+    return fileList;
+  };
 
   return (
     <>
@@ -140,6 +115,12 @@ export const AddDonationForm = () => {
         >
           <form.AppField
             name="title"
+            validators={{
+              onChange: ({ value }) =>
+                value.length === 0
+                  ? t('internal.validations.required')
+                  : undefined,
+            }}
             children={(field) => (
               <div>
                 <Label
@@ -150,14 +131,29 @@ export const AddDonationForm = () => {
                 </Label>
                 <field.Input
                   id={field.name}
+                  value={field.state.value}
+                  disabled={postDonationMutation.isPending}
+                  onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
+                {field.state.meta.isBlurred &&
+                  field.state.meta.errors.map((e, index) => (
+                    <p key={index} className="text-red-600">
+                      {e}
+                    </p>
+                  ))}
               </div>
             )}
           />
 
           <form.AppField
             name="description"
+            validators={{
+              onChange: ({ value }) =>
+                value.length === 0
+                  ? t('internal.validations.required')
+                  : undefined,
+            }}
             children={(field) => (
               <div>
                 <Label
@@ -168,8 +164,17 @@ export const AddDonationForm = () => {
                 </Label>
                 <field.Input
                   id={field.name}
+                  disabled={postDonationMutation.isPending}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
+                {field.state.meta.isBlurred &&
+                  field.state.meta.errors.map((e, index) => (
+                    <p key={index} className="text-red-600">
+                      {e}
+                    </p>
+                  ))}
               </div>
             )}
           />
@@ -185,6 +190,9 @@ export const AddDonationForm = () => {
                 </Label>
                 <field.Input
                   id={field.name}
+                  value={field.state.value ?? ''}
+                  disabled={postDonationMutation.isPending}
+                  onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
               </div>
@@ -193,6 +201,14 @@ export const AddDonationForm = () => {
 
           <form.AppField
             name="phone"
+            validators={{
+              onChange: ({ value }) =>
+                value
+                  ? /[0-9]{10}/.test(value)
+                    ? undefined
+                    : t('internal.validations.phone')
+                  : undefined,
+            }}
             children={(field) => (
               <div>
                 <Label
@@ -203,9 +219,18 @@ export const AddDonationForm = () => {
                 </Label>
                 <field.Input
                   id={field.name}
+                  value={field.state.value ?? ''}
                   type="number"
+                  disabled={postDonationMutation.isPending}
+                  onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
+                {field.state.meta.isBlurred &&
+                  field.state.meta.errors.map((e, index) => (
+                    <p key={index} className="text-red-600">
+                      {e}
+                    </p>
+                  ))}
               </div>
             )}
           />
@@ -213,6 +238,12 @@ export const AddDonationForm = () => {
           <div className="flex gap-10 w-full">
             <form.AppField
               name="categoryId"
+              validators={{
+                onChange: ({ value }) =>
+                  value.length === 0
+                    ? t('internal.validations.required')
+                    : undefined,
+              }}
               children={(field) => (
                 <div className="flex-1/2">
                   <Label
@@ -221,11 +252,17 @@ export const AddDonationForm = () => {
                   >
                     {t('donations.category')}
                   </Label>
-                  <field.Select onValueChange={field.handleChange}>
-                    <field.SelectTrigger className="w-full">
+                  <field.Select
+                    onValueChange={field.handleChange}
+                    disabled={postDonationMutation.isPending}
+                  >
+                    <field.SelectTrigger
+                      className="w-full"
+                      value={field.state.value}
+                    >
                       <field.SelectValue />
                     </field.SelectTrigger>
-                    <field.SelectContent>
+                    <field.SelectContent onBlur={field.handleBlur}>
                       {categories.map((ctg) => (
                         <field.SelectItem value={ctg.value} key={ctg.value}>
                           {ctg.text}
@@ -233,11 +270,23 @@ export const AddDonationForm = () => {
                       ))}
                     </field.SelectContent>
                   </field.Select>
+                  {field.state.meta.isBlurred &&
+                    field.state.meta.errors.map((e, index) => (
+                      <p key={index} className="text-red-600">
+                        {e}
+                      </p>
+                    ))}
                 </div>
               )}
             />
             <form.AppField
               name="locationId"
+              validators={{
+                onChange: ({ value }) =>
+                  value.length === 0
+                    ? t('internal.validations.required')
+                    : undefined,
+              }}
               children={(field) => (
                 <div className="flex-1/2">
                   <Label
@@ -246,11 +295,17 @@ export const AddDonationForm = () => {
                   >
                     {t('donations.location')}
                   </Label>
-                  <field.Select onValueChange={field.handleChange}>
-                    <field.SelectTrigger className="w-full">
+                  <field.Select
+                    onValueChange={field.handleChange}
+                    disabled={postDonationMutation.isPending}
+                  >
+                    <field.SelectTrigger
+                      className="w-full"
+                      value={field.state.value}
+                    >
                       <field.SelectValue />
                     </field.SelectTrigger>
-                    <field.SelectContent>
+                    <field.SelectContent onBlur={field.handleBlur}>
                       {locations.map((loc) => (
                         <field.SelectItem value={loc.value} key={loc.value}>
                           {loc.text}
@@ -258,6 +313,12 @@ export const AddDonationForm = () => {
                       ))}
                     </field.SelectContent>
                   </field.Select>
+                  {field.state.meta.isBlurred &&
+                    field.state.meta.errors.map((e, index) => (
+                      <p key={index} className="text-red-600">
+                        {e}
+                      </p>
+                    ))}
                   <Button onClick={() => setSheetOpen(true)} variant="link">
                     {t('addDonation.addLocation')}
                   </Button>
@@ -267,24 +328,83 @@ export const AddDonationForm = () => {
           </div>
           <form.AppField
             name="attachements"
-            children={(field) => (
-              <div>
-                <Label
-                  htmlFor={field.name}
-                  className="font-semibold text-xl pb-2"
-                >
-                  {t('addDonation.attachements')}
-                </Label>
-                <Input
-                  className="h-full"
-                  id={field.name}
-                  type="file"
-                  multiple
-                  accept={'image/png, image/jpg, image/jpeg'}
-                  onChange={(e) => field.handleChange(e.target.files)}
-                />
-              </div>
-            )}
+            validators={{
+              onChange: ({ value }) =>
+                (value?.length ?? 0) === 0
+                  ? t('internal.validations.required')
+                  : undefined,
+            }}
+            children={(field) => {
+              const length = field.state.value?.length ?? 0;
+              return (
+                <div>
+                  <Label
+                    htmlFor={field.name}
+                    className="font-semibold text-xl pb-2"
+                  >
+                    {t('addDonation.attachements')}
+                  </Label>
+                  <div>
+                    <label
+                      htmlFor={field.name}
+                      onDragEnter={preventDrag}
+                      onDragOver={preventDrag}
+                      onDragLeave={preventDrag}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        field.handleChange(selectFirst4(e.dataTransfer.files));
+                      }}
+                    >
+                      <div className="border-2 w-full h-50 rounded-2xl shadow-xs cursor-pointer">
+                        <div className="flex w-full justify-center items-center h-full flex-col focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]">
+                          <UploadCloud size={25} />
+                          <p>{t('internal.fields.attachement1')}</p>
+                          <p className="text-sm text-gray-400 ">
+                            {t('internal.fields.attachement2')}
+                          </p>
+                          {length !== 0 && (
+                            <div className="flex flex-row gap-2 items-center">
+                              <p>
+                                {length === 1 ? '1 file' : `${length} files`}
+                              </p>
+                              <Button
+                                className="z-10"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  field.setValue(null);
+                                }}
+                                size="icon"
+                              >
+                                <X />
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </label>
+                    <Input
+                      id={field.name}
+                      hidden
+                      type="file"
+                      multiple
+                      disabled={postDonationMutation.isPending}
+                      onBlur={field.handleBlur}
+                      accept={'image/png, image/jpg, image/jpeg'}
+                      onChange={(e) =>
+                        field.handleChange(selectFirst4(e.target.files))
+                      }
+                    />
+                  </div>
+                  {field.state.meta.isBlurred &&
+                    field.state.meta.errors.map((e, index) => (
+                      <p key={index} className="text-red-600">
+                        {e}
+                      </p>
+                    ))}
+                </div>
+              );
+            }}
           />
           <form.AppForm>
             <form.Button className="w-max self-end" type="submit">
@@ -293,103 +413,7 @@ export const AddDonationForm = () => {
           </form.AppForm>
         </form>
       </div>
-
-      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>{t('location.title')}</SheetTitle>
-          </SheetHeader>
-          <div className="h-full">
-            <form
-              className="flex flex-col flex-1 h-full py-5 px-3"
-              onSubmit={(e) => {
-                e.preventDefault();
-                locationForm.handleSubmit();
-              }}
-            >
-              <locationForm.AppField
-                name="county"
-                children={(field) => (
-                  <div>
-                    <Label htmlFor={field.name} className="font-semibold pb-2">
-                      {t('location.county')}
-                    </Label>
-                    <Input
-                      id={field.name}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                  </div>
-                )}
-              />
-              <locationForm.AppField
-                name="city"
-                children={(field) => (
-                  <div>
-                    <Label htmlFor={field.name} className="font-semibold pb-2">
-                      {t('location.city')}
-                    </Label>
-                    <Input
-                      id={field.name}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                  </div>
-                )}
-              />
-              <locationForm.AppField
-                name="street"
-                children={(field) => (
-                  <div>
-                    <Label htmlFor={field.name} className="font-semibold pb-2">
-                      {t('location.street')}
-                    </Label>
-                    <Input
-                      id={field.name}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                  </div>
-                )}
-              />
-              <locationForm.AppField
-                name="number"
-                children={(field) => (
-                  <div>
-                    <Label htmlFor={field.name} className="font-semibold pb-2">
-                      {t('location.number')}
-                    </Label>
-                    <Input
-                      id={field.name}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                  </div>
-                )}
-              />
-              <locationForm.AppField
-                name="postalCode"
-                children={(field) => (
-                  <div>
-                    <Label htmlFor={field.name} className="font-semibold pb-2">
-                      {t('location.postalCode')}
-                    </Label>
-                    <Input
-                      id={field.name}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                  </div>
-                )}
-              />
-
-              <form.AppForm>
-                <SheetFooter className="flex flex-row justify-end mt-auto">
-                  <SheetClose asChild>
-                    <Button variant="secondary">{t('internal.close')}</Button>
-                  </SheetClose>
-                  <Button type="submit">{t('internal.submit')}</Button>
-                </SheetFooter>
-              </form.AppForm>
-            </form>
-          </div>
-        </SheetContent>
-      </Sheet>
+      <AddLocation setSheetOpen={setSheetOpen} sheetOpen={sheetOpen} />
     </>
   );
 };

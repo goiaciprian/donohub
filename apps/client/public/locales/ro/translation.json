@@ -12,7 +12,32 @@
     "submit": "Salveaza",
     "close": "Inchide",
     "create": "Creat",
-    "error": "Eroare la creare"
+    "error": "Eroare la creare",
+    "smtWrong": "Ceva nu a mers",
+    "validations": {
+      "comments": "Comentariile goale nu sunt permise",
+      "required": "Obligatoriu",
+      "phone": "Numar de telefon invalid",
+      "noPhone": "Numarul nu e disponibil"
+    },
+    "fields": {
+      "attachement1": "Incarca PNG JPG sau JPEG",
+      "attachement2": "Minim 1 fisier, maxim 4 fisiere"
+    },
+    "notFoundAnything": "Se pare ca nu am gasit nimic",
+    "adminManagement": {
+      "title": "Admin Management"
+    },
+    "evaluation": {
+      "donation": {
+        "title": "Gestiune Donatii",
+        "evaluate": "Verificare donatii"
+      },
+      "comment": {
+        "title": "Gestiune Comentarii",
+        "evaluate": "Verificare comentarii"
+      }
+    }
   },
   "navigation": {
     "donations": "Cauta o donatie",
@@ -91,5 +116,9 @@
       "success": "Link copiat",
       "error": "A aparut o problema la copiere"
     }
+  },
+  "tooltip": {
+    "copy": "Copieaza link-ul",
+    "clearFilters": "Sterge filtrele"
   }
 }

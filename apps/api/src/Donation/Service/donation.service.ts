@@ -197,14 +197,14 @@ export class DonationService {
         : {}),
       ...(q
         ? {
-            OR: [
+            OR: q.split(' ').flatMap((word) => [
               {
-                title: { contains: q, mode: 'insensitive' },
+                title: { contains: word, mode: 'insensitive' },
               },
               {
-                description: { contains: q, mode: 'insensitive' },
+                description: { contains: word, mode: 'insensitive' },
               },
-            ],
+            ]),
           }
         : {}),
     };

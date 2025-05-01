@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { UserInfoService } from './Service/userinfo.service';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
-import { EndpointResponse } from '@/Common/Decorators/endpoint.response';
+import { EndpointResponse } from '@/Common/Decorators/endpointResponse.decorator';
 import { UserInfoDto } from '@donohub/shared';
 import { UserCreatedEvent } from '@/Common/Dtos/usercreated.event';
 import { UserDeletedEvent } from '@/Common/Dtos/userdeleted.event';

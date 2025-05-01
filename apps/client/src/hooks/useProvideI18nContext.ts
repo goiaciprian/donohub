@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 export const useProvideI18nContext = () => {
   const {
-    i18n: { resolvedLanguage, changeLanguage },
+    i18n: { resolvedLanguage, changeLanguage, languages },
     t,
   } = useTranslation();
 
@@ -22,5 +22,7 @@ export const useProvideI18nContext = () => {
 
   return {
     setLang,
+    languages,
+    resolvedLanguage,
   };
 };

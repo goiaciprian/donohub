@@ -87,6 +87,8 @@ model Comment {
     full_name   String
     text        String
 
+    userImage String
+
     Donation   Donation @relation(fields: [donationId], references: [id])
     donationId String   @map("donation_id")
 

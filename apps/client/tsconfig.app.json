@@ -4,6 +4,7 @@
     "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
     "jsx": "react-jsx",
+    "allowJs": true,
     "lib": ["dom"],
     "types": [
       "node",

@@ -2,14 +2,8 @@ import { useAuthRequest } from '@/hooks/useAuthRequest';
 import { getDonations } from '@/support';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { DonationCard } from './DonationCard';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from './ui/pagination';
+import { t } from 'i18next';
+import { Pagination } from './Pagination';
 
 interface QueriedDonationsProps {
   location: string | undefined;
@@ -40,7 +34,7 @@ export const QueriedDonations = ({
   if (donationsData.totalItems === 0) {
     return (
       <section>
-        <h2 className="text-4xl">No donations found</h2>
+        <h2 className="text-4xl">{t('internal.notFoundAnything')}</h2>
       </section>
     );
   }
@@ -54,29 +48,13 @@ export const QueriedDonations = ({
       </div>
       <div>
         <div className="pb-10">
-          <Pagination>
-            <PaginationContent className="gap-15">
-              {donationsData.hasPrev && (
-                <PaginationItem
-                  onClick={() => updatePage(donationsData.page - 1)}
-                >
-                  <PaginationPrevious className="text-2xl" />
-                </PaginationItem>
-              )}
-              <PaginationItem>
-                <PaginationLink className="text-2xl" isActive>
-                  {donationsData.page}
-                </PaginationLink>
-              </PaginationItem>
-              {donationsData.hasNext && (
-                <PaginationItem
-                  onClick={() => updatePage(donationsData.page + 1)}
-                >
-                  <PaginationNext className="text-2xl" />
-                </PaginationItem>
-              )}
-            </PaginationContent>
-          </Pagination>
+          <Pagination
+            hasNext={donationsData.hasNext}
+            hasPrev={donationsData.hasPrev}
+            page={donationsData.page}
+            totalPages={donationsData.totalPages}
+            update={updatePage}
+          />
         </div>
       </div>
     </section>

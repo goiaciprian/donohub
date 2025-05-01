@@ -5,6 +5,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { DonationCard } from './DonationCard';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Button } from './ui/button';
 
 const LatestDonationsHome = () => {
   const { t } = useTranslation();
@@ -19,7 +20,7 @@ const LatestDonationsHome = () => {
   }
 
   if (!latestDonationsQuery.data) {
-    return <div>{t('home.latestDonations.noData')}</div>;
+    return <div>{t('internal.notFoundAnything')}</div>;
   }
 
   const { items: donations } = latestDonationsQuery.data;
@@ -36,9 +37,9 @@ const LatestDonationsHome = () => {
       </div>
       <div className="w-full text-center pt-30">
         <NavLink to="donations" viewTransition>
-          <button className="text-4xl rounded-2xl border-gray-800 bg-gray-800 text-white border-1 px-8 py-4 cursor-pointer hover:text-black hover:bg-white">
+          <Button className="cursor-pointer text-3xl px-10 py-8">
             {t('home.latestDonation.seeAll')}
-          </button>
+          </Button>
         </NavLink>
       </div>
     </section>
