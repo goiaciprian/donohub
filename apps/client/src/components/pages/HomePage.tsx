@@ -19,16 +19,17 @@ export const HomePage = () => {
 
   return (
     <Page
+      className="select-none"
       staticFirst={
         <section className="relative w-full h-[90vh] bg-[url(/assets/home1.jpg)] bg-cover bg-top-left bg-blend-overlay bg-gray-700">
           <div className="absolute text-white h-[90vh] w-full pt-5">
             <h1 className="text-4xl text-center font-bold">
               {t('home.banner1')}
             </h1>
-            <h2 className="text-4xl max-w-3xl text-center pt-20 ml-20 font-bold">
+            <h2 className="text-4xl max-w-3xl text-center pt-40 ml-20 font-bold">
               {t('home.banner2')}
             </h2>
-            <div className="absolute bottom-80 left-[80%]">
+            <div className="absolute bottom-80 left-[70%]">
               <h2 className="text-4xl font-bold pb-3">{t('home.banner3')}</h2>
               <SignedOut>
                 <div className="flex flex-row w-full justify-between">

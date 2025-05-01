@@ -1,8 +1,3 @@
-import {
-  QueryObserver,
-  QueryObserverResult,
-  useQueryClient,
-} from '@tanstack/react-query';
 import React from 'react';
 import { Spinner } from '../spinner/Spinner';
 
@@ -32,7 +27,6 @@ export const Page = ({
   return (
     <main className={'h-full ' + className}>
       {staticFirst}
-      {/* {render()} */}
       <React.Suspense fallback={spinnerContainer()}>
         {dynamicComponent}
       </React.Suspense>

@@ -10,10 +10,10 @@ import {
 import { Carousel, CarouselContent, CarouselItem } from './ui/carousel';
 import { NavLink, useParams } from 'react-router-dom';
 import { Button } from './ui/button';
-import { toast } from 'sonner';
-import { MapPin, Clipboard } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { displayLocation, getCategoryIcon } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import { CopyButton } from './buttons/CopyButton';
 
 export const DonationCard = ({
   donation,
@@ -23,7 +23,7 @@ export const DonationCard = ({
   const { lang } = useParams();
   const { t } = useTranslation();
   return (
-    <Card className="w-[800px] p-5">
+    <Card className="w-[800px] p-5 select-none">
       <div className="flex flex-row h-full">
         <Carousel opts={{ loop: true }} className="w-full max-w-[200px]">
           <CarouselContent>
@@ -71,21 +71,9 @@ export const DonationCard = ({
           </CardContent>
           <CardFooter className="self-end justify-self-end mt-auto">
             <div className="flex flex-row gap-2">
-              <Button
-                className="cursor-pointer text-xl"
-                size="icon"
-                variant="secondary"
-                onClick={() =>
-                  navigator.clipboard
-                    .writeText(
-                      `${window.location.origin}/${lang}/donations/${donation.id}`,
-                    )
-                    .then(() => toast.success('Linked copied'))
-                    .catch(() => toast.error('Error copying the link'))
-                }
-              >
-                <Clipboard />
-              </Button>
+              <CopyButton
+                url={`${window.location.origin}/${lang}/donations/${donation.id}`}
+              />
               <NavLink to={`/${lang}/donations/${donation.id}`} viewTransition>
                 <Button className="cursor-pointer text-xl">
                   {t('donationCard.details')}

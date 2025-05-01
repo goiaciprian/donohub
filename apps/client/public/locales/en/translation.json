@@ -11,7 +11,32 @@
     "submit": "Submit",
     "close": "Close",
     "create": "Created",
-    "error": "Failed to create"
+    "error": "Failed to create",
+    "smtWrong": "Something went wrong",
+    "validations": {
+      "comments": "Empty comments are not allowed",
+      "required": "Required",
+      "phone": "Phone number invalid",
+      "noPhone": "Phone not available"
+    },
+    "fields": {
+      "attachement1": "Upload PNG JPG or JPEG",
+      "attachement2": "Minim 1 file, maxim 4 files"
+    },
+    "notFoundAnything": "Looks like we didn't find anything",
+    "adminManagement": {
+      "title": "Admin Management"
+    },
+    "evaluation": {
+      "donation": {
+        "title": "Manage Donations",
+        "evaluate": "Evaluate donations"
+      },
+      "comment": {
+        "title": "Manage Comments",
+        "evaluate": "Evaluate comments"
+      }
+    }
   },
   "navigation": {
     "donations": "Search for a donation",
@@ -25,7 +50,6 @@
     "latestDonation": {
       "title": "Latest 5 donations",
       "seeAll": "See all",
-      "noData": "No data",
       "error": "Something went wrong loading latest donations"
     },
     "4steps": {
@@ -88,5 +112,9 @@
       "success": "Linked copied",
       "error": "Error copying the link"
     }
+  },
+  "tooltip": {
+    "copy": "Copy current link",
+    "clearFilters": "Clear filters"
   }
 }

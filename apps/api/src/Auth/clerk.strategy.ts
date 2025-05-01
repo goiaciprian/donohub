@@ -12,8 +12,13 @@ import { ConfigService } from '@nestjs/config';
 import express from 'express';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@/Prisma/prisma.service';
+import { PermissionsType } from '@donohub/shared';
 
 export type UserType = User & {
+  publicMetadata: {
+    permissions: PermissionsType[];
+  };
+} & {
   userInfo: Prisma.UserInfoGetPayload<{
     select: {
       clerkUserId: true;
@@ -64,10 +69,6 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
     try {
       const tokenPayload = await verifyToken(token, {
         secretKey: this.configService.get('clerkSecretKey'),
-        authorizedParties: [
-          'https://donohub.srv-lab.work',
-          'https://donohub.srv-lab.work',
-        ],
       });
 
       const user = await this.clerkClient.users.getUser(tokenPayload.sub);
@@ -75,7 +76,6 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
         throw new UnauthorizedException();
       }
 
-      // try {
       const userInfo = await this.prismaService.userInfo.findFirstOrThrow({
         where: { clerkUserId: user.id },
       });
@@ -83,18 +83,6 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
         ...user,
         userInfo,
       } as UserType;
-      // } catch (_e) {
-      //   const userInfo = await this.prismaService.userInfo.create({
-      //     data: {
-      //       clerkUserId: user.id,
-      //       rating: 0,
-      //     },
-      //   });
-      //   return {
-      //     ...user,
-      //     userInfo,
-      //   } as UserType;
-      // }
     } catch (error) {
       Logger.error(error);
       throw new UnauthorizedException();

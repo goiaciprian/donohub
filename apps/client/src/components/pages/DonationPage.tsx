@@ -19,7 +19,7 @@ export const DonationPage = () => {
 
   return (
     <Page
-      className="lg:md:mx-[5%] py-5"
+      className="lg:md:mx-[5%] py-5 select-none"
       dynamicComponent={<DetailedDonation donationId={donationId ?? ''} />}
     />
   );

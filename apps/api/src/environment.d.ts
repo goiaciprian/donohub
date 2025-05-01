@@ -10,6 +10,7 @@ declare global {
       SUPABASE_API_KEY: string;
       DELETE_WEBHOOK_KEY: string;
       CREATE_WEBHOOK_KEY: string;
+      FE_PUBLIC_KEY: string;
     }
   }
 }

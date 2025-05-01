@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { LocationService } from './Service/location.service';
-import { EndpointResponse } from '@/Common/Decorators/endpoint.response';
+import { EndpointResponse } from '@/Common/Decorators/endpointResponse.decorator';
 import { LocationDto, PostLocationDto } from '@donohub/shared';
 import { ApiTags } from '@nestjs/swagger';
 import { HasAuth } from '@/Common/Decorators/hasAuth.decorator';
@@ -36,7 +36,7 @@ export class LocationController {
 
       return formatedArr;
     });
-    return [...new Set(flattenLocations)]
+    return [...new Set(flattenLocations)];
   }
 
   @Post()

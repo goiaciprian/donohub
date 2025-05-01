@@ -11,7 +11,6 @@ import { HealthModule } from '@/Health/health.module';
 import { PrismaModule } from '@/Prisma/prisma.module';
 import { SupabaseModule } from '@/Supabase/supanase.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { ListenersModule } from '@/Common/Listenters/listener.module';
 import { SseModule } from '@/Common/SSE/sse.module';
 import { GeneralModule } from './general.module';
 import { DonationModule } from '@/Donation/donation.module';
@@ -19,6 +18,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { LocationModule } from '@/Location/location.module';
 import { UserInfoModule } from '@/UserInfo/userinfo.module';
+import { CommentsModule } from '@/Comments/comments.module';
 
 @Module({
   imports: [
@@ -39,23 +39,19 @@ import { UserInfoModule } from '@/UserInfo/userinfo.module';
     PrismaModule,
     SupabaseModule,
     EventEmitterModule.forRoot(),
-    ListenersModule,
     SseModule,
     MulterModule.register({
-      storage: memoryStorage
+      storage: memoryStorage,
     }),
 
     GeneralModule,
     DonationModule,
     LocationModule,
     UserInfoModule,
+    CommentsModule,
   ],
   controllers: [],
   providers: [
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: ClerkAuthGuard,
-    // },
     {
       provide: APP_PIPE,
       useClass: ZodValidationPipe,
@@ -64,6 +60,6 @@ import { UserInfoModule } from '@/UserInfo/userinfo.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
+    consumer.apply(LoggerMiddleware).forRoutes('/');
   }
 }

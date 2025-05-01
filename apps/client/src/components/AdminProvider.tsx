@@ -1,0 +1,26 @@
+import { useHasPermissions } from '@/hooks/useHasPermissions';
+import { PermissionsType } from '@donohub/shared';
+import React from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+
+interface AdminProviderProps {
+  permission?: PermissionsType;
+  children: React.ReactNode | React.ReactNode[];
+}
+
+export const AdminProvider = ({ permission, children }: AdminProviderProps) => {
+  const { permissions, isLoggedIn } = useHasPermissions();
+  const { lang } = useParams();
+  const navigate = useNavigate();
+
+  console.log(isLoggedIn, permission && !permissions.includes(permission));
+
+  console.log(permission);
+
+  if (!isLoggedIn || (permission && !permissions.includes(permission))) {
+    navigate(`/${lang}`, { viewTransition: true });
+    return null;
+  }
+
+  return children;
+};

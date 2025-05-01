@@ -9,6 +9,7 @@ import { Footer } from '@/components/Footer';
 import { DonationsPage } from '@/components/pages/DonationsPage';
 import { DonationPage } from '@/components/pages/DonationPage';
 import { AddDonationPage } from '@/components/pages/AddDonationPage';
+import { AdminProvider } from '@/components/AdminProvider';
 
 export const router = createBrowserRouter([
   {
@@ -22,7 +23,7 @@ export const router = createBrowserRouter([
         path: '',
         element: (
           <Providers>
-            <div className="flex flex-col min-h-screen ">
+            <div className="flex flex-col min-h-screen">
               <Navigation />
               <Outlet />
               <Footer />
@@ -54,6 +55,32 @@ export const router = createBrowserRouter([
               {
                 path: ':donationId',
                 element: <DonationPage />,
+              },
+            ],
+          },
+          {
+            path: 'admin',
+            children: [
+              {
+                path: 'evaluate',
+                children: [
+                  {
+                    path: 'donation',
+                    element: (
+                      <AdminProvider permission={'donation:evaluate'}>
+                        <h1>Evaluate donations</h1>
+                      </AdminProvider>
+                    ),
+                  },
+                  {
+                    path: 'comment',
+                    element: (
+                      <AdminProvider permission={'comments:evaluate'}>
+                        <h1>Evaluate comments</h1>
+                      </AdminProvider>
+                    ),
+                  },
+                ],
               },
             ],
           },

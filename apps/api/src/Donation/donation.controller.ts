@@ -3,29 +3,23 @@ import {
   Body,
   Controller,
   Get,
-  HttpStatus,
-  Logger,
   Param,
-  ParseFilePipeBuilder,
-  ParseIntPipe,
   ParseUUIDPipe,
   Post,
+  Put,
   Query,
   UnprocessableEntityException,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
-  ApiBody,
   ApiConsumes,
-  ApiProperty,
   ApiTags,
 } from '@nestjs/swagger';
 import { DonationService } from './Service/donation.service';
 import { CurrentUser } from '@/Common/Decorators/user.decorator';
 import { PaginationQueryDto } from '@/Common/Dtos/pagination.dto';
-import { EndpointResponse } from '@/Common/Decorators/endpoint.response';
+import { EndpointResponse } from '@/Common/Decorators/endpointResponse.decorator';
 import { DonationDto, PostDonationDto } from '@donohub/shared';
 import { type UserType } from '@/Auth/clerk.strategy';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
@@ -125,5 +119,13 @@ export class DonationController {
       filterSort.location || undefined,
       filterSort.q || undefined,
     );
+  }
+
+  @Put(':id/evaluate')
+  @HasAuth('donation:evaluate')
+  async listDonation(@Param('id') donationId: string) {
+    return {
+      m: `${donationId} settings to listed`,
+    };
   }
 }
