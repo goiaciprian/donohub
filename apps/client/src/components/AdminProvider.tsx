@@ -13,10 +13,6 @@ export const AdminProvider = ({ permission, children }: AdminProviderProps) => {
   const { lang } = useParams();
   const navigate = useNavigate();
 
-  console.log(isLoggedIn, permission && !permissions.includes(permission));
-
-  console.log(permission);
-
   if (!isLoggedIn || (permission && !permissions.includes(permission))) {
     navigate(`/${lang}`, { viewTransition: true });
     return null;

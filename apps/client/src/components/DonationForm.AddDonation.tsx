@@ -12,6 +12,10 @@ import { toast } from 'sonner';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AddLocation } from './AddLocation.AddDonation';
 import { UploadCloud, X } from 'lucide-react';
+import { usePrompt } from '@/hooks/usePrompt';
+import { Dialog, DialogContent, DialogHeader } from './ui/dialog';
+import { DialogTitle } from '@radix-ui/react-dialog';
+import { PageConfirmDialog } from './dialogs/PageConfirmDialog';
 
 export const AddDonationForm = () => {
   const { t } = useTranslation();
@@ -103,6 +107,12 @@ export const AddDonationForm = () => {
     return fileList;
   };
 
+  const [showPrompt, confirmNavigation, cancelNavigation] = usePrompt(
+    () => form.state.isDirty,
+  );
+
+  // console.log(form.state);
+
   return (
     <>
       <div className="h-full">
@@ -125,7 +135,7 @@ export const AddDonationForm = () => {
               <div>
                 <Label
                   htmlFor={field.name}
-                  className="font-semibold text-xl pb-2"
+                  className="font-semibold text-md pb-2"
                 >
                   {t('addDonation.title')}
                 </Label>
@@ -158,7 +168,7 @@ export const AddDonationForm = () => {
               <div>
                 <Label
                   htmlFor={field.name}
-                  className="font-semibold text-xl pb-2"
+                  className="font-semibold text-md pb-2"
                 >
                   {t('addDonation.description')}
                 </Label>
@@ -184,7 +194,7 @@ export const AddDonationForm = () => {
               <div>
                 <Label
                   htmlFor={field.name}
-                  className="font-semibold text-xl pb-2"
+                  className="font-semibold text-md pb-2"
                 >
                   {t('addDonation.quantity')}
                 </Label>
@@ -213,7 +223,7 @@ export const AddDonationForm = () => {
               <div>
                 <Label
                   htmlFor={field.name}
-                  className="font-semibold text-xl pb-2"
+                  className="font-semibold text-md pb-2"
                 >
                   {t('addDonation.phone')}
                 </Label>
@@ -248,7 +258,7 @@ export const AddDonationForm = () => {
                 <div className="flex-1/2">
                   <Label
                     htmlFor={field.name}
-                    className="font-semibold text-xl pb-2"
+                    className="font-semibold text-md pb-2"
                   >
                     {t('donations.category')}
                   </Label>
@@ -291,7 +301,7 @@ export const AddDonationForm = () => {
                 <div className="flex-1/2">
                   <Label
                     htmlFor={field.name}
-                    className="font-semibold text-xl pb-2"
+                    className="font-semibold text-md pb-2"
                   >
                     {t('donations.location')}
                   </Label>
@@ -340,7 +350,7 @@ export const AddDonationForm = () => {
                 <div>
                   <Label
                     htmlFor={field.name}
-                    className="font-semibold text-xl pb-2"
+                    className="font-semibold text-md pb-2"
                   >
                     {t('addDonation.attachements')}
                   </Label>
@@ -414,6 +424,11 @@ export const AddDonationForm = () => {
         </form>
       </div>
       <AddLocation setSheetOpen={setSheetOpen} sheetOpen={sheetOpen} />
+      <PageConfirmDialog
+        open={showPrompt}
+        onCancel={cancelNavigation}
+        onSubmit={confirmNavigation}
+      />
     </>
   );
 };

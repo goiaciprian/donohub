@@ -172,8 +172,8 @@ export const DonationComments = ({ donationId }: { donationId: string }) => {
                   <p>{comment.fullName}</p>
                 </CardTitle>
                 <CardDescription className="flex flex-row items-center gap-1">
-                  <CalendarPlus size="20" />
-                  <p>
+                  <CalendarPlus size="18" />
+                  <p className={'text-sm'}>
                     {fromNow
                       ? createdAt.fromNow()
                       : createdAt.format(DATE_FORMAT)}

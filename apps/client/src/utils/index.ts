@@ -11,10 +11,9 @@ export const createRequest = <TResp, TParams = object, TBody = object>(
   url: string,
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
 ) => {
-  return (accessToken: string, params: RequestVars<TParams, TBody>) =>
-    axios<TResp, AxiosResponse<TResp, TBody>, TBody>({
+  return (accessToken: string, params: RequestVars<TParams, TBody>) => {
+    return axios<TResp, AxiosResponse<TResp, TBody>, TBody>({
       method: method,
-      //   url: url + (params.pathParams ?? ''),
       url: (params.pathParams ?? []).reduce((url, current) => {
         return url.replace(current.key, current.value);
       }, url),
@@ -22,6 +21,7 @@ export const createRequest = <TResp, TParams = object, TBody = object>(
       params: params.params,
       headers: { Authorization: `Bearer ${accessToken}` },
     });
+  };
 };
 
 export const getErrorMessage = (
@@ -31,6 +31,8 @@ export const getErrorMessage = (
   switch (status) {
     case 401:
       return t('unauthorized');
+    case 500:
+      return t('internal.smtWrong');
     case 404:
     default:
       return t('notFound');

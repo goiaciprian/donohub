@@ -18,7 +18,7 @@ export const getDonations = createRequest<PaginatedDonationDto>(
 );
 
 export const getDonationById = createRequest<DonationDto>(
-  '/api/donations/:id',
+  '/api/donations/by/:id',
   'GET',
 );
 
@@ -60,5 +60,10 @@ export const postComment = createRequest<CommentDto, object, CommentPostDto>(
   '/api/comments/:donationId',
   'POST',
 );
+
+export const getUnlistedDonations = createRequest<
+  PaginatedDonationDto,
+  { page: number; size: number }
+>('/api/donations/unlisted', 'GET');
 
 export * from './router';

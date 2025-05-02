@@ -10,6 +10,7 @@ import { DonationsPage } from '@/components/pages/DonationsPage';
 import { DonationPage } from '@/components/pages/DonationPage';
 import { AddDonationPage } from '@/components/pages/AddDonationPage';
 import { AdminProvider } from '@/components/AdminProvider';
+import { EvaluateDonations } from '@/components/pages/EvaluateDonations';
 
 export const router = createBrowserRouter([
   {
@@ -60,6 +61,7 @@ export const router = createBrowserRouter([
           },
           {
             path: 'admin',
+            ErrorBoundary: () => <ErrorPage />,
             children: [
               {
                 path: 'evaluate',
@@ -68,7 +70,7 @@ export const router = createBrowserRouter([
                     path: 'donation',
                     element: (
                       <AdminProvider permission={'donation:evaluate'}>
-                        <h1>Evaluate donations</h1>
+                        <EvaluateDonations />
                       </AdminProvider>
                     ),
                   },

@@ -6,6 +6,8 @@ import { UserRound, Mail, Star } from 'lucide-react';
 import { Spinner } from './spinner/Spinner';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { useTranslation } from 'react-i18next';
+import { Tooltip, TooltipContent } from './ui/tooltip';
+import { TooltipTrigger } from '@radix-ui/react-tooltip';
 
 export const DonationUserInfo = ({ clerkUserId }: { clerkUserId: string }) => {
   const { t } = useTranslation();
@@ -31,27 +33,42 @@ export const DonationUserInfo = ({ clerkUserId }: { clerkUserId: string }) => {
   }
 
   const userInfo = userInfoQuery.data;
-  const ratingArr = [0].fill(1, 0, Math.floor(userInfo.rating ?? 0));
+  const ratingArr = [1, 1, 1, 1]; //[0].fill(1, 0, Math.floor(userInfo.rating ?? 0));
 
   return (
-    <div className="flex flex-row gap-5 items-center">
+    <div className="flex flex-row gap-3 items-center">
       <div>
-        <Avatar className="size-20">
+        <Avatar className="size-15">
           <AvatarImage src={userInfo.avatar} />
           <AvatarFallback>{userInfo.fullName}</AvatarFallback>
         </Avatar>
       </div>
       <div>
-        <h4 className="text-2xl flex items-center gap-5">
-          <UserRound /> {userInfo.fullName}
+        <h4 className="text-md flex items-center gap-3">
+          <UserRound size={18} /> <span>{userInfo.fullName}</span>
         </h4>
-        <h4 className="text-2xl flex items-center gap-5">
-          <Mail /> {userInfo.email}
+        <h4 className="text-md flex items-center gap-3">
+          <Mail size={18} /> <span>{userInfo.email}</span>
         </h4>
-        <h4 className="text-2xl flex items-center gap-5">
-          {ratingArr.map((value, index) => (
-            <Star key={index} fill={value ? 'yellow' : 'white'} />
-          ))}
+        <h4>
+          <Tooltip>
+            <TooltipTrigger>
+              <div className="flex gap-1">
+                {ratingArr.map((value, index) => (
+                  <Star
+                    size={18}
+                    key={index}
+                    fill={value ? 'yellow' : 'white'}
+                  />
+                ))}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>
+                {ratingArr.reduce((total, value) => total + value, 0)} rating
+              </p>
+            </TooltipContent>
+          </Tooltip>
         </h4>
       </div>
     </div>

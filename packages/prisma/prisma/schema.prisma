@@ -75,10 +75,24 @@ model Donation {
 
     status String
 
-    images Image[]
+    images             Image[]
+    DonationEvaluation DonationEvaluation[]
 
     @@index([clerkUserId])
     @@map("donation")
+}
+
+model DonationEvaluation {
+    id          String  @id @default(uuid())
+    clerkUserId String
+    userImage   String
+    userName    String
+    approved    Boolean
+
+    donationId String   @map("donation_id")
+    donation   Donation @relation(fields: [donationId], references: [id])
+
+    @@map("donation_evaluation")
 }
 
 model Comment {

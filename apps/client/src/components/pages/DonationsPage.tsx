@@ -12,7 +12,7 @@ import { Input } from '../ui/input';
 import React from 'react';
 import { useDebounce } from 'use-debounce';
 import { QueriedDonations } from '../QueriedDonations.Donations';
-import { URLSearchParamsInit, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useAuthRequest } from '@/hooks/useAuthRequest';
 import { getCategories, getLocationsDropdown } from '@/support';
 import { useTranslation } from 'react-i18next';
@@ -153,9 +153,9 @@ export const DonationsPage = () => {
               <div>
                 <CopyButton url={window.location.href} size={80} />
               </div>
-              <h1 className="font-bold text-4xl">{t('donations.title')}</h1>
+              <h1 className="font-bold text-3xl">{t('donations.title')}</h1>
             </div>
-            <h3 className="text-2xl">{t('donations.subtitle')}</h3>
+            <h3 className="text-xl">{t('donations.subtitle')}</h3>
           </div>
           <div className="flex w-full items-end py-5 gap-8 *:last:ml-auto">
             <div>

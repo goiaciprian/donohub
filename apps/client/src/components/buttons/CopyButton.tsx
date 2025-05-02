@@ -16,7 +16,7 @@ export const CopyButton = ({ url, size, variant }: { url: string; size?: number,
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            className="cursor-pointer text-xl"
+            className="cursor-pointer"
             variant={variant}
             size="icon"
             onClick={() =>

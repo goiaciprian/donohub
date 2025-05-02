@@ -3,42 +3,42 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { RequestVars } from '@/utils';
 import React from 'react';
 
-export const useAuthRequest = <TResp, TBody = object, TParams = object>(
+export const useAuthRequest = <TResp, TParams, TBody>(
   request: (
     accessToken: string,
-    params: RequestVars<TBody, TParams>,
+    params: RequestVars<TParams, TBody>,
   ) => Promise<AxiosResponse<TResp, TBody>>,
 ) => {
   const { getToken } = useAuth();
-  const [token, setToken] = React.useState<string>('');
+  const [_token, setToken] = React.useState<string | null>(null);
 
-  const fetchNewToken = React.useCallback(async () => {
-    setToken(
-      (await getToken({
-        template: 'main',
-      })) ?? '',
-    );
+  const token = React.useCallback(async () => {
+    let t = _token;
+    if (!t) {
+      t = await getToken();
+      setToken(t);
+    }
+    return t;
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getToken, setToken]);
 
-  React.useEffect(() => {
-    fetchNewToken();
-  }, [fetchNewToken]);
-
   const requestFnWithAuthToken = React.useCallback(
-    async (p: RequestVars<TBody, TParams>) => {
+    async (p: RequestVars<TParams, TBody>) => {
       try {
-        const requestCall = await request(token ?? '', p);
+        const receivedToken = await token();
+        const requestCall = await request(receivedToken || '', p);
         return requestCall.data;
       } catch (err) {
         if (err instanceof AxiosError && err.status === 401) {
-          await fetchNewToken();
-          const requestCall = await request(token ?? '', p);
+          const receivedToken = await token();
+          const requestCall = await request(receivedToken || '', p);
           return requestCall.data;
         }
         throw err;
       }
     },
-    [token, fetchNewToken, request],
+    [token, request],
   );
 
   return requestFnWithAuthToken;

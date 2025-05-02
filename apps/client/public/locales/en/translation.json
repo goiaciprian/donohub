@@ -116,5 +116,11 @@
   "tooltip": {
     "copy": "Copy current link",
     "clearFilters": "Clear filters"
+  },
+  "leaving": {
+    "title": "Before you leave",
+    "confirmq": "You will lose all data. Are you sure ?",
+    "cancel": "No",
+    "submit": "Yes"
   }
 }

@@ -12,15 +12,17 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import {
-  ApiConsumes,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { DonationService } from './Service/donation.service';
 import { CurrentUser } from '@/Common/Decorators/user.decorator';
 import { PaginationQueryDto } from '@/Common/Dtos/pagination.dto';
 import { EndpointResponse } from '@/Common/Decorators/endpointResponse.decorator';
-import { DonationDto, PostDonationDto } from '@donohub/shared';
+import {
+  DonationDto,
+  type DonationEvaluationType,
+  PaginatedDonationDto,
+  PostDonationDto,
+} from '@donohub/shared';
 import { type UserType } from '@/Auth/clerk.strategy';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { DonationFilterSortDto } from './Dtos/donation-filter-sort.dto';
@@ -49,7 +51,7 @@ export class DonationController {
     );
   }
 
-  @Get(':id')
+  @Get('by/:id')
   @EndpointResponse({
     type: DonationDto,
   })
@@ -121,11 +123,38 @@ export class DonationController {
     );
   }
 
-  @Put(':id/evaluate')
+  @Put('/evaluate/:id/:status')
   @HasAuth('donation:evaluate')
-  async listDonation(@Param('id') donationId: string) {
-    return {
-      m: `${donationId} settings to listed`,
-    };
+  async listDonation(
+    @Param('id') donationId: string,
+    @Param('status') status: DonationEvaluationType,
+    @CurrentUser() user: UserType,
+  ) {
+    return await this.donationService.evaluateDonation(
+      donationId,
+      status,
+      user,
+    );
+  }
+
+  @Get('unlisted')
+  @HasAuth()
+  @EndpointResponse({
+    type: PaginatedDonationDto,
+  })
+  async getUnlistedDonation(@Query() pagination: PaginationQueryDto) {
+    return await this.donationService.getUnlistedDonations(pagination);
+  }
+
+  @Get('evaluated/:clerkId')
+  @HasAuth('donation:evaluate')
+  async getEvaluatedDonationsByUser(
+    @Param('clerkId') clerkId: string,
+    @Query() pagination: PaginationQueryDto,
+  ) {
+    return this.donationService.getEvaluatedDonationsByUser(
+      clerkId,
+      pagination,
+    );
   }
 }

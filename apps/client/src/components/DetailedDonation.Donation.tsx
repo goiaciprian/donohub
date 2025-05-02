@@ -26,7 +26,7 @@ import { DonationComments } from './DonationComments.Donation';
 import { DATE_FORMAT } from '@/utils';
 import { CopyButton } from './buttons/CopyButton';
 import { Button } from './ui/button';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 interface DetailedDonationProps {
   donationId: string;
@@ -34,6 +34,7 @@ interface DetailedDonationProps {
 
 export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const donationDateFn = useAuthRequest(getDonationById);
   const donationData = useSuspenseQuery<DonationDto>({
@@ -49,51 +50,55 @@ export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
   return (
     <div>
       <div className="flex items-center gap-4">
-        <NavLink to='..' viewTransition  >
-          <Button size="icon" className="cursor-pointer" >
-            <ArrowLeft />
-          </Button>
-        </NavLink>
+        {/* <NavLink to=".." viewTransition> */}
+        <Button
+          size="icon"
+          className="cursor-pointer"
+          onClick={() => navigate(-1)}
+        >
+          <ArrowLeft />
+        </Button>
+        {/* </NavLink> */}
         <CopyButton url={window.location.href} />
-        <h1 className="text-4xl font-bold align-middle">{donation.title}</h1>
+        <h1 className="text-2xl font-bold align-middle">{donation.title}</h1>
       </div>
       <div className="pt-5 flex">
         <div className="flex-1 pr-20">
           <div>
-            <h4 className="text-2xl flex items-center gap-5">
+            <h4 className="text-md flex items-center gap-3">
               {getCategoryIcon(donation.category)}{' '}
               {t(`categories.${donation.category}`)}
             </h4>
-            <h4 className="text-2xl flex items-center gap-5">
-              <MapPin /> {displayLocation(donation.location)}
+            <h4 className="text-md flex items-center gap-3">
+              <MapPin size={18} /> {displayLocation(donation.location)}
             </h4>
-            <h4 className="text-2xl flex items-center gap-5">
-              <Hash /> {donation.quantity ?? 0}
+            <h4 className="text-md flex items-center gap-3">
+              <Hash size={18} /> {donation.quantity ?? 0}
             </h4>
-            <h4 className="text-2xl flex items-center gap-5">
-              <PhoneCall />
+            <h4 className="text-md flex items-center gap-3">
+              <PhoneCall size={18} />
               {donation.phone || t('internal.validations.noPhone')}
             </h4>
           </div>
           <div className="mt-5">
-            <h4 className="text-2xl flex items-center gap-5">
-              <CalendarClock /> {updatedAt.fromNow()} ({' '}
+            <h4 className="text-md flex items-center gap-3">
+              <CalendarClock size={18} /> {updatedAt.fromNow()} ({' '}
               {createdAt.format(DATE_FORMAT)} )
             </h4>
 
-            <h4 className="text-2xl flex items-center gap-5">
-              <CalendarPlus /> {createdAt.fromNow()} ({' '}
+            <h4 className="text-md flex items-center gap-3">
+              <CalendarPlus size={18} /> {createdAt.fromNow()} ({' '}
               {createdAt.format(DATE_FORMAT)} )
             </h4>
           </div>
-          <div className="py-8">
+          <div className="pt-8 pb-3">
             <Separator className="w-full" />
           </div>
           <div>
-            <h2 className="font-semibold text-2xl">{donation.description}</h2>
+            <h2 className="font-semibold text-md">{donation.description}</h2>
           </div>
           <div className="pt-28 py-8">
-            <h2 className="font-semibold text-4xl">{t('donation.user')}</h2>
+            <h2 className="font-bold text-xl">{t('donation.user')}</h2>
             <div className="py-3">
               <Separator className="w-full" />
             </div>
@@ -102,13 +107,13 @@ export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
           <div></div>
         </div>
         <div>
-          <Carousel opts={{ loop: true }} className="max-w-[500px]">
+          <Carousel opts={{ loop: true }} className="max-w-[300px]">
             <CarouselContent>
               {donation.attachements.length === 0 && (
                 <CarouselItem>
                   <img
-                    className="rounded-2xl min-w-[500px] max-w-[500px] min-h-[500px] max-h-[500px]"
-                    src="https://placehold.co/500x500?text=No+attachements"
+                    className="rounded-2xl min-w-[300px] max-w-[300px] min-h-[300px] max-h-[300px]"
+                    src="https://placehold.co/300x300?text=No+attachements"
                     alt="no_image"
                   />
                 </CarouselItem>
@@ -116,7 +121,7 @@ export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
               {donation.attachements.map((url) => (
                 <CarouselItem key={url}>
                   <img
-                    className="rounded-2xl min-w-[500px] max-w-[500px] min-h-[500px] max-h-[500px]"
+                    className="rounded-2xl min-w-[300px] max-w-[300px] min-h-[300px] max-h-[300px]"
                     src={url}
                     alt={donation.title}
                   />
@@ -129,7 +134,7 @@ export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
         </div>
       </div>
       <div className="pt-10">
-        <h1 className="text-4xl font-semibold">{t('donation.comments')}</h1>
+        <h1 className="text-xl font-bold">{t('donation.comments')}</h1>
         <div className="py-3">
           <Separator className="w-full" />
         </div>

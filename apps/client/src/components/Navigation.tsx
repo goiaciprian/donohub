@@ -10,7 +10,6 @@ import {
   MessagesSquare,
   PanelLeftClose,
   PanelLeftOpen,
-  Paperclip,
 } from 'lucide-react';
 import { useHasPermissions } from '@/hooks/useHasPermissions';
 import { DonationsProfile } from './profile/Donations.Profile';

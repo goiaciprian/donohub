@@ -30,7 +30,7 @@ export const DonationCard = ({
             {donation.attachements.length === 0 && (
               <CarouselItem>
                 <img
-                  className="rounded-2xl min-w-[200px] max-w-[200px] min-h-[200px] max-h-[200px]"
+                  className="rounded-2xl min-w-[150px] max-w-[150px] min-h-[150px] max-h-[150px]"
                   src="https://placehold.co/200x200?text=No+attachements"
                   alt="no_image"
                 />
@@ -42,7 +42,7 @@ export const DonationCard = ({
                 // className="min-w-[200px] max-w-[200px] min-h-[200px] max-h-[200px]"
               >
                 <img
-                  className="rounded-2xl min-w-[200px] max-w-[200px] min-h-[200px] max-h-[200px]"
+                  className="rounded-2xl min-w-[150px] max-w-[150px] min-h-[150px] max-h-[150px]"
                   src={url}
                   alt={donation.title}
                 />
@@ -52,22 +52,22 @@ export const DonationCard = ({
         </Carousel>
         <div className="flex flex-col w-full">
           <CardHeader>
-            <CardTitle className="text-3xl">{donation.title}</CardTitle>
+            <CardTitle className="text-2xl">{donation.title}</CardTitle>
             <CardDescription className="w-max">
               <div className="flex flex-row gap-5 w-fit flex-wrap overflow-hidden whitespace-nowrap ">
-                <h5 className="text-xl flex items=-center gap-2">
+                <h5 className="flex items=-center gap-2">
                   {getCategoryIcon(donation.category)}
                   {t(`categories.${donation.category}`)}
                 </h5>
-                <h5 className="text-xl flex items-center gap-2 text-ellipsis">
-                  <MapPin />
+                <h5 className="flex items-center gap-2 text-ellipsis">
+                  <MapPin size={18} />
                   {displayLocation(donation.location)}
                 </h5>
               </div>
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl">{donation.description}</p>
+            <p className="text-xl">{donation.description}</p>
           </CardContent>
           <CardFooter className="self-end justify-self-end mt-auto">
             <div className="flex flex-row gap-2">
@@ -75,7 +75,7 @@ export const DonationCard = ({
                 url={`${window.location.origin}/${lang}/donations/${donation.id}`}
               />
               <NavLink to={`/${lang}/donations/${donation.id}`} viewTransition>
-                <Button className="cursor-pointer text-xl">
+                <Button className="cursor-pointer">
                   {t('donationCard.details')}
                 </Button>
               </NavLink>
