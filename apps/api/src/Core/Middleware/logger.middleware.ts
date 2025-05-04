@@ -7,7 +7,7 @@ export class LoggerMiddleware implements NestMiddleware {
     const start = Date.now();
     const isSse = req.path.includes('sse');
     if (isSse) {
-      Logger.log(`SSE ${req.path}}`);
+      Logger.log(`SSE ${req.path}`);
     } else {
       res.on('close', () =>
         Logger.log(

@@ -24,7 +24,6 @@ const handleSetup = ({ url, userId }) => {
 
   eventSource.onmessage = (event) => {
     const { message, title } = JSON.parse(event.data);
-    console.log('received ', message, title);
     if (message === 'ping') {
       return;
     }

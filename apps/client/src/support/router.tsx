@@ -1,15 +1,19 @@
-import { createBrowserRouter, Outlet } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import { Providers } from '../components/Providers';
 import { ErrorPage } from '../components/ErrorPage';
 import { Navigation } from '../components/Navigation';
 import { InitialRedirect } from '../components/InitialRedirect';
-import { Protect } from '@clerk/clerk-react';
 import { HomePage } from '@/components/pages/HomePage';
 import { Footer } from '@/components/Footer';
 import { DonationsPage } from '@/components/pages/DonationsPage';
 import { DonationPage } from '@/components/pages/DonationPage';
 import { AddDonationPage } from '@/components/pages/AddDonationPage';
 import { AdminProvider } from '@/components/AdminProvider';
+import { EvaluateDonations } from '@/components/pages/EvaluateDonations';
+import { DonationsProfile } from '@/components/profile/Donations.Profile';
+import { CommentsProfile } from '@/components/profile/Comments.Profile';
+import { Protect } from '@/components/Protect';
+import { EvaluatedDonations } from '@/components/pages/EvaluatedDonation';
 
 export const router = createBrowserRouter([
   {
@@ -38,7 +42,7 @@ export const router = createBrowserRouter([
           {
             path: 'donor',
             element: (
-              <Protect fallback={<ErrorPage status={401} />}>
+              <Protect>
                 <AddDonationPage />
               </Protect>
             ),
@@ -60,20 +64,21 @@ export const router = createBrowserRouter([
           },
           {
             path: 'admin',
+            ErrorBoundary: () => <ErrorPage />,
             children: [
               {
                 path: 'evaluate',
                 children: [
                   {
-                    path: 'donation',
+                    path: 'donations',
                     element: (
                       <AdminProvider permission={'donation:evaluate'}>
-                        <h1>Evaluate donations</h1>
+                        <EvaluateDonations />
                       </AdminProvider>
                     ),
                   },
                   {
-                    path: 'comment',
+                    path: 'comments',
                     element: (
                       <AdminProvider permission={'comments:evaluate'}>
                         <h1>Evaluate comments</h1>
@@ -81,6 +86,37 @@ export const router = createBrowserRouter([
                     ),
                   },
                 ],
+              },
+              {
+                path: 'evaluated',
+                children: [
+                  {
+                    path: 'donations',
+                    element: (
+                      <AdminProvider permission={'donation:evaluate'}>
+                        <EvaluatedDonations />
+                      </AdminProvider>
+                    ),
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: 'user',
+            element: (
+              <Protect>
+                <Outlet />
+              </Protect>
+            ),
+            children: [
+              {
+                path: 'donations',
+                element: <DonationsProfile />,
+              },
+              {
+                path: 'comments',
+                element: <CommentsProfile />,
               },
             ],
           },

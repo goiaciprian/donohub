@@ -7,11 +7,15 @@
   "unauthorized": "Acces interzis",
 
   "internal": {
+    "action": "Actiune",
     "signInButton": "Logare",
     "signUpButton": "Inregistrare",
     "submit": "Salveaza",
     "close": "Inchide",
     "create": "Creat",
+    "success": "Succes",
+    "approve": "Aproba",
+    "deny": "Respoinge",
     "error": "Eroare la creare",
     "smtWrong": "Ceva nu a mers",
     "validations": {
@@ -81,13 +85,6 @@
   "footer": {
     "terms": "Termeni si conditii"
   },
-  "categories": {
-    "CLOTHING": "Imbracaminte",
-    "FOOTWEAR": "Incaltaminte",
-    "FURNITURE": "Mobilier",
-    "HOME_APPLIANCES": "Electrocasnice",
-    "STATIONERY": "Papetarie"
-  },
   "donation": {
     "user": "Utilizator",
     "comments": "Comentarii",
@@ -100,7 +97,10 @@
     "description": "Descriere",
     "quantity": "Cantitate",
     "phone": "Telefon",
-    "attachements": "Atasamente"
+    "attachements": "Atasamente",
+    "location": "Location",
+    "category": "Category",
+    "status": "Status"
   },
   "location": {
     "title": "Creaza Locatie",

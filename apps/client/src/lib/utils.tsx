@@ -1,3 +1,4 @@
+import Resources from '@/support/resources';
 import { LocationDto } from '@donohub/shared';
 import clsx, { ClassValue } from 'clsx';
 import {
@@ -17,17 +18,17 @@ export function cn(...inputs: ClassValue[]) {
 export function getCategoryIcon(category: string) {
   switch (category) {
     case 'HOME_APPLIANCES':
-      return <WashingMachine />;
+      return <WashingMachine size={18} />;
     case 'FURNITURE':
-      return <Armchair />;
+      return <Armchair size={18} />;
     case 'FOOTWEAR':
-      return <Footprints />;
+      return <Footprints size={18} />;
     case 'STATIONERY':
-      return <Layers />;
+      return <Layers size={18} />;
     case 'CLOTHING':
-      return <Shirt />;
+      return <Shirt size={18} />;
     default:
-      return <CircleEllipsis />;
+      return <CircleEllipsis size={18} />;
   }
 }
 
@@ -40,3 +41,5 @@ export function displayLocation(
 
   return `${hasValue(location.county, false)}${hasValue(location.city)}${hasValue(location.street)}${hasValue(location.number)}${hasValue(location.postalCode)}`;
 }
+
+export type LocaleCategoriesHeleper = `categories:${keyof Resources['categories']}`;

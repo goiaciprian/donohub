@@ -18,24 +18,25 @@ export class SupabaseService extends SupabaseClient {
       );
   }
 
-  async uploadAndGetPubliUrl(
-    attachements: Array<Express.Multer.File>,
-  ) {
+  async uploadAndGetPubliUrl(attachements: Array<Express.Multer.File>) {
     await Promise.all(
       attachements.map((img) =>
         this.storage
           .from('media')
-          .upload(`${img.originalname}`, img.buffer, { contentType: img.mimetype }),
+          .upload(`${img.originalname}`, img.buffer, {
+            contentType: img.mimetype,
+          }),
       ),
     );
     return attachements.map(
       (img) =>
-        this.storage.from('media').getPublicUrl(`${img.originalname}`)
-          .data.publicUrl,
+        this.storage.from('media').getPublicUrl(`${img.originalname}`).data
+          .publicUrl,
     );
   }
 
-  async getPublicUrl(fileName: string) {
-    return this.storage.from('media').getPublicUrl(`${fileName}`).data.publicUrl;
+  getPublicUrl(fileName: string) {
+    return this.storage.from('media').getPublicUrl(`${fileName}`).data
+      .publicUrl;
   }
 }

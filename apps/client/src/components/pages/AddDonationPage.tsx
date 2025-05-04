@@ -9,7 +9,7 @@ export const AddDonationPage = () => {
     <Page
       className="lg:md:mx-[5%] select-none"
       staticFirst={
-        <h1 className="font-bold pt-5 text-4xl">{t('navigation.create')}</h1>
+        <h1 className="font-bold pt-5 text-3xl">{t('navigation.create')}</h1>
       }
       dynamicComponent={<AddDonationForm />}
     />

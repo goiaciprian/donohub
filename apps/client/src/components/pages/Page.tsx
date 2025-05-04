@@ -25,7 +25,7 @@ export const Page = ({
   };
 
   return (
-    <main className={'h-full ' + className}>
+    <main className={'h-full mx-[5%] ' + className}>
       {staticFirst}
       <React.Suspense fallback={spinnerContainer()}>
         {dynamicComponent}

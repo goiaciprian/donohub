@@ -12,9 +12,12 @@ import { toast } from 'sonner';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AddLocation } from './AddLocation.AddDonation';
 import { UploadCloud, X } from 'lucide-react';
+import { usePrompt } from '@/hooks/usePrompt';
+import { PageConfirmDialog } from './dialogs/PageConfirmDialog';
+import { LocaleCategoriesHeleper } from '@/lib/utils';
 
 export const AddDonationForm = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'categories']);
   const { lang } = useParams();
   const navigate = useNavigate();
 
@@ -34,7 +37,7 @@ export const AddDonationForm = () => {
 
   const categories = categoriesQuery.data.map((ctg) => ({
     value: ctg.id,
-    text: t(`categories.${ctg.name}`),
+    text: t(`categories:${ctg.name}` as LocaleCategoriesHeleper),
   }));
   const locations = locationsQuery.data.map((loc) => ({
     value: loc.id,
@@ -46,6 +49,7 @@ export const AddDonationForm = () => {
     mutationKey: ['donation'],
     mutationFn: (body: FormData) => postDonationFn({ body }),
     onSuccess: (resp) => {
+      form.reset();
       toast.success(t('internal.create'));
       navigate(`/${lang}/donations/${resp.id}`);
     },
@@ -103,6 +107,12 @@ export const AddDonationForm = () => {
     return fileList;
   };
 
+  const [showPrompt, confirmNavigation, cancelNavigation] = usePrompt(
+    () => form.state.isDirty,
+  );
+
+  // console.log(form.state);
+
   return (
     <>
       <div className="h-full">
@@ -125,7 +135,7 @@ export const AddDonationForm = () => {
               <div>
                 <Label
                   htmlFor={field.name}
-                  className="font-semibold text-xl pb-2"
+                  className="font-semibold text-md pb-2"
                 >
                   {t('addDonation.title')}
                 </Label>
@@ -136,12 +146,14 @@ export const AddDonationForm = () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                {field.state.meta.isBlurred &&
-                  field.state.meta.errors.map((e, index) => (
+                {/* {field.state.meta.isBlurred && */}
+                {field.state.meta.errors.map((e, index) => {
+                  return (
                     <p key={index} className="text-red-600">
                       {e}
                     </p>
-                  ))}
+                  );
+                })}
               </div>
             )}
           />
@@ -158,7 +170,7 @@ export const AddDonationForm = () => {
               <div>
                 <Label
                   htmlFor={field.name}
-                  className="font-semibold text-xl pb-2"
+                  className="font-semibold text-md pb-2"
                 >
                   {t('addDonation.description')}
                 </Label>
@@ -169,8 +181,8 @@ export const AddDonationForm = () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                {field.state.meta.isBlurred &&
-                  field.state.meta.errors.map((e, index) => (
+                {/* {field.state.meta.isBlurred && */}
+                  {field.state.meta.errors.map((e, index) => (
                     <p key={index} className="text-red-600">
                       {e}
                     </p>
@@ -184,7 +196,7 @@ export const AddDonationForm = () => {
               <div>
                 <Label
                   htmlFor={field.name}
-                  className="font-semibold text-xl pb-2"
+                  className="font-semibold text-md pb-2"
                 >
                   {t('addDonation.quantity')}
                 </Label>
@@ -213,7 +225,7 @@ export const AddDonationForm = () => {
               <div>
                 <Label
                   htmlFor={field.name}
-                  className="font-semibold text-xl pb-2"
+                  className="font-semibold text-md pb-2"
                 >
                   {t('addDonation.phone')}
                 </Label>
@@ -248,7 +260,7 @@ export const AddDonationForm = () => {
                 <div className="flex-1/2">
                   <Label
                     htmlFor={field.name}
-                    className="font-semibold text-xl pb-2"
+                    className="font-semibold text-md pb-2"
                   >
                     {t('donations.category')}
                   </Label>
@@ -270,8 +282,8 @@ export const AddDonationForm = () => {
                       ))}
                     </field.SelectContent>
                   </field.Select>
-                  {field.state.meta.isBlurred &&
-                    field.state.meta.errors.map((e, index) => (
+                  {/* {field.state.meta.isBlurred && */}
+                    {field.state.meta.errors.map((e, index) => (
                       <p key={index} className="text-red-600">
                         {e}
                       </p>
@@ -291,7 +303,7 @@ export const AddDonationForm = () => {
                 <div className="flex-1/2">
                   <Label
                     htmlFor={field.name}
-                    className="font-semibold text-xl pb-2"
+                    className="font-semibold text-md pb-2"
                   >
                     {t('donations.location')}
                   </Label>
@@ -313,8 +325,8 @@ export const AddDonationForm = () => {
                       ))}
                     </field.SelectContent>
                   </field.Select>
-                  {field.state.meta.isBlurred &&
-                    field.state.meta.errors.map((e, index) => (
+                  {/* {field.state.meta.isBlurred && */}
+                    {field.state.meta.errors.map((e, index) => (
                       <p key={index} className="text-red-600">
                         {e}
                       </p>
@@ -329,10 +341,14 @@ export const AddDonationForm = () => {
           <form.AppField
             name="attachements"
             validators={{
-              onChange: ({ value }) =>
+              onSubmit: ({ value }) =>
                 (value?.length ?? 0) === 0
                   ? t('internal.validations.required')
                   : undefined,
+              // onChange: ({ value }) =>
+              //   (value?.length ?? 0) === 0
+              //     ? t('internal.validations.required')
+              //     : undefined,
             }}
             children={(field) => {
               const length = field.state.value?.length ?? 0;
@@ -340,7 +356,7 @@ export const AddDonationForm = () => {
                 <div>
                   <Label
                     htmlFor={field.name}
-                    className="font-semibold text-xl pb-2"
+                    className="font-semibold text-md pb-2"
                   >
                     {t('addDonation.attachements')}
                   </Label>
@@ -396,12 +412,14 @@ export const AddDonationForm = () => {
                       }
                     />
                   </div>
-                  {field.state.meta.isBlurred &&
-                    field.state.meta.errors.map((e, index) => (
-                      <p key={index} className="text-red-600">
-                        {e}
-                      </p>
-                    ))}
+                  <div>
+                    {field.state.meta.errors &&
+                      field.state.meta.errors.map((e, index) => (
+                        <p key={index} className="text-red-600 z-10">
+                          {e}
+                        </p>
+                      ))}
+                  </div>
                 </div>
               );
             }}
@@ -414,6 +432,11 @@ export const AddDonationForm = () => {
         </form>
       </div>
       <AddLocation setSheetOpen={setSheetOpen} sheetOpen={sheetOpen} />
+      <PageConfirmDialog
+        open={showPrompt}
+        onCancel={cancelNavigation}
+        onSubmit={confirmNavigation}
+      />
     </>
   );
 };

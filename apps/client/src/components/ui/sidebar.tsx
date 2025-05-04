@@ -115,6 +115,7 @@ function SidebarProvider({
     };
     window.addEventListener('keydown', closeWhenEscape);
     return () => window.removeEventListener('keydown', closeWhenEscape);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setOpen]);
 
   // We add a state so that we can do data-state="expanded" or "collapsed".

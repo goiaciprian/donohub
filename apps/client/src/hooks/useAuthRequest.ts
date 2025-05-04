@@ -1,44 +1,31 @@
-import { useAuth } from '@clerk/clerk-react';
 import { AxiosError, AxiosResponse } from 'axios';
 import { RequestVars } from '@/utils';
 import React from 'react';
+import { useAuthContext } from '@/context/AuthContext';
 
-export const useAuthRequest = <TResp, TBody = object, TParams = object>(
+export const useAuthRequest = <TResp, TParams, TBody, TUrl extends string>(
   request: (
     accessToken: string,
-    params: RequestVars<TBody, TParams>,
+    params: RequestVars<TParams, TBody, TUrl>,
   ) => Promise<AxiosResponse<TResp, TBody>>,
 ) => {
-  const { getToken } = useAuth();
-  const [token, setToken] = React.useState<string>('');
-
-  const fetchNewToken = React.useCallback(async () => {
-    setToken(
-      (await getToken({
-        template: 'main',
-      })) ?? '',
-    );
-  }, [getToken, setToken]);
-
-  React.useEffect(() => {
-    fetchNewToken();
-  }, [fetchNewToken]);
+  const { token, generate } = useAuthContext();
 
   const requestFnWithAuthToken = React.useCallback(
-    async (p: RequestVars<TBody, TParams>) => {
+    async (p: RequestVars<TParams, TBody, TUrl>) => {
       try {
-        const requestCall = await request(token ?? '', p);
+        const requestCall = await request(token, p);
         return requestCall.data;
       } catch (err) {
         if (err instanceof AxiosError && err.status === 401) {
-          await fetchNewToken();
-          const requestCall = await request(token ?? '', p);
+          const _token = await generate();
+          const requestCall = await request(_token, p);
           return requestCall.data;
         }
         throw err;
       }
     },
-    [token, fetchNewToken, request],
+    [token, generate, request],
   );
 
   return requestFnWithAuthToken;

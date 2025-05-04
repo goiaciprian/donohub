@@ -1,7 +1,7 @@
 import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 import { SignUpButton } from '@/components/buttons/SignUpButton';
 import { SignInButton } from '@/components/buttons/SignInButton';
-import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSidebar } from './ui/sidebar';
 import { Button } from './ui/button';
@@ -10,19 +10,13 @@ import {
   MessagesSquare,
   PanelLeftClose,
   PanelLeftOpen,
-  Paperclip,
 } from 'lucide-react';
 import { useHasPermissions } from '@/hooks/useHasPermissions';
-import { DonationsProfile } from './profile/Donations.Profile';
-import React from 'react';
-import { Spinner } from './spinner/Spinner';
-import { CommentsProfile } from './profile/Comments.Profile';
 
 export const Navigation = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation().pathname;
-  const { toggleSidebar, open } = useSidebar();
+  const { toggleSidebar, open, isMobile } = useSidebar();
   const { hasPermissions } = useHasPermissions();
   const { lang } = useParams();
 
@@ -39,7 +33,7 @@ export const Navigation = () => {
       <nav className="w-full select-none sticky top-0 z-10">
         <div className="flex w-full h-max py-4 px-5 justify-end items-center bg-gray-800 text-white flex-row">
           <div className="mr-auto">
-            {hasPermissions && (
+            {hasPermissions && !isMobile && (
               <Button
                 size={'icon'}
                 variant="ghost"
@@ -82,35 +76,40 @@ export const Navigation = () => {
                   },
                 }}
               >
-                <UserButton.UserProfilePage
-                  label={'Donations'}
-                  labelIcon={<Layers size={16} />}
-                  url={`/${lang}/user/donations`}
-                >
-                  <React.Suspense fallback={<Spinner />}>
-                    <DonationsProfile />
-                  </React.Suspense>
-                </UserButton.UserProfilePage>
-                <UserButton.UserProfilePage
-                  label={'Comments'}
-                  labelIcon={<MessagesSquare size={16} />}
-                  url={`/${lang}/user/comments`}
-                >
-                  <React.Suspense fallback={<Spinner />}>
-                    <CommentsProfile />
-                  </React.Suspense>
-                </UserButton.UserProfilePage>
-                <UserButton.UserProfilePage label={'security'} />
+                <UserButton.MenuItems>
+                  <UserButton.Action
+                    label={'Donations'}
+                    labelIcon={<Layers size={14} color="#c4c4c5" />}
+                    onClick={() =>
+                      navigate(`/${lang}/user/donations`, {
+                        viewTransition: true,
+                      })
+                    }
+                  />
+                </UserButton.MenuItems>
+                <UserButton.MenuItems>
+                  <UserButton.Action
+                    label={'Comments'}
+                    labelIcon={<MessagesSquare size={14} color="#c4c4c5" />}
+                    onClick={() =>
+                      navigate(`/${lang}/user/comments`, {
+                        viewTransition: true,
+                      })
+                    }
+                  />
+                </UserButton.MenuItems>
+
+                <UserButton.MenuItems>
+                  <UserButton.Action label={'manageAccount'} />
+                </UserButton.MenuItems>
               </UserButton>
             </SignedIn>
-            {location !== '/en' && location !== '/ro' && (
-              <SignedOut>
-                <div>
-                  <SignInButton className="text-white text-md" />
-                  <SignUpButton className="text-white text-md" />
-                </div>
-              </SignedOut>
-            )}
+            <SignedOut>
+              <div>
+                <SignInButton className="text-white text-md" />
+                <SignUpButton className="text-white text-md" />
+              </div>
+            </SignedOut>
           </div>
         </div>
       </nav>

@@ -6,11 +6,15 @@
   "notFound": "Not found",
   "unauthorized": "Unauthorized",
   "internal": {
+    "action": "Action",
     "signInButton": "Log In",
     "signUpButton": "Sign up",
     "submit": "Submit",
     "close": "Close",
     "create": "Created",
+    "success": "Success",
+    "approve": "Approve",
+    "deny": "Deny",
     "error": "Failed to create",
     "smtWrong": "Something went wrong",
     "validations": {
@@ -78,13 +82,6 @@
   "footer": {
     "terms": "Terms and conditions"
   },
-  "categories": {
-    "CLOTHING": "Clothing",
-    "FOOTWEAR": "Footware",
-    "FURNITURE": "Furniture",
-    "HOME_APPLIANCES": "Home Appliances",
-    "STATIONERY": "Stationery"
-  },
   "donation": {
     "user": "User",
     "comments": "Comments",
@@ -97,7 +94,10 @@
     "description": "Description",
     "quantity": "Quantity",
     "phone": "Phone",
-    "attachements": "Attachements"
+    "attachements": "Attachements",
+    "location": "Location",
+    "category": "Category",
+    "status": "Status"
   },
   "location": {
     "title": "Create Location",
@@ -116,5 +116,11 @@
   "tooltip": {
     "copy": "Copy current link",
     "clearFilters": "Clear filters"
+  },
+  "leaving": {
+    "title": "Before you leave",
+    "confirmq": "You will lose all data. Are you sure ?",
+    "cancel": "No",
+    "submit": "Yes"
   }
 }

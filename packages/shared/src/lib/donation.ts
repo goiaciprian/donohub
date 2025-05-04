@@ -5,10 +5,23 @@ import { LocationSchema } from './location';
 import { createPaginatedResponse } from './utils/utils';
 
 export const DonationStatus = extendApi(
-  z.enum(['UNLISTED', 'LISTED', 'IN_PROGRESS', 'RESOLVED']),
+  z.enum([
+    'UNLISTED',
+    'LISTED',
+    'IN_PROGRESS',
+    'RESOLVED',
+    'NEEDS_WORK',
+    'USER_UPDATED',
+  ]),
 );
 
 export type DonationStatusEnum = z.infer<typeof DonationStatus>;
+
+export const DonationEvaluationSchema = extendApi(
+  z.enum(['ACCEPTED', 'DECLINED']),
+);
+
+export type DonationEvaluationType = z.infer<typeof DonationEvaluationSchema>;
 
 export const DonationSchema = extendApi(
   z.object({
@@ -80,3 +93,42 @@ export const PaginatedDonationSchema = createPaginatedResponse(
 export class PaginatedDonationDto extends createZodDto(
   PaginatedDonationSchema,
 ) {}
+
+export const DonationEvaluateScheme = extendApi(
+  z.object({
+    id: z.string(),
+    clerkUserId: z.string(),
+    userImage: z.string(),
+    userName: z.string(),
+    approved: z.boolean(),
+    comment: z.string().nullable(),
+    createdAt: z.date()
+  }),
+);
+
+export const PaginatedEvaluatedDonationScheme = createPaginatedResponse(
+  DonationSchema.extend({
+    categoryId: z.string(),
+    locationId: z.string(),
+    category: z.string(),
+    location: LocationSchema.omit({
+      id: true,
+      updatedAt: true,
+      createdAt: true,
+    }),
+    attachements: z.array(z.string()),
+    evaluations: z.array(DonationEvaluateScheme),
+  }),
+);
+
+export class PaginatedEvaluatedDonationDto extends createZodDto(
+  PaginatedEvaluatedDonationScheme,
+) {}
+
+export const PutDonationEvaluationSchema = extendApi(z.object({
+  comment: z.string().optional().nullable()
+}));
+
+export class PutDonationEvaluationDto extends createZodDto(PutDonationEvaluationSchema) {};
+
+export class UpdateDonationDto extends createZodDto(PostDonationSchema.partial()) {};  
