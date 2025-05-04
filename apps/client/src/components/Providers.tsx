@@ -48,7 +48,10 @@ export const Providers = ({
         navigator.serviceWorker.ready.then((r) =>
           r.active?.postMessage({
             type: 'SETUP',
-            payload: { url: import.meta.env.VITE_API_URL, userId },
+            payload: {
+              url: window.location.origin, //import.meta.env.VITE_API_URL
+              userId,
+            },
           }),
         );
       } else if (isUserLoaded && !userId) {
