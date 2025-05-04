@@ -62,25 +62,37 @@ export const AppSidebar = () => {
               {t('internal.evaluation.donation.title')}
             </SidebarGroupLabel>
             <SidebarGroupContent>
-              {donationsPermissions.map((permission) => {
-                const path = permission.split(':')[1];
-                return (
-                  <SidebarMenu key={permission}>
+              {donationsPermissions.includes('donation:evaluate') && (
+                <>
+                  <SidebarMenu>
                     <SidebarMenuItem>
                       <SidebarMenuButton asChild className="text-white">
                         <NavLink
-                          to={`/${lang}/admin/${path}/donation`}
+                          to={`/${lang}/admin/evaluate/donations`}
                           viewTransition
                         >
                           <span>
-                            {t(`internal.evaluation.donation.${path}`)}
+                            {t(`internal.evaluation.donation.evaluate`)}
                           </span>
                         </NavLink>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   </SidebarMenu>
-                );
-              })}
+
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild className="text-white">
+                        <NavLink
+                          to={`/${lang}/admin/evaluated/donations`}
+                          viewTransition
+                        >
+                          <span>Evaluated by me</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </>
+              )}
             </SidebarGroupContent>
           </SidebarGroup>
         )}
@@ -91,25 +103,20 @@ export const AppSidebar = () => {
               {t('internal.evaluation.comment.title')}
             </SidebarGroupLabel>
             <SidebarGroupContent>
-              {commentsPermissions.map((permission) => {
-                const path = permission.split(':')[1];
-                return (
-                  <SidebarMenu key={permission}>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild className="text-white">
-                        <NavLink
-                          to={`/${lang}/admin/${path}/comment`}
-                          viewTransition
-                        >
-                          <span>
-                            {t(`internal.evaluation.comment.${path}`)}
-                          </span>
-                        </NavLink>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  </SidebarMenu>
-                );
-              })}
+              {commentsPermissions.includes('comments:evaluate') && (
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild className="text-white">
+                      <NavLink
+                        to={`/${lang}/admin/evaluate/comments`}
+                        viewTransition
+                      >
+                        <span>{t(`internal.evaluation.comment.evaluate`)}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              )}
             </SidebarGroupContent>
           </SidebarGroup>
         )}

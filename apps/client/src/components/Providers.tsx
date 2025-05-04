@@ -10,6 +10,8 @@ import moment from 'moment';
 import { PostHogPageView } from '@/app/PostHogPageView';
 import { useUser } from '@clerk/clerk-react';
 import { AppSidebar } from './AppSidebar';
+import { AuthContextProvider } from '@/context/AuthContext';
+import { CookiesProvider } from 'react-cookie';
 
 export const Providers = ({
   children,
@@ -80,12 +82,14 @@ export const Providers = ({
   }
 
   return (
-    <>
-      <AppSidebar />
-      <main className="w-full">{children}</main>
-      <ReactQueryDevtools position="right" />
-      <Toaster />
-      <PostHogPageView />
-    </>
+    <CookiesProvider defaultSetOptions={{ path: '/' }}>
+      <AuthContextProvider>
+        <AppSidebar />
+        <main className="w-full">{children}</main>
+        <ReactQueryDevtools position="right" />
+        <Toaster />
+        <PostHogPageView />
+      </AuthContextProvider>
+    </CookiesProvider>
   );
 };

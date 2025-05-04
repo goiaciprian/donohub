@@ -1,0 +1,137 @@
+interface Resources {
+  "categories": {
+    "CLOTHING": "Clothing",
+    "FOOTWEAR": "Footware",
+    "FURNITURE": "Furniture",
+    "HOME_APPLIANCES": "Home Appliances",
+    "STATIONERY": "Stationery"
+  },
+  "translation": {
+    "appTitle": {
+      "normal": "DonoHUB | Welcome",
+      "error": "DonoHUB | Unexpected"
+    },
+    "notFound": "Not found",
+    "unauthorized": "Unauthorized",
+    "internal": {
+      "action": "Action",
+      "signInButton": "Log In",
+      "signUpButton": "Sign up",
+      "submit": "Submit",
+      "close": "Close",
+      "create": "Created",
+      "success": "Success",
+      "approve": "Approve",
+      "deny": "Deny",
+      "error": "Failed to create",
+      "smtWrong": "Something went wrong",
+      "validations": {
+        "comments": "Empty comments are not allowed",
+        "required": "Required",
+        "phone": "Phone number invalid",
+        "noPhone": "Phone not available"
+      },
+      "fields": {
+        "attachement1": "Upload PNG JPG or JPEG",
+        "attachement2": "Minim 1 file, maxim 4 files"
+      },
+      "notFoundAnything": "Looks like we didn't find anything",
+      "adminManagement": {
+        "title": "Admin Management"
+      },
+      "evaluation": {
+        "donation": {
+          "title": "Manage Donations",
+          "evaluate": "Evaluate donations"
+        },
+        "comment": {
+          "title": "Manage Comments",
+          "evaluate": "Evaluate comments"
+        }
+      }
+    },
+    "navigation": {
+      "donations": "Search for a donation",
+      "create": "Add a donation"
+    },
+    "home": {
+      "banner1": "Giveaway what you don't use",
+      "banner2": "Turn the things you no longer need into opportunities for others. Donate, receive, and build a better community.",
+      "banner3": "Log in and donate now",
+      "or": "or",
+      "latestDonation": {
+        "title": "Latest 5 donations",
+        "seeAll": "See all",
+        "error": "Something went wrong loading latest donations"
+      },
+      "4steps": {
+        "title": "How it's working?",
+        "subtitle": "4 simple steps",
+        "step1": "Login sau create an account",
+        "step2": "Add a donation",
+        "step3": "Wait for a notification from us when someone is interested",
+        "step4": "Decide upon devilery method"
+      },
+      "cta": {
+        "title": "Find the pleasure to give and receive freely"
+      }
+    },
+    "donations": {
+      "title": "Donations",
+      "subtitle": "Here you can search for what you need. You can search for specific key word, or filter based on the category and the location",
+      "keywords": "Keywords",
+      "category": "Category",
+      "location": "Location",
+      "pageSize": "Page Size"
+    },
+    "donationCard": {
+      "details": "See details"
+    },
+    "footer": {
+      "terms": "Terms and conditions"
+    },
+    "donation": {
+      "user": "User",
+      "comments": "Comments",
+      "comment": "Comment",
+      "post": "Post"
+    },
+    "addDonation": {
+      "addLocation": "Add location",
+      "title": "Title",
+      "description": "Description",
+      "quantity": "Quantity",
+      "phone": "Phone",
+      "attachements": "Attachements",
+      "location": "Location",
+      "category": "Category",
+      "status": "Status"
+    },
+    "location": {
+      "title": "Create Location",
+      "county": "County",
+      "city": "City",
+      "street": "Street",
+      "number": "Number",
+      "postalCode": "Postal Code"
+    },
+    "toast": {
+      "copyLink": {
+        "success": "Linked copied",
+        "error": "Error copying the link"
+      }
+    },
+    "tooltip": {
+      "copy": "Copy current link",
+      "clearFilters": "Clear filters"
+    },
+    "leaving": {
+      "title": "Before you leave",
+      "confirmq": "You will lose all data. Are you sure ?",
+      "cancel": "No",
+      "submit": "Yes"
+    }
+  }
+}
+
+export default Resources;

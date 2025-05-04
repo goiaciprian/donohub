@@ -12,7 +12,7 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger';
 import { DonationService } from './Service/donation.service';
 import { CurrentUser } from '@/Common/Decorators/user.decorator';
 import { PaginationQueryDto } from '@/Common/Dtos/pagination.dto';
@@ -21,7 +21,10 @@ import {
   DonationDto,
   type DonationEvaluationType,
   PaginatedDonationDto,
+  PaginatedEvaluatedDonationDto,
   PostDonationDto,
+  PutDonationEvaluationDto,
+  UpdateDonationDto,
 } from '@donohub/shared';
 import { type UserType } from '@/Auth/clerk.strategy';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
@@ -37,9 +40,9 @@ export class DonationController {
 
   @Get('self')
   @EndpointResponse({
-    type: DonationDto,
-    isArray: true,
+    type: PaginatedEvaluatedDonationDto,
   })
+  @HasAuth()
   async getDonationsByUser(
     @CurrentUser() user: UserType,
     @Query() pagination: PaginationQueryDto,
@@ -106,6 +109,49 @@ export class DonationController {
     );
   }
 
+  @Put('/update/:id')
+  @EndpointResponse({
+    type: DonationDto,
+  })
+  @ApiConsumes('multipart/form-data')
+  @HasAuth()
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'attachements', maxCount: 4 }], {
+      limits: {
+        fileSize: 1000 * 1000 * 5, //5 mb
+      },
+      fileFilter: (_, file, cb) => {
+        if (acceptMimeType.includes(file.mimetype)) {
+          cb(null, true);
+          return;
+        }
+        cb(
+          new UnprocessableEntityException(
+            `type should be one of ${acceptMimeType.join(', ')}`,
+          ),
+          false,
+        );
+      },
+    }),
+  )
+  async updateDonation(
+    @Param('id') donationId: string,
+    @Body() partialObject: UpdateDonationDto,
+    @UploadedFiles()
+    { attachements }: { attachements: Express.Multer.File[] | undefined },
+    @CurrentUser() user: UserType,
+  ) {
+    if (Object.keys(partialObject).length === 0 && !attachements) {
+      throw new BadRequestException();
+    }
+    return await this.donationService.updateDonation(
+      donationId,
+      partialObject,
+      attachements,
+      user,
+    );
+  }
+
   @Get()
   @EndpointResponse({
     type: DonationDto,
@@ -124,15 +170,25 @@ export class DonationController {
   }
 
   @Put('/evaluate/:id/:status')
+  @ApiParam({
+    name: 'status',
+    required: true,
+    type: String,
+  })
   @HasAuth('donation:evaluate')
   async listDonation(
     @Param('id') donationId: string,
     @Param('status') status: DonationEvaluationType,
+    @Body() evaluationDto: PutDonationEvaluationDto,
     @CurrentUser() user: UserType,
   ) {
+    if (status === 'DECLINED' && !evaluationDto.comment) {
+      throw new BadRequestException();
+    }
     return await this.donationService.evaluateDonation(
       donationId,
       status,
+      evaluationDto,
       user,
     );
   }
@@ -142,12 +198,18 @@ export class DonationController {
   @EndpointResponse({
     type: PaginatedDonationDto,
   })
-  async getUnlistedDonation(@Query() pagination: PaginationQueryDto) {
-    return await this.donationService.getUnlistedDonations(pagination);
+  async getUnlistedDonation(
+    @Query() pagination: PaginationQueryDto,
+    @CurrentUser() user: UserType,
+  ) {
+    return await this.donationService.getUnlistedDonations(pagination, user);
   }
 
   @Get('evaluated/:clerkId')
   @HasAuth('donation:evaluate')
+  @EndpointResponse({
+    type: PaginatedEvaluatedDonationDto,
+  })
   async getEvaluatedDonationsByUser(
     @Param('clerkId') clerkId: string,
     @Query() pagination: PaginationQueryDto,

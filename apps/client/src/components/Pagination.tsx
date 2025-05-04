@@ -22,7 +22,7 @@ export const Pagination = ({
 }: PaginationProps) => {
   return (
     <SPagination className="select-none">
-      <PaginationContent className="gap-15">
+      <PaginationContent className="gap-2">
         <PaginationItem
           onClick={() => update(page - 1)}
           className={`cursor-pointer ${hasPrev ? undefined : 'opacity-0'}`}
@@ -39,7 +39,7 @@ export const Pagination = ({
           <PaginationLink isActive>{page}</PaginationLink>
         </PaginationItem>
         <PaginationItem
-          className={`cursor-pointer ${page !== totalPages ? '' : 'opacity-0'}`}
+          className={`cursor-pointer ${page !== totalPages && totalPages !== 0 ? '' : 'opacity-0'}`}
           onClick={() => update(totalPages)}
         >
           <PaginationLink>{totalPages}</PaginationLink>

@@ -101,11 +101,15 @@ export const DonationEvaluateScheme = extendApi(
     userImage: z.string(),
     userName: z.string(),
     approved: z.boolean(),
+    comment: z.string().nullable(),
+    createdAt: z.date()
   }),
 );
 
 export const PaginatedEvaluatedDonationScheme = createPaginatedResponse(
   DonationSchema.extend({
+    categoryId: z.string(),
+    locationId: z.string(),
     category: z.string(),
     location: LocationSchema.omit({
       id: true,
@@ -120,3 +124,11 @@ export const PaginatedEvaluatedDonationScheme = createPaginatedResponse(
 export class PaginatedEvaluatedDonationDto extends createZodDto(
   PaginatedEvaluatedDonationScheme,
 ) {}
+
+export const PutDonationEvaluationSchema = extendApi(z.object({
+  comment: z.string().optional().nullable()
+}));
+
+export class PutDonationEvaluationDto extends createZodDto(PutDonationEvaluationSchema) {};
+
+export class UpdateDonationDto extends createZodDto(PostDonationSchema.partial()) {};  

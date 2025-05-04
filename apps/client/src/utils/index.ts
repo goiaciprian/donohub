@@ -1,22 +1,37 @@
 import axios, { AxiosResponse } from 'axios';
 import { TFunction } from 'i18next';
 
-export type RequestVars<TParams, TBody> = {
-  params?: TParams;
-  body?: TBody;
-  pathParams?: { key: string; value: string }[];
-};
+type Methods = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
-export const createRequest = <TResp, TParams = object, TBody = object>(
-  url: string,
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+type ExtractPathParams<T extends string> =
+  T extends `${infer _}:${infer Param}/${infer Rest}`
+    ? `:${Param}` | ExtractPathParams<Rest>
+    : T extends `${infer _}:${infer Param}`
+      ? `:${Param}`
+      : never;
+
+export type RequestVars<
+  TParams,
+  TBody,
+  TUrl extends string,
+> = (ExtractPathParams<TUrl> extends never
+  ? { pathParams?: undefined }
+  : {
+      pathParams: { key: ExtractPathParams<TUrl>; value: string }[];
+    }) &
+  (TParams extends undefined ? { params?: undefined } : { params: TParams }) &
+  (TBody extends undefined ? { body?: undefined } : { body: TBody });
+
+const createRequest = <TResp, TParams, TBody, TUrl extends string>(
+  url: TUrl,
+  method: Methods,
 ) => {
-  return (accessToken: string, params: RequestVars<TParams, TBody>) => {
+  return (accessToken: string, params: RequestVars<TParams, TBody, TUrl>) => {
     return axios<TResp, AxiosResponse<TResp, TBody>, TBody>({
       method: method,
       url: (params.pathParams ?? []).reduce((url, current) => {
         return url.replace(current.key, current.value);
-      }, url),
+      }, url as string),
       data: params.body,
       params: params.params,
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -24,10 +39,12 @@ export const createRequest = <TResp, TParams = object, TBody = object>(
   };
 };
 
-export const getErrorMessage = (
-  status: number,
-  t: TFunction<'translation', undefined>,
-) => {
+export const withRequest =
+  <TUrl extends string>(url: TUrl) =>
+  <TResp, TParams = undefined, TBody = undefined>(method: Methods) =>
+    createRequest<TResp, TParams, TBody, TUrl>(url, method);
+
+export const getErrorMessage = (status: number, t: TFunction) => {
   switch (status) {
     case 401:
       return t('unauthorized');

@@ -20,11 +20,13 @@ interface BaseData {
 interface TableProps<D> {
   columns: ColumnDef<D, any>[];
   data: D[];
+  className?: string;
 }
 
 export const Table = <Data extends BaseData>({
   columns,
   data,
+  className,
 }: TableProps<Data>) => {
   const table = useReactTable({
     state: {
@@ -38,7 +40,7 @@ export const Table = <Data extends BaseData>({
   });
 
   return (
-    <STable>
+    <STable className={className}>
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>

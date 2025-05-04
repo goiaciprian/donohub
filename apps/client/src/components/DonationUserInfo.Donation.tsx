@@ -33,7 +33,7 @@ export const DonationUserInfo = ({ clerkUserId }: { clerkUserId: string }) => {
   }
 
   const userInfo = userInfoQuery.data;
-  const ratingArr = [1, 1, 1, 1]; //[0].fill(1, 0, Math.floor(userInfo.rating ?? 0));
+  const ratingArr = [0].fill(1, 0, Math.floor(userInfo.rating ?? 0));
 
   return (
     <div className="flex flex-row gap-3 items-center">

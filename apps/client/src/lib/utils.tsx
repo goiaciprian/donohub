@@ -1,3 +1,4 @@
+import Resources from '@/support/resources';
 import { LocationDto } from '@donohub/shared';
 import clsx, { ClassValue } from 'clsx';
 import {
@@ -40,3 +41,5 @@ export function displayLocation(
 
   return `${hasValue(location.county, false)}${hasValue(location.city)}${hasValue(location.street)}${hasValue(location.number)}${hasValue(location.postalCode)}`;
 }
+
+export type LocaleCategoriesHeleper = `categories:${keyof Resources['categories']}`;

@@ -3,7 +3,11 @@ import moment from 'moment';
 import { DonationDto } from '@donohub/shared';
 import { useAuthRequest } from '@/hooks/useAuthRequest';
 import { getDonationById } from '@/support';
-import { displayLocation, getCategoryIcon } from '@/lib/utils';
+import {
+  displayLocation,
+  getCategoryIcon,
+  LocaleCategoriesHeleper,
+} from '@/lib/utils';
 import {
   CalendarPlus,
   MapPin,
@@ -26,14 +30,14 @@ import { DonationComments } from './DonationComments.Donation';
 import { DATE_FORMAT } from '@/utils';
 import { CopyButton } from './buttons/CopyButton';
 import { Button } from './ui/button';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface DetailedDonationProps {
   donationId: string;
 }
 
 export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'categories']);
   const navigate = useNavigate();
 
   const donationDateFn = useAuthRequest(getDonationById);
@@ -50,7 +54,6 @@ export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
   return (
     <div>
       <div className="flex items-center gap-4">
-        {/* <NavLink to=".." viewTransition> */}
         <Button
           size="icon"
           className="cursor-pointer"
@@ -58,16 +61,15 @@ export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
         >
           <ArrowLeft />
         </Button>
-        {/* </NavLink> */}
         <CopyButton url={window.location.href} />
         <h1 className="text-2xl font-bold align-middle">{donation.title}</h1>
       </div>
-      <div className="pt-5 flex">
+      <div className="pt-5 flex flex-wrap justify-center">
         <div className="flex-1 pr-20">
           <div>
             <h4 className="text-md flex items-center gap-3">
               {getCategoryIcon(donation.category)}{' '}
-              {t(`categories.${donation.category}`)}
+              {t(`categories:${donation.category}` as LocaleCategoriesHeleper)}
             </h4>
             <h4 className="text-md flex items-center gap-3">
               <MapPin size={18} /> {displayLocation(donation.location)}

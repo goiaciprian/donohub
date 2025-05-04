@@ -84,10 +84,12 @@ model Donation {
 
 model DonationEvaluation {
     id          String  @id @default(uuid())
+    createdAt   DateTime @default(now())
     clerkUserId String
     userImage   String
     userName    String
     approved    Boolean
+    comment     String?
 
     donationId String   @map("donation_id")
     donation   Donation @relation(fields: [donationId], references: [id])

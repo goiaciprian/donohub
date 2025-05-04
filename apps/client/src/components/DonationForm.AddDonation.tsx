@@ -13,12 +13,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AddLocation } from './AddLocation.AddDonation';
 import { UploadCloud, X } from 'lucide-react';
 import { usePrompt } from '@/hooks/usePrompt';
-import { Dialog, DialogContent, DialogHeader } from './ui/dialog';
-import { DialogTitle } from '@radix-ui/react-dialog';
 import { PageConfirmDialog } from './dialogs/PageConfirmDialog';
+import { LocaleCategoriesHeleper } from '@/lib/utils';
 
 export const AddDonationForm = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'categories']);
   const { lang } = useParams();
   const navigate = useNavigate();
 
@@ -38,7 +37,7 @@ export const AddDonationForm = () => {
 
   const categories = categoriesQuery.data.map((ctg) => ({
     value: ctg.id,
-    text: t(`categories.${ctg.name}`),
+    text: t(`categories:${ctg.name}` as LocaleCategoriesHeleper),
   }));
   const locations = locationsQuery.data.map((loc) => ({
     value: loc.id,
@@ -50,6 +49,7 @@ export const AddDonationForm = () => {
     mutationKey: ['donation'],
     mutationFn: (body: FormData) => postDonationFn({ body }),
     onSuccess: (resp) => {
+      form.reset();
       toast.success(t('internal.create'));
       navigate(`/${lang}/donations/${resp.id}`);
     },
@@ -146,12 +146,14 @@ export const AddDonationForm = () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                {field.state.meta.isBlurred &&
-                  field.state.meta.errors.map((e, index) => (
+                {/* {field.state.meta.isBlurred && */}
+                {field.state.meta.errors.map((e, index) => {
+                  return (
                     <p key={index} className="text-red-600">
                       {e}
                     </p>
-                  ))}
+                  );
+                })}
               </div>
             )}
           />
@@ -179,8 +181,8 @@ export const AddDonationForm = () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                {field.state.meta.isBlurred &&
-                  field.state.meta.errors.map((e, index) => (
+                {/* {field.state.meta.isBlurred && */}
+                  {field.state.meta.errors.map((e, index) => (
                     <p key={index} className="text-red-600">
                       {e}
                     </p>
@@ -280,8 +282,8 @@ export const AddDonationForm = () => {
                       ))}
                     </field.SelectContent>
                   </field.Select>
-                  {field.state.meta.isBlurred &&
-                    field.state.meta.errors.map((e, index) => (
+                  {/* {field.state.meta.isBlurred && */}
+                    {field.state.meta.errors.map((e, index) => (
                       <p key={index} className="text-red-600">
                         {e}
                       </p>
@@ -323,8 +325,8 @@ export const AddDonationForm = () => {
                       ))}
                     </field.SelectContent>
                   </field.Select>
-                  {field.state.meta.isBlurred &&
-                    field.state.meta.errors.map((e, index) => (
+                  {/* {field.state.meta.isBlurred && */}
+                    {field.state.meta.errors.map((e, index) => (
                       <p key={index} className="text-red-600">
                         {e}
                       </p>
@@ -339,10 +341,14 @@ export const AddDonationForm = () => {
           <form.AppField
             name="attachements"
             validators={{
-              onChange: ({ value }) =>
+              onSubmit: ({ value }) =>
                 (value?.length ?? 0) === 0
                   ? t('internal.validations.required')
                   : undefined,
+              // onChange: ({ value }) =>
+              //   (value?.length ?? 0) === 0
+              //     ? t('internal.validations.required')
+              //     : undefined,
             }}
             children={(field) => {
               const length = field.state.value?.length ?? 0;
@@ -406,12 +412,14 @@ export const AddDonationForm = () => {
                       }
                     />
                   </div>
-                  {field.state.meta.isBlurred &&
-                    field.state.meta.errors.map((e, index) => (
-                      <p key={index} className="text-red-600">
-                        {e}
-                      </p>
-                    ))}
+                  <div>
+                    {field.state.meta.errors &&
+                      field.state.meta.errors.map((e, index) => (
+                        <p key={index} className="text-red-600 z-10">
+                          {e}
+                        </p>
+                      ))}
+                  </div>
                 </div>
               );
             }}

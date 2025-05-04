@@ -25,6 +25,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../ui/tooltip';
+import { LocaleCategoriesHeleper } from '@/lib/utils';
 
 interface StateReducer {
   query?: string;
@@ -80,7 +81,7 @@ const reducerFunc = (state: State, payload: Payload) => {
 };
 
 export const DonationsPage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'categories']);
   const [searchParams, setSearchParms] = useSearchParams();
 
   const [{ category, location, page, pageSize, query }, dispatchRaw] =
@@ -157,7 +158,7 @@ export const DonationsPage = () => {
             </div>
             <h3 className="text-xl">{t('donations.subtitle')}</h3>
           </div>
-          <div className="flex w-full items-end py-5 gap-8 *:last:ml-auto">
+          <div className="flex flex-wrap w-full items-end gap-4 py-3 md:py-5 md:gap-8 md:*:last:ml-auto">
             <div>
               <label htmlFor="query" className="font-semibold">
                 {t('donations.keywords')}
@@ -191,7 +192,7 @@ export const DonationsPage = () => {
                   <SelectItem value="clear">All</SelectItem>
                   {categories.map((category) => (
                     <SelectItem key={category.id} value={category.id}>
-                      {t(`categories.${category.name}`)}
+                      {t(`categories:${category.name}` as LocaleCategoriesHeleper)}
                     </SelectItem>
                   ))}
                 </SelectContent>

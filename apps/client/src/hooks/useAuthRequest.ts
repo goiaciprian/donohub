@@ -1,44 +1,31 @@
-import { useAuth } from '@clerk/clerk-react';
 import { AxiosError, AxiosResponse } from 'axios';
 import { RequestVars } from '@/utils';
 import React from 'react';
+import { useAuthContext } from '@/context/AuthContext';
 
-export const useAuthRequest = <TResp, TParams, TBody>(
+export const useAuthRequest = <TResp, TParams, TBody, TUrl extends string>(
   request: (
     accessToken: string,
-    params: RequestVars<TParams, TBody>,
+    params: RequestVars<TParams, TBody, TUrl>,
   ) => Promise<AxiosResponse<TResp, TBody>>,
 ) => {
-  const { getToken } = useAuth();
-  const [_token, setToken] = React.useState<string | null>(null);
-
-  const token = React.useCallback(async () => {
-    let t = _token;
-    if (!t) {
-      t = await getToken();
-      setToken(t);
-    }
-    return t;
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getToken, setToken]);
+  const { token, generate } = useAuthContext();
 
   const requestFnWithAuthToken = React.useCallback(
-    async (p: RequestVars<TParams, TBody>) => {
+    async (p: RequestVars<TParams, TBody, TUrl>) => {
       try {
-        const receivedToken = await token();
-        const requestCall = await request(receivedToken || '', p);
+        const requestCall = await request(token, p);
         return requestCall.data;
       } catch (err) {
         if (err instanceof AxiosError && err.status === 401) {
-          const receivedToken = await token();
-          const requestCall = await request(receivedToken || '', p);
+          const _token = await generate();
+          const requestCall = await request(_token, p);
           return requestCall.data;
         }
         throw err;
       }
     },
-    [token, request],
+    [token, generate, request],
   );
 
   return requestFnWithAuthToken;

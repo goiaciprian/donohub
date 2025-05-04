@@ -27,7 +27,7 @@ const LatestDonationsHome = () => {
 
   return (
     <section className="w-full px-[15%]">
-      <h3 className="text-center py-20 text-4xl font-bold italic">
+      <h3 className="text-center py-20 text-2xl font-bold italic">
         {t('home.latestDonation.title')}
       </h3>
       <div className="flex flex-wrap gap-10 justify-center">
@@ -37,7 +37,7 @@ const LatestDonationsHome = () => {
       </div>
       <div className="w-full text-center pt-30">
         <NavLink to="donations" viewTransition>
-          <Button className="cursor-pointer text-3xl px-10 py-8">
+          <Button className="cursor-pointer text-xl px-6 py-5">
             {t('home.latestDonation.seeAll')}
           </Button>
         </NavLink>

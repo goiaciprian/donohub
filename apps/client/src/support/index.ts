@@ -6,64 +6,78 @@ import {
   DonationDto,
   LocationDto,
   PaginatedDonationDto,
+  PaginatedEvaluatedDonationDto,
   PostLocationDto,
+  PutDonationEvaluationDto,
+  UpdateDonationDto,
   UserInfoDto,
 } from '@donohub/shared';
 
-import { createRequest } from '@/utils';
+import { withRequest } from '@/utils';
 
-export const getDonations = createRequest<PaginatedDonationDto>(
-  `/api/donations`,
-  'GET',
-);
+export const getDonations = withRequest('/api/donations')<
+  PaginatedDonationDto,
+  { page: number; size: number },
+  undefined
+>('GET');
 
-export const getDonationById = createRequest<DonationDto>(
+export const getDonationById = withRequest(
   '/api/donations/by/:id',
-  'GET',
-);
+)<DonationDto>('GET');
 
-export const getCategories = createRequest<CategoryDto[]>(
-  '/api/categories',
-  'GET',
-);
+export const getCategories =
+  withRequest('/api/categories')<CategoryDto[]>('GET');
 
-export const getLocationsDropdown = createRequest<string[]>(
-  '/api/locations/dropdown',
-  'GET',
-);
+export const getLocationsDropdown = withRequest('/api/locations/dropdown')<
+  string[]
+>('GET');
 
-export const getLocations = createRequest<LocationDto[]>(
-  '/api/locations',
-  'GET',
-);
+export const getLocations = withRequest('/api/locations')<LocationDto[]>('GET');
 
-export const getUserInfoByClerkId = createRequest<UserInfoDto>(
+export const getUserInfoByClerkId = withRequest(
   '/api/userInfo/:id/clerk',
-  'GET',
-);
+)<UserInfoDto>('GET');
 
-export const postDonations = createRequest<DonationDto, object, FormData>(
-  '/api/donations',
-  'POST',
-);
+export const postDonations = withRequest('/api/donations')<
+  DonationDto,
+  undefined,
+  FormData
+>('POST');
 
-export const postLocation = createRequest<LocationDto, object, PostLocationDto>(
-  '/api/locations',
-  'POST',
-);
+export const postLocation = withRequest('/api/locations')<
+  LocationDto,
+  undefined,
+  PostLocationDto
+>('POST');
 
-export const getComments = createRequest<CommentPaginatedDto>(
-  '/api/comments/:donationId',
-  'GET',
-);
-export const postComment = createRequest<CommentDto, object, CommentPostDto>(
-  '/api/comments/:donationId',
-  'POST',
-);
+export const getComments = withRequest('/api/comments/:donationId')<
+  CommentPaginatedDto,
+  { page: number; size: number }
+>('GET');
+export const postComment = withRequest('/api/comments/:donationId')<
+  CommentDto,
+  undefined,
+  CommentPostDto
+>('POST');
 
-export const getUnlistedDonations = createRequest<
+export const getUnlistedDonations = withRequest('/api/donations/unlisted')<
   PaginatedDonationDto,
   { page: number; size: number }
->('/api/donations/unlisted', 'GET');
+>('GET');
+
+export const evaluateDonation = withRequest(
+  '/api/donations/evaluate/:id/:status',
+)<void, undefined, PutDonationEvaluationDto>('PUT');
+
+export const selfDonations = withRequest('/api/donations/self')<
+  PaginatedEvaluatedDonationDto,
+  { page: number; size: number }
+>('GET');
+
+export const updateDonation = withRequest('/api/donations/update/:id')<
+  DonationDto,
+  undefined,
+  FormData
+>('PUT');
 
 export * from './router';
