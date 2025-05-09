@@ -30,7 +30,7 @@ const LatestDonationsHome = () => {
       <h3 className="text-center py-20 text-2xl font-bold italic">
         {t('home.latestDonation.title')}
       </h3>
-      <div className="flex flex-wrap gap-10 justify-center">
+      <div className="flex flex-wrap gap-10 items-stretch justify-center">
         {donations.map((donation, index) => (
           <DonationCard key={index} donation={donation} />
         ))}

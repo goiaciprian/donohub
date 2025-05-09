@@ -27,9 +27,9 @@ export const DonationCard = ({
   const { lang } = useParams();
   const { t } = useTranslation(['translation', 'categories']);
   return (
-    <Card className="w-[800px] p-5 select-none">
-      <div className="flex flex-row h-full">
-        <Carousel opts={{ loop: true }} className="w-full max-w-[200px]">
+    <Card className="w-full md:max-w-[500px] p-5 select-none">
+      <div className="flex items-center gap-2 md:gap-0 flex-col md:flex-row h-full w-full">
+        <Carousel opts={{ loop: true }} className="w-full max-w-[150px]">
           <CarouselContent>
             {donation.attachements.length === 0 && (
               <CarouselItem>
@@ -51,32 +51,36 @@ export const DonationCard = ({
             ))}
           </CarouselContent>
         </Carousel>
-        <div className="flex flex-col w-full">
-          <CardHeader>
-            <CardTitle className="text-2xl">{donation.title}</CardTitle>
-            <CardDescription className="w-max">
-              <div className="flex flex-wrap gap-1 md:gap-5 whitespace-nowrap ">
-                <h5 className="flex items-center gap-2">
+        <div className="flex flex-col gap-5 md:gap-0 w-full">
+          <CardHeader className="">
+            <CardTitle className="text-2xl w-fit m-auto md:m-0 working-break-1">
+              {donation.title}
+            </CardTitle>
+            <CardDescription className="w-full">
+              <div className="flex flex-col gap-1 md:gap-0">
+                <h5 className="flex items-center gap-2 m-auto md:m-0">
                   {getCategoryIcon(donation.category)}
                   {t(
                     `categories:${donation.category}` as LocaleCategoriesHeleper,
                   )}
                 </h5>
-                <h5 className="flex items-center gap-2 w-full md:w-auto">
+                <h5 className="flex items-center gap-2 w-fit m-auto md:m-0">
                   <MapPin size={18} />
-                  <div className="md:w-auto w-[150px] overflow-hidden text-ellipsis whitespace-nowrap inline-block">
-                    {displayLocation(donation.location)}
+                  <div className="w-full">
+                    <p className="working-break-[2]">
+                      {displayLocation(donation.location)}
+                    </p>
                   </div>
                 </h5>
               </div>
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-xl truncate text-ellipsis ">
+            <p className="text-xl m-auto md:m-0 w-fit working-break-[2] ">
               {donation.description}
             </p>
           </CardContent>
-          <CardFooter className="self-end justify-self-end mt-auto">
+          <CardFooter className="self-center md:self-end md:justify-self-end mt-auto">
             <div className="flex flex-row gap-2">
               <CopyButton
                 url={`${window.location.origin}/${lang}/donations/${donation.id}`}

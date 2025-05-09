@@ -31,6 +31,7 @@ import { DATE_FORMAT } from '@/utils';
 import { CopyButton } from './buttons/CopyButton';
 import { Button } from './ui/button';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface DetailedDonationProps {
   donationId: string;
@@ -39,6 +40,7 @@ interface DetailedDonationProps {
 export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
   const { t } = useTranslation(['translation', 'categories']);
   const navigate = useNavigate();
+  const onMobile = useIsMobile();
 
   const donationDateFn = useAuthRequest(getDonationById);
   const donationData = useSuspenseQuery<DonationDto>({
@@ -64,7 +66,7 @@ export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
         <CopyButton url={window.location.href} />
         <h1 className="text-2xl font-bold align-middle">{donation.title}</h1>
       </div>
-      <div className="pt-5 flex flex-wrap justify-center">
+      <div className="pt-5 flex flex-col-reverse md:flex-row gap-6 justify-center w-full">
         <div className="flex-1 pr-20">
           <div>
             <h4 className="text-md flex items-center gap-3">
@@ -99,7 +101,7 @@ export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
           <div>
             <h2 className="font-semibold text-md">{donation.description}</h2>
           </div>
-          <div className="pt-28 py-8">
+          <div className="pt-5 py-8">
             <h2 className="font-bold text-xl">{t('donation.user')}</h2>
             <div className="py-3">
               <Separator className="w-full" />
@@ -108,7 +110,7 @@ export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
           </div>
           <div></div>
         </div>
-        <div>
+        <div className="self-center">
           <Carousel opts={{ loop: true }} className="max-w-[300px]">
             <CarouselContent>
               {donation.attachements.length === 0 && (
@@ -130,12 +132,16 @@ export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
+            {!onMobile && (
+              <>
+                <CarouselPrevious />
+                <CarouselNext />
+              </>
+            )}
           </Carousel>
         </div>
       </div>
-      <div className="pt-10">
+      <div>
         <h1 className="text-xl font-bold">{t('donation.comments')}</h1>
         <div className="py-3">
           <Separator className="w-full" />
