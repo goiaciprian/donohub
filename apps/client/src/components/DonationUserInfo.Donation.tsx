@@ -36,19 +36,20 @@ export const DonationUserInfo = ({ clerkUserId }: { clerkUserId: string }) => {
   const ratingArr = [0].fill(1, 0, Math.floor(userInfo.rating ?? 0));
 
   return (
-    <div className="flex flex-row gap-3 items-center">
+    <div className="flex flex-col md:flex-row gap-3 items-center">
       <div>
         <Avatar className="size-15">
           <AvatarImage src={userInfo.avatar} />
           <AvatarFallback>{userInfo.fullName}</AvatarFallback>
         </Avatar>
       </div>
-      <div>
+      <div className="w-full">
         <h4 className="text-md flex items-center gap-3">
           <UserRound size={18} /> <span>{userInfo.fullName}</span>
         </h4>
-        <h4 className="text-md flex items-center gap-3">
-          <Mail size={18} /> <span>{userInfo.email}</span>
+        <h4 className="text-md flex items-center gap-3 ">
+          <Mail size={18} />{' '}
+          <span className="working-break-[2]">{userInfo.email}</span>
         </h4>
         <h4>
           <Tooltip>

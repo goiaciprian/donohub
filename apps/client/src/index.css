@@ -184,3 +184,19 @@
     @apply bg-background text-foreground w-full;
   }
 }
+
+@utility working-break-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@utility working-break-* {
+  display: -webkit-box;
+  -webkit-line-clamp: --value([integer]);
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
