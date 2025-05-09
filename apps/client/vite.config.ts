@@ -4,6 +4,8 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import { VitePWA } from 'vite-plugin-pwa';
+import ViteSitemap from 'vite-plugin-sitemap';
+import { createHtmlPlugin } from 'vite-plugin-html';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), ['VITE_', '']);
@@ -27,7 +29,25 @@ export default defineConfig(({ mode }) => {
       },
       allowedHosts: ['donohub.srv-lab.work'],
     },
-    plugins: [react(), tailwindcss(), VitePWA({ injectRegister: 'auto' })],
+    plugins: [
+      react(),
+      tailwindcss(),
+      VitePWA({ injectRegister: 'auto' }),
+      ViteSitemap({
+        hostname: 'https://donohub.srv-lab.work',
+        generateRobotsTxt: true,
+      }),
+      createHtmlPlugin({
+        minify: true,
+        inject: {
+          data: {
+            title: 'Donohub',
+            description:
+              'Donohub is a platform that allow people to connect and share items',
+          },
+        },
+      }),
+    ],
     // worker: {
     //  plugins: [ nxViteTsPaths() ],
     // },
