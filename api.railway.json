@@ -1,0 +1,15 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "watchPatterns": ["/apps/api/*"],
+    "buildCommand": "npx nx run @donohub/api:build"
+  },
+  "deploy": {
+    "preDeployCommand": "npx nx run @donohub/prisma:migrate",
+    "startCommand": "npx nx run @donohub/prisma:generate && npx nx run @donohub/api:serve:production",
+    "restartPolicyType": "NEVER",
+    "healthcheckPath": "/api/health",
+    "healthcheckTimeout": 300
+  }
+}
