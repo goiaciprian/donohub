@@ -2,7 +2,6 @@ import { CLERK_CLIENT } from '@/Auth/clerk.provider';
 import { PrismaService } from '@/Prisma/prisma.service';
 import { type ClerkClient } from '@clerk/backend';
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { error } from 'console';
 
 @Injectable()
 export class UserInfoService {
@@ -37,9 +36,9 @@ export class UserInfoService {
       this.prismaService.userInfo.findFirstOrThrow({
         where: { clerkUserId: id },
       }),
-    ]).catch(error => {
+    ]).catch((error) => {
       Logger.error(error);
-      return [null, null]
+      return [null, null];
     });
 
     return {
@@ -61,6 +60,12 @@ export class UserInfoService {
   }
 
   async completeDeletion(clerkId: string) {
+    await this.prismaService.comment.deleteMany({
+      where: {
+        clerkUserId: clerkId,
+      },
+    });
+
     await this.prismaService.donation.deleteMany({
       where: { clerkUserId: clerkId },
     });

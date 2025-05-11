@@ -48,7 +48,7 @@ export const Navigation = () => {
           <div className="flex flex-row gap-5 items-center">
             <NavLink
               to={'donations'}
-              className={'font-bold hover:underline'}
+              className={'text-sm md:text-md font-bold hover:underline'}
               viewTransition
             >
               {t('navigation.donations')}
@@ -56,7 +56,7 @@ export const Navigation = () => {
             <SignedIn>
               <NavLink
                 to={'donor'}
-                className={'font-bold hover:underline'}
+                className={'text-sm md:text-md font-bold hover:underline'}
                 viewTransition
               >
                 {t('navigation.create')}
@@ -106,8 +106,8 @@ export const Navigation = () => {
             </SignedIn>
             <SignedOut>
               <div>
-                <SignInButton className="text-white text-md" />
-                <SignUpButton className="text-white text-md" />
+                <SignInButton className="text-white text-sm md:text-md cursor-pointer" />
+                <SignUpButton className="text-white text-sm md:text-md cursor-pointer" />
               </div>
             </SignedOut>
           </div>

@@ -98,7 +98,7 @@ export class DonationController {
     { attachements }: { attachements: Express.Multer.File[] | undefined },
     @CurrentUser() user: UserType,
   ): Promise<DonationDto> {
-    if (!attachements || attachements.length === 0) {
+    if (!attachements || attachements.length === 0 || attachements.length > 4) {
       throw new BadRequestException();
     }
     return await this.donationService.createDonation(

@@ -22,16 +22,13 @@ export const Providers = ({
   const { lang } = useParams();
   const userStatus = useUser();
 
-  const userId = userStatus.user?.id;
-  const isUserLoaded = userStatus.isLoaded;
-
   React.useEffect(() => {
     setLang(lang);
     moment.locale(lang);
   }, [lang, setLang]);
 
   const requestNotificationPerission = async () => {
-    let permission = 'denied';
+    let permission = Notification.permission;
     if (Notification.permission === 'default') {
       permission = await Notification.requestPermission();
     }
@@ -40,20 +37,21 @@ export const Providers = ({
   };
 
   React.useEffect(() => {
+    const userId = userStatus.user?.id;
+    const isUserLoaded = userStatus.isLoaded;
+
     const setup = async () => {
-      if (isUserLoaded && userId) {
-        if (!requestNotificationPerission()) {
-          return;
-        }
-        navigator.serviceWorker.ready.then((r) =>
+      const hasPermission = await requestNotificationPerission();
+      if (isUserLoaded && userId && hasPermission) {
+        navigator.serviceWorker.ready.then((r) => {
           r.active?.postMessage({
             type: 'SETUP',
             payload: {
               url: window.location.origin, //import.meta.env.VITE_API_URL
               userId,
             },
-          }),
-        );
+          });
+        });
       } else if (isUserLoaded && !userId) {
         navigator.serviceWorker.ready.then((r) =>
           r.active?.postMessage({
@@ -65,7 +63,7 @@ export const Providers = ({
     };
 
     setup();
-  }, [userId, isUserLoaded]);
+  }, [userStatus]);
 
   const getCategoriesFn = useAuthRequest(getCategories);
   const getLocationsDropdownFn = useAuthRequest(getLocationsDropdown);

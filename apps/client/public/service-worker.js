@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-restricted-globals, @typescript-eslint/no-unused-expressions
+self.__WB_MANIFEST;
+
 /**
  * @typedef {Object} SETUP_PAYLOAD
  * @property {string} url
@@ -58,6 +61,7 @@ onpush = (event) => {
  */
 onmessage = (event) => {
   const { type, payload } = event.data;
+  console.log(event);
   switch (type) {
     case PAYLOAD_TYPE[0]:
       handleSetup(payload);
