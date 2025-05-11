@@ -35,9 +35,11 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         injectRegister: 'auto',
         strategies: 'injectManifest',
-        srcDir: 'public',
         filename: 'service-worker.js',
         devOptions: { enabled: true },
+        injectManifest: {
+          injectionPoint: undefined,
+        },
         includeAssets: [
           'favicon.ico',
           'home1.jpg',
