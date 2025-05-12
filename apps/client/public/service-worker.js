@@ -61,7 +61,6 @@ onpush = (event) => {
  */
 onmessage = (event) => {
   const { type, payload } = event.data;
-  console.log(event);
   switch (type) {
     case PAYLOAD_TYPE[0]:
       handleSetup(payload);

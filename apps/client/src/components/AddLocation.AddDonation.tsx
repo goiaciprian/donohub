@@ -196,19 +196,27 @@ export const AddLocation = ({
               />
 
               <locationForm.AppForm>
-                <SheetFooter className="flex flex-row justify-end mt-auto">
-                  <SheetClose asChild>
-                    <Button
-                      disabled={locationMutation.isPending}
-                      variant="secondary"
-                    >
-                      {t('internal.close')}
-                    </Button>
-                  </SheetClose>
-                  <Button disabled={locationMutation.isPending} type="submit">
-                    {t('internal.submit')}
-                  </Button>
-                </SheetFooter>
+                <locationForm.Subscribe
+                  selector={(s) => s.isSubmitting}
+                  children={(isSubmitting) => (
+                    <SheetFooter className="flex flex-row justify-end mt-auto">
+                      <SheetClose asChild>
+                        <Button
+                          disabled={locationMutation.isPending || isSubmitting}
+                          variant="secondary"
+                        >
+                          {t('internal.close')}
+                        </Button>
+                      </SheetClose>
+                      <Button
+                        disabled={locationMutation.isPending || isSubmitting}
+                        type="submit"
+                      >
+                        {t('internal.submit')}
+                      </Button>
+                    </SheetFooter>
+                  )}
+                />
               </locationForm.AppForm>
             </form>
           </div>

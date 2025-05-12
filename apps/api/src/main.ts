@@ -9,6 +9,10 @@ import { patchNestjsSwagger } from '@anatine/zod-nestjs';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { rawBody: true });
 
+  app.enableCors({
+    origin: ['https://donohub.srv-lab.work', 'https://future.donohub.srv-lab.work'],
+  })
+
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   const globalPrefix = 'api';

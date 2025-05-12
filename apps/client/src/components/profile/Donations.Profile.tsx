@@ -40,6 +40,16 @@ const UserDonations = () => {
 
   const donationsData = selfDonationsQuery.data;
 
+  if (donationsData.totalItems === 0) {
+    return (
+      <div className="h-full">
+        <h1 className="font-bold md:text-xl py-20 text-center">
+          {t('internal.notFoundAnything')}
+        </h1>
+      </div>
+    );
+  }
+
   return (
     <>
       <Accordion type="multiple">
@@ -189,7 +199,7 @@ export const DonationsProfile = () => {
       className="select-none"
       staticFirst={
         <div>
-          <h1 className="font-bold text-xl py-5">My donations</h1>
+          <h1 className="font-bold md:text-xl py-5">My donations</h1>
         </div>
       }
       dynamicComponent={<UserDonations />}

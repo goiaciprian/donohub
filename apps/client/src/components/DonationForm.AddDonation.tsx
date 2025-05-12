@@ -7,7 +7,7 @@ import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { CategoryDto } from '@donohub/shared';
 import { Button } from './ui/button';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { toast } from 'sonner';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AddLocation } from './AddLocation.AddDonation';
@@ -172,7 +172,7 @@ export const AddDonationForm = () => {
                 >
                   {t('addDonation.description')}
                 </Label>
-                    <field.Textarea
+                <field.Textarea
                   id={field.name}
                   disabled={postDonationMutation.isPending}
                   value={field.state.value}
@@ -329,7 +329,11 @@ export const AddDonationForm = () => {
                       {e}
                     </p>
                   ))}
-                  <Button onClick={() => setSheetOpen(true)} variant="link">
+                  <Button
+                    onClick={() => setSheetOpen(true)}
+                    variant="link"
+                    className="cursor-pointer pl-0"
+                  >
                     {t('addDonation.addLocation')}
                   </Button>
                 </div>
@@ -423,9 +427,18 @@ export const AddDonationForm = () => {
             }}
           />
           <form.AppForm>
-            <form.Button className="w-max self-end" type="submit">
-              {t('internal.submit')}
-            </form.Button>
+            <form.Subscribe
+              selector={(s) => s.isSubmitting}
+              children={(isSubmitting) => (
+                <form.Button
+                  className="w-max self-end"
+                  type="submit"
+                  disabled={isSubmitting || postDonationMutation.isPending}
+                >
+                  {t('internal.submit')}
+                </form.Button>
+              )}
+            />
           </form.AppForm>
         </form>
       </div>

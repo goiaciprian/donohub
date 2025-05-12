@@ -1,18 +1,30 @@
-import { EvaluationDialog } from "@/components/dialogs/EvaluationDialog";
-import { Pagination } from "@/components/Pagination";
-import { Table } from "@/components/Table";
-import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useAuthRequest } from "@/hooks/useAuthRequest";
-import { LocaleCategoriesHeleper } from "@/lib/utils";
-import { getUnlistedDonations, evaluateDonation } from "@/support";
-import { PaginatedDonationDto, DonationEvaluationType, PutDonationEvaluationDto } from "@donohub/shared";
-import { useQueryClient, useSuspenseQuery, useMutation } from "@tanstack/react-query";
-import { createColumnHelper } from "@tanstack/react-table";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
+import { CommentRequestDialog } from '@/components/dialogs/CommentRequestDialog';
+import { Pagination } from '@/components/Pagination';
+import { Table } from '@/components/Table';
+import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { useAuthRequest } from '@/hooks/useAuthRequest';
+import { LocaleCategoriesHeleper } from '@/lib/utils';
+import { getUnlistedDonations, evaluateDonation } from '@/support';
+import {
+  PaginatedDonationDto,
+  DonationEvaluationType,
+  PutDonationEvaluationDto,
+} from '@donohub/shared';
+import {
+  useQueryClient,
+  useSuspenseQuery,
+  useMutation,
+} from '@tanstack/react-query';
+import { createColumnHelper } from '@tanstack/react-table';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'sonner';
 
 type TableDonation = Pick<
   PaginatedDonationDto['items'][0],
@@ -180,7 +192,7 @@ export const UnlistedDonations = () => {
           />
         </div>
       </div>
-      <EvaluationDialog
+      <CommentRequestDialog
         id={selectedId}
         isLoading={evaluateDonationMutation.isPending}
         title={t('internal.evaluation.donation.title')}

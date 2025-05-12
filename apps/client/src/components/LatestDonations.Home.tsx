@@ -16,11 +16,23 @@ const LatestDonationsHome = () => {
   });
 
   if (latestDonationsQuery.isError) {
-    return <div>{t('home.latestDonation.error')}</div>;
+    return (
+      <div className="flex w-full justify-center items-center h-[150px]">
+        <h1 className="font-bold md:text-lg">
+          {t('home.latestDonation.error')}
+        </h1>
+      </div>
+    );
   }
 
   if (!latestDonationsQuery.data) {
-    return <div>{t('internal.notFoundAnything')}</div>;
+    return (
+      <div className="flex w-full justify-center items-center h-[150px]">
+        <h1 className="font-bold md:text-lg">
+          {t('internal.notFoundAnything')}
+        </h1>
+      </div>
+    );
   }
 
   const { items: donations } = latestDonationsQuery.data;

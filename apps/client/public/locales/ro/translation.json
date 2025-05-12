@@ -10,7 +10,7 @@
     "action": "Actiune",
     "signInButton": "Logare",
     "signUpButton": "Inregistrare",
-    "submit": "Salveaza",
+    "submit": "Trimite",
     "close": "Inchide",
     "create": "Creat",
     "success": "Succes",
@@ -40,6 +40,9 @@
       "comment": {
         "title": "Gestiune Comentarii",
         "evaluate": "Verificare comentarii"
+      },
+      "dialog": {
+        "description": "Comentariul este necesar daca nu aprobi"
       }
     }
   },
@@ -89,7 +92,11 @@
     "user": "Utilizator",
     "comments": "Comentarii",
     "comment": "Comentariu",
-    "post": "Posteaza"
+    "post": "Posteaza",
+    "request": {
+      "description": "Poti lasa un comentariu",
+      "requestDonation": "Cere donatia"
+    }
   },
   "addDonation": {
     "addLocation": "Adauga locatie",
