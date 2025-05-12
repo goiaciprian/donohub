@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-restricted-globals, @typescript-eslint/no-unused-expressions
+self.__WB_MANIFEST;
+
 /**
  * @typedef {Object} SETUP_PAYLOAD
  * @property {string} url

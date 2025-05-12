@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
       proxy: {
         '/api': env.VITE_API_URL,
       },
-      allowedHosts: ['donohub.srv-lab.work'],
+      allowedHosts: ['donohub.srv-lab.work', 'future.donohub.srv-lab.work'],
     },
     preview: {
       port: parseInt(env.PORT || '4300'),
@@ -27,12 +27,48 @@ export default defineConfig(({ mode }) => {
       proxy: {
         '/api': env.VITE_API_URL,
       },
-      allowedHosts: ['donohub.srv-lab.work'],
+      allowedHosts: ['donohub.srv-lab.work', 'future.donohub.srv-lab.work'],
     },
     plugins: [
       react(),
       tailwindcss(),
-      VitePWA({ injectRegister: 'auto' }),
+      VitePWA({
+        injectRegister: 'auto',
+        strategies: 'injectManifest',
+        filename: 'service-worker.js',
+        devOptions: { enabled: true },
+        injectManifest: {
+          injectionPoint: undefined,
+        },
+        includeAssets: [
+          'favicon.ico',
+          'home1.jpg',
+          'mainx192.png',
+          'mainx512.png',
+        ],
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        },
+        manifest: {
+          name: 'DonoHUB',
+          short_name: 'DonoHUB',
+          description:
+            'Donohub is a platform that allow people to connect and share items',
+          theme_color: '#1e2939',
+          icons: [
+            {
+              src: 'assets/mainx192.png',
+              sizes: '192x192',
+              type: 'image/png',
+            },
+            {
+              src: 'assets/mainx512.png',
+              sizes: '512x512',
+              type: 'image/png',
+            },
+          ],
+        },
+      }),
       ViteSitemap({
         hostname: 'https://donohub.srv-lab.work',
         generateRobotsTxt: true,

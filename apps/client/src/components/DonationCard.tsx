@@ -80,7 +80,7 @@ export const DonationCard = ({
               {donation.description}
             </p>
           </CardContent>
-          <CardFooter className="self-center md:self-end md:justify-self-end mt-auto">
+          <CardFooter className="self-center md:mt-5 md:self-end md:justify-self-end mt-auto">
             <div className="flex flex-row gap-2">
               <CopyButton
                 url={`${window.location.origin}/${lang}/donations/${donation.id}`}

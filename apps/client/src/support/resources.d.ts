@@ -47,6 +47,9 @@ interface Resources {
         "comment": {
           "title": "Manage Comments",
           "evaluate": "Evaluate comments"
+        },
+        "dialog": {
+          "description": "Comment required when denying"
         }
       }
     },
@@ -94,7 +97,11 @@ interface Resources {
       "user": "User",
       "comments": "Comments",
       "comment": "Comment",
-      "post": "Post"
+      "post": "Post",
+      "request": {
+        "description": "You can leave a comment to the donation owner",
+        "requestDonation": "Request Donation"
+      }
     },
     "addDonation": {
       "addLocation": "Add location",

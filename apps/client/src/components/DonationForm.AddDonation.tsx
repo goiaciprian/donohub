@@ -76,8 +76,8 @@ export const AddDonationForm = () => {
       formData.append('description', value.description);
       formData.append('categoryId', value.categoryId);
       formData.append('locationId', value.locationId);
-      formData.append('qunatity', value.quantity as string);
-      formData.append('phone', value.phone as string);
+      if (value.quantity) formData.append('quantity', value.quantity as string);
+      if (value.phone) formData.append('phone', value.phone as string);
 
       for (let i = 0; i < value.attachements.length; i++) {
         const file = value.attachements.item(i);
@@ -110,8 +110,6 @@ export const AddDonationForm = () => {
   const [showPrompt, confirmNavigation, cancelNavigation] = usePrompt(
     () => form.state.isDirty,
   );
-
-  // console.log(form.state);
 
   return (
     <>
@@ -174,7 +172,7 @@ export const AddDonationForm = () => {
                 >
                   {t('addDonation.description')}
                 </Label>
-                <field.Input
+                <field.Textarea
                   id={field.name}
                   disabled={postDonationMutation.isPending}
                   value={field.state.value}
@@ -182,11 +180,11 @@ export const AddDonationForm = () => {
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {/* {field.state.meta.isBlurred && */}
-                  {field.state.meta.errors.map((e, index) => (
-                    <p key={index} className="text-red-600">
-                      {e}
-                    </p>
-                  ))}
+                {field.state.meta.errors.map((e, index) => (
+                  <p key={index} className="text-red-600">
+                    {e}
+                  </p>
+                ))}
               </div>
             )}
           />
@@ -283,11 +281,11 @@ export const AddDonationForm = () => {
                     </field.SelectContent>
                   </field.Select>
                   {/* {field.state.meta.isBlurred && */}
-                    {field.state.meta.errors.map((e, index) => (
-                      <p key={index} className="text-red-600">
-                        {e}
-                      </p>
-                    ))}
+                  {field.state.meta.errors.map((e, index) => (
+                    <p key={index} className="text-red-600">
+                      {e}
+                    </p>
+                  ))}
                 </div>
               )}
             />
@@ -326,12 +324,16 @@ export const AddDonationForm = () => {
                     </field.SelectContent>
                   </field.Select>
                   {/* {field.state.meta.isBlurred && */}
-                    {field.state.meta.errors.map((e, index) => (
-                      <p key={index} className="text-red-600">
-                        {e}
-                      </p>
-                    ))}
-                  <Button onClick={() => setSheetOpen(true)} variant="link">
+                  {field.state.meta.errors.map((e, index) => (
+                    <p key={index} className="text-red-600">
+                      {e}
+                    </p>
+                  ))}
+                  <Button
+                    onClick={() => setSheetOpen(true)}
+                    variant="link"
+                    className="cursor-pointer pl-0"
+                  >
                     {t('addDonation.addLocation')}
                   </Button>
                 </div>
@@ -425,9 +427,18 @@ export const AddDonationForm = () => {
             }}
           />
           <form.AppForm>
-            <form.Button className="w-max self-end" type="submit">
-              {t('internal.submit')}
-            </form.Button>
+            <form.Subscribe
+              selector={(s) => s.isSubmitting}
+              children={(isSubmitting) => (
+                <form.Button
+                  className="w-max self-end"
+                  type="submit"
+                  disabled={isSubmitting || postDonationMutation.isPending}
+                >
+                  {t('internal.submit')}
+                </form.Button>
+              )}
+            />
           </form.AppForm>
         </form>
       </div>

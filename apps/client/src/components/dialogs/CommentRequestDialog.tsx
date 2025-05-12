@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Label } from '../ui/label';
 import { DonationEvaluationType } from '@donohub/shared';
 
-interface EvaluationDialogProps {
+interface CommentRequestDialogProps {
   title: string;
   id: string | null;
   isLoading: boolean;
@@ -15,6 +15,10 @@ interface EvaluationDialogProps {
     comment: string | null;
   }) => void;
   onClose: () => void;
+  description?: string;
+  closeText?: string;
+  submitText?: string;
+  closeButton?: boolean;
 }
 
 type SubmitMeta = {
@@ -25,14 +29,22 @@ const initialMeta: SubmitMeta = {
   submitAction: null,
 };
 
-export const EvaluationDialog = ({
+export const CommentRequestDialog = ({
   title,
   id,
   isLoading,
   onClose,
   onResponse,
-}: EvaluationDialogProps) => {
+  closeButton = false,
+  description: descriptionRaw,
+  closeText: closeTextRaw,
+  submitText: submitTextRaw,
+}: CommentRequestDialogProps) => {
   const { t } = useTranslation();
+
+  const description = descriptionRaw || 'Comment required when denying';
+  const closeText = closeTextRaw || t('internal.deny');
+  const submitText = submitTextRaw || t('internal.approve');
 
   const commentForm = useAppForm({
     defaultValues: {
@@ -65,7 +77,7 @@ export const EvaluationDialog = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>Comment required when denying</DialogDescription>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <div>
           <form
@@ -102,23 +114,26 @@ export const EvaluationDialog = ({
                   <div className="pt-3 w-full flex justify-end">
                     <commentForm.Button
                       variant="ghost"
-                      className="hover:bg-red-200"
-                      disabled={!!isSubmitting || !comment || isLoading}
+                      className={closeButton ? "cursor-pointer" : 'hover:bg-red-200 cursor-pointer'}
+                      disabled={
+                        !closeButton &&
+                        (!!isSubmitting || !comment || isLoading)
+                      }
                       onClick={() =>
                         commentForm.handleSubmit({ submitAction: 'DECLINED' })
                       }
                     >
-                      {t('internal.deny')}
+                      {closeText}
                     </commentForm.Button>
                     <commentForm.Button
                       variant="ghost"
-                      className="hover:bg-green-200"
+                      className="hover:bg-green-200 cursor-pointer"
                       disabled={!!isSubmitting || isLoading}
                       onClick={() =>
                         commentForm.handleSubmit({ submitAction: 'ACCEPTED' })
                       }
                     >
-                      {t('internal.approve')}
+                      {submitText}
                     </commentForm.Button>
                   </div>
                 );
