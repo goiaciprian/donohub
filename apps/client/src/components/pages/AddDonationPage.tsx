@@ -11,7 +11,7 @@ export const AddDonationPage = () => {
       staticFirst={
         <h1 className="font-bold pt-5 text-3xl">{t('navigation.create')}</h1>
       }
-      dynamicComponent={<AddDonationForm />}
+      staticSecond={<AddDonationForm />}
     />
   );
 };
