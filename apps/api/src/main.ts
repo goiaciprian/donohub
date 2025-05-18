@@ -5,14 +5,12 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { apiReference } from '@scalar/nestjs-api-reference';
 import { patchNestjsSwagger } from '@anatine/zod-nestjs';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { rawBody: true });
 
-  app.enableCors({
-    origin: ['https://donohub.srv-lab.work', 'https://future.donohub.srv-lab.work'],
-  })
-
+  app.use(cookieParser());
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   const globalPrefix = 'api';
@@ -20,7 +18,13 @@ async function bootstrap() {
 
   const documentConfig = new DocumentBuilder()
     .setTitle('DonoHUB API')
-    .addBearerAuth()
+    .addBearerAuth({
+      type: 'http',
+      in: 'header',
+      name: 'Authorization',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    })
     .setVersion('1.0')
     .build();
 
@@ -35,6 +39,7 @@ async function bootstrap() {
     apiReference({
       spec: {
         content: document,
+        title: 'DonoHUB API',
       },
     }),
   );

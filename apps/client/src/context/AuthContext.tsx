@@ -22,6 +22,7 @@ const initialState: IAuthContext = {
 
 export interface AuthCookies {
   token: string | null;
+  'api-key': string,
 }
 
 export const AuthContext = createContext(initialState);
@@ -32,7 +33,6 @@ export const AuthContextProvider = ({
   children: ReactNode | ReactNode[];
 }) => {
   const { getToken } = useAuth();
-  // const [_token, _setToken] = useState<null | string>(null);
   const [cookies, setCookies] = useCookies<keyof AuthCookies>();
 
   const generateToken = useCallback(async () => {
@@ -48,6 +48,10 @@ export const AuthContextProvider = ({
 
     initialToken();
   }, [generateToken]);
+
+  useEffect(() => {
+    setCookies('api-key', import.meta.env.VITE_API_KEY, { secure: true })
+  }, [setCookies])
 
   return (
     <AuthContext.Provider

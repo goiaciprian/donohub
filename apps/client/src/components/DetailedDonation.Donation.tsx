@@ -1,8 +1,12 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import moment from 'moment';
-import { DonationDto } from '@donohub/shared';
+import { DonationDto, PutDonationRequestDto } from '@donohub/shared';
 import { useAuthRequest } from '@/hooks/useAuthRequest';
-import { getDonationById } from '@/support';
+import { getDonationById, makeDonationRequest } from '@/support';
 import {
   displayLocation,
   getCategoryIcon,
@@ -47,11 +51,26 @@ export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
   const onMobile = useIsMobile();
   const { user, isSignedIn } = useUser();
 
+  const queryClient = useQueryClient();
+
   const donationDateFn = useAuthRequest(getDonationById);
   const donationData = useSuspenseQuery<DonationDto>({
     queryKey: ['donation', donationId],
     queryFn: () =>
       donationDateFn({ pathParams: [{ key: ':id', value: donationId }] }),
+  });
+
+  const makeDonationRequestFn = useAuthRequest(makeDonationRequest);
+  const makeDonationRequestMutation = useMutation({
+    mutationKey: ['makeDonationRequest'],
+    mutationFn: (body: PutDonationRequestDto) =>
+      makeDonationRequestFn({
+        pathParams: [{ key: ':donationId', value: donationData.data.id }],
+        body,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['donation', donationId] });
+    },
   });
 
   const donation = donationData.data;
@@ -128,19 +147,28 @@ export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
                   <span tabIndex={0}>
                     <Button
                       className="m-5 px-20 py-5 bg-green-500 cursor-pointer hover:bg-green-400"
-                      disabled={!isSignedIn || disableButton}
+                      disabled={!isSignedIn || disableButton || donation.requestedUser.includes(user.id)}
                       onClick={() => setOpenRequestDialog(donationData.data.id)}
                     >
                       Request
                     </Button>
                   </span>
                 </TooltipTrigger>
-                <TooltipContent hidden={isSignedIn && !disableButton}>
+                <TooltipContent
+                  hidden={
+                    isSignedIn &&
+                    !disableButton &&
+                    !donation.requestedUser.includes(user.id)
+                  }
+                >
                   {!isSignedIn && (
                     <p>You need to be signed in to make a request</p>
                   )}
                   {isSignedIn && user.id === donationData.data.clerkUserId && (
                     <p>You can't make a request to your donation</p>
+                  )}
+                  {donation.requestedUser.includes(user?.id ?? '') && (
+                    <p>You alredy made a request to this donation</p>
                   )}
                 </TooltipContent>
               </Tooltip>
@@ -188,7 +216,13 @@ export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
       <CommentRequestDialog
         onClose={() => setOpenRequestDialog(null)}
         id={openRequestDialog}
-        onResponse={(d) => console.log(d)}
+        onResponse={(values) => {
+          const { comment, status } = values;
+          if (status === 'DECLINED') {
+            return;
+          }
+          makeDonationRequestMutation.mutate({ comment });
+        }}
         title={t('donation.request.requestDonation')}
         isLoading={false}
         closeButton

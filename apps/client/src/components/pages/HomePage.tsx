@@ -14,7 +14,7 @@ export const HomePage = () => {
   const getLatestDonationsFn = useAuthRequest(getDonations);
   usePrefetchQuery({
     queryKey: ['home', 'latest-donations'],
-    queryFn: () => getLatestDonationsFn({ params: { page: 1, size: 5 } }),
+    queryFn: () => getLatestDonationsFn({ params: { page: 1, size: 6 } }),
   });
 
   return (
