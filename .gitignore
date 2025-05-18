@@ -47,3 +47,5 @@ vitest.config.*.timestamp*
 
 **/.env
 docker-compose.yaml
+
+*.pem

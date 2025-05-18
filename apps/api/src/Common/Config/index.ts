@@ -8,7 +8,8 @@ export const ConfigurationSchema = z.object({
   supabaseUrl: z.string(),
   supabaseApiKey: z.string(),
   deleteWebhookKey: z.string(),
-  createWebhookKey:z.string(), 
+  createWebhookKey: z.string(),
+  apiKey: z.string(),
 });
 
 export type Configuration = z.infer<typeof ConfigurationSchema>;
@@ -25,6 +26,7 @@ const getConfig = (): Configuration => {
     supabaseApiKey: process.env.SUPABASE_API_KEY,
     createWebhookKey: process.env.CREATE_WEBHOOK_KEY,
     deleteWebhookKey: process.env.DELETE_WEBHOOK_KEY,
+    apiKey: process.env.API_KEY,
   };
 };
 

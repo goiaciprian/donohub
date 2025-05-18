@@ -127,5 +127,15 @@
   "tooltip": {
     "copy": "Copieaza link-ul",
     "clearFilters": "Sterge filtrele"
+  },
+  "leaving": {
+    "title": "Inainte sa pleci",
+    "confirmq": "O sa pierzi datele. Esti sigur ?",
+    "cancel": "Nu",
+    "submit": "Da"
+  },
+  "dialogRequest": {
+    "title": "Raspunde cererii",
+    "confirm": "Esti sigur ?"
   }
 }

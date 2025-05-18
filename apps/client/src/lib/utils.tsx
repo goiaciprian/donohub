@@ -51,3 +51,7 @@ export type DeepKeys<T> = T extends object
         : never;
     }[keyof T]
   : never;
+
+export function displayEnum(value: string) {
+  return value.split('_').map(word => `${word[0]}${word.slice(1).toLocaleLowerCase()}`).join(' ');
+}

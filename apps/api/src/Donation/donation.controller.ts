@@ -21,9 +21,12 @@ import {
   DonationDto,
   type DonationEvaluationType,
   PaginatedDonationDto,
+  PaginatedDonationRequestByUserDto,
+  PaginatedDonationUserRequestsDto,
   PaginatedEvaluatedDonationDto,
   PostDonationDto,
   PutDonationEvaluationDto,
+  PutDonationRequestDto,
   UpdateDonationDto,
 } from '@donohub/shared';
 import { type UserType } from '@/Auth/clerk.strategy';
@@ -218,5 +221,54 @@ export class DonationController {
       clerkId,
       pagination,
     );
+  }
+
+  @Put('request/create/:donationId')
+  @HasAuth()
+  async putDonationRequest(
+    @Param('donationId') donationId: string,
+    @Body() body: PutDonationRequestDto,
+    @CurrentUser() user: UserType,
+  ) {
+    await this.donationService.createDonationRequest(donationId, body, user);
+  }
+
+  @Put('request/resolve/:requestId/:status')
+  @ApiParam({
+    name: 'status',
+    required: true,
+    type: String,
+  })
+  @HasAuth()
+  async resolveDonationRequest(
+    @Param('requestId') requestId: string,
+    @Param('status') status: DonationEvaluationType,
+    @CurrentUser() user: UserType,
+  ) {
+    await this.donationService.resolveDonationRequest(requestId, status, user);
+  }
+
+  @Get('request/self')
+  @HasAuth()
+  @EndpointResponse({
+    type: PaginatedDonationRequestByUserDto,
+  })
+  async getUsersDonationRequests(
+    @Query() pagination: PaginationQueryDto,
+    @CurrentUser() user: UserType,
+  ): Promise<PaginatedDonationRequestByUserDto> {
+    return await this.donationService.getSelfDonationRequests(pagination, user);
+  }
+
+  @Get('request/donation')
+  @HasAuth()
+  @EndpointResponse({
+    type: PaginatedDonationUserRequestsDto,
+  })
+  async getDonationsRequests(
+    @Query() pagination: PaginationQueryDto,
+    @CurrentUser() user: UserType,
+  ) {
+    return await this.donationService.getDonationRequests(pagination, user);
   }
 }

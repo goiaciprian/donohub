@@ -12,16 +12,18 @@ import moment from 'moment';
 import { DATE_FORMAT } from '@/utils';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel';
-import { getCategoryIcon } from '@/lib/utils';
+import { cn, getCategoryIcon } from '@/lib/utils';
 import { Hash, MapPin, PhoneCall } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { useTranslation } from 'react-i18next';
-import { Separator } from '../ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { EditDonationDialog } from '../dialogs/EditDonationDialog';
 import { useState } from 'react';
 import { PaginatedEvaluatedDonationDto } from '@donohub/shared';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { DonationRequests } from './DonationRequest.Profile';
+import { ListSelfRequests } from './UserRequests.Profile';
 
 const UserDonations = () => {
   const { lang } = useParams();
@@ -52,7 +54,7 @@ const UserDonations = () => {
 
   return (
     <>
-      <Accordion type="multiple">
+      <Accordion type="multiple" className="flex flex-col gap-3 pb-10">
         {donationsData.items.map((d) => {
           const titleColor =
             d.status === 'NEEDS_WORK'
@@ -61,16 +63,28 @@ const UserDonations = () => {
                 ? 'text-green-500'
                 : undefined;
           return (
-            <AccordionItem key={d.id} value={d.id}>
+            <AccordionItem
+              key={d.id}
+              value={d.id}
+              className="border-2 px-8 rounded-lg border-b-4 last:border-b-4"
+            >
               <div className="w-full flex items-baseline">
                 <div className="flex-3/4">
-                  <AccordionTrigger className="cursor-pointer">
-                    <Alert className="border-0">
+                  <AccordionTrigger className="cursor-pointer pr-4 md:pr-0">
+                    <div>
+                      <h3 className={cn(titleColor, 'font-bold')}>
+                        {d.status}
+                      </h3>
+                      <h3 className={'font-semibold text-muted-foreground'}>
+                        {d.title} ({moment(d.createdAt).format(DATE_FORMAT)})
+                      </h3>
+                    </div>
+                    {/* <Alert className="border-0">
                       <AlertTitle className={titleColor}>{d.status}</AlertTitle>
                       <AlertDescription>
                         {d.title} ({moment(d.createdAt).format(DATE_FORMAT)})
                       </AlertDescription>
-                    </Alert>
+                    </Alert> */}
                   </AccordionTrigger>
                 </div>
                 <div className="flex-1 flex gap-2 justify-end">
@@ -98,7 +112,7 @@ const UserDonations = () => {
               </div>
               <AccordionContent>
                 <div className="flex flex-col gap-3 px-4">
-                  <p className="font-semibold">{d.description}</p>
+                  <p className="font-semibold max-w-[80%]">{d.description}</p>
                   <div className="flex flex-row">
                     <div className="flex-1 flex flex-col gap-2">
                       <div className="flex items-center gap-1">
@@ -147,7 +161,6 @@ const UserDonations = () => {
                     </div>
                   </div>
                   <div>
-                    <Separator />
                     <div className="pt-3 flex flex-col gap-3">
                       {d.evaluations.map((e) => {
                         return (
@@ -195,14 +208,45 @@ const UserDonations = () => {
 
 export const DonationsProfile = () => {
   return (
-    <Page
-      className="select-none"
-      staticFirst={
-        <div>
-          <h1 className="font-bold md:text-xl py-5">My donations</h1>
-        </div>
-      }
-      dynamicComponent={<UserDonations />}
-    />
+    <Tabs defaultValue="myDonations">
+      <Page
+        className="select-none"
+        staticFirst={
+          <TabsList className="bg-white my-8">
+            <TabsTrigger
+              className="md:text-xl cursor-pointer data-[state=active]:underline"
+              value="myDonations"
+            >
+              My donations
+            </TabsTrigger>
+            <TabsTrigger
+              className="md:text-xl cursor-pointer data-[state=active]:underline"
+              value="donationRequests"
+            >
+              Donation Requests
+            </TabsTrigger>
+            <TabsTrigger
+              className="md:text-xl cursor-pointer data-[state=active]:underline"
+              value="userRequests"
+            >
+              My Requests
+            </TabsTrigger>
+          </TabsList>
+        }
+        dynamicComponent={
+          <>
+            <TabsContent value="myDonations">
+              <UserDonations />
+            </TabsContent>
+            <TabsContent value="donationRequests">
+              <DonationRequests />
+            </TabsContent>
+            <TabsContent value="userRequests">
+              <ListSelfRequests />
+            </TabsContent>
+          </>
+        }
+      />
+    </Tabs>
   );
 };

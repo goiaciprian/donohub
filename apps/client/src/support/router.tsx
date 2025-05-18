@@ -112,7 +112,12 @@ export const router = createBrowserRouter([
             children: [
               {
                 path: 'donations',
-                element: <DonationsProfile />,
+                children: [
+                  {
+                    path: '',
+                    element: <DonationsProfile />,
+                  },
+                ],
               },
               {
                 path: 'comments',

@@ -76,5 +76,8 @@
       "inputs": ["production", "^production"]
     }
   },
-  "nxCloudId": "681efd6f897b13e904e82815"
+  "nxCloudId": "681efd6f897b13e904e82815",
+  "tui": {
+    "enabled": false
+  }
 }

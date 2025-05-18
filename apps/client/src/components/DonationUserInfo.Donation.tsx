@@ -9,7 +9,13 @@ import { useTranslation } from 'react-i18next';
 import { Tooltip, TooltipContent } from './ui/tooltip';
 import { TooltipTrigger } from '@radix-ui/react-tooltip';
 
-export const DonationUserInfo = ({ clerkUserId }: { clerkUserId: string }) => {
+export const DonationUserInfo = ({
+  clerkUserId,
+  avatarSize,
+}: {
+  clerkUserId: string;
+  avatarSize?: string;
+}) => {
   const { t } = useTranslation();
   const getUserInfoFn = useAuthRequest(getUserInfoByClerkId);
   const userInfoQuery = useQuery<UserInfoDto>({
@@ -38,7 +44,7 @@ export const DonationUserInfo = ({ clerkUserId }: { clerkUserId: string }) => {
   return (
     <div className="flex flex-col md:flex-row gap-3 items-center">
       <div>
-        <Avatar className="size-15">
+        <Avatar className={avatarSize || 'size-15'}>
           <AvatarImage src={userInfo.avatar} />
           <AvatarFallback>{userInfo.fullName}</AvatarFallback>
         </Avatar>
