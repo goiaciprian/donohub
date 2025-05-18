@@ -75,6 +75,7 @@ export class DonationDto extends createZodDto(
       updatedAt: true,
     }),
     attachements: z.array(z.string()),
+    requestedUser: z.array(z.string())
   }),
 ) {}
 
@@ -102,7 +103,7 @@ export const DonationEvaluateScheme = extendApi(
     userName: z.string(),
     approved: z.boolean(),
     comment: z.string().nullable(),
-    createdAt: z.date()
+    createdAt: z.date(),
   }),
 );
 
@@ -125,10 +126,69 @@ export class PaginatedEvaluatedDonationDto extends createZodDto(
   PaginatedEvaluatedDonationScheme,
 ) {}
 
-export const PutDonationEvaluationSchema = extendApi(z.object({
-  comment: z.string().optional().nullable()
-}));
+export const PutDonationEvaluationSchema = extendApi(
+  z.object({
+    comment: z.string().optional().nullable(),
+  }),
+);
 
-export class PutDonationEvaluationDto extends createZodDto(PutDonationEvaluationSchema) {};
+export class PutDonationEvaluationDto extends createZodDto(
+  PutDonationEvaluationSchema,
+) {}
 
-export class UpdateDonationDto extends createZodDto(PostDonationSchema.partial()) {};  
+export class UpdateDonationDto extends createZodDto(
+  PostDonationSchema.partial(),
+) {}
+
+export const DonationRequestByUserSchema = extendApi(
+  z.object({
+    id: z.string(),
+    createdAt: z.date(),
+    donationId: z.string(),
+    donationTitle: z.string(),
+    donationUserId: z.string(),
+    comment: z.string().nullable(),
+    status: DonationEvaluationSchema,
+  }),
+);
+
+export class PaginatedDonationRequestByUserDto extends createZodDto(
+  createPaginatedResponse(DonationRequestByUserSchema)
+) {}
+
+export const DonationUserRequestsSchema = extendApi(
+  z.object({
+    id: z.string(),
+    createdAt: z.date(),
+    donationId: z.string(),
+    donationName: z.string(),
+    userName: z.string(),
+    userImage: z.string(),
+    comment: z.string().nullable(),
+    status: DonationEvaluationSchema,
+  }),
+);
+
+export class PaginatedDonationUserRequestsDto extends createZodDto(
+  createPaginatedResponse(z.object({
+    id: z.string(),
+    title: z.string(),
+    requests: z.array(z.object({
+      id: z.string(),
+      createdAt: z.date(),
+      clerkUserId: z.string(),
+      userImage: z.string(),
+      userName: z.string(),
+      comment: z.string().nullable(),
+      status: DonationEvaluationSchema,
+    }))
+  })),
+) {}
+
+export class PutDonationRequestDto extends createZodDto(
+  extendApi(
+    z.object({
+      comment: z.string().nullable(),
+    }),
+  ),
+) {}

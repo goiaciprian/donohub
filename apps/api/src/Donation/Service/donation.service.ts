@@ -3,19 +3,24 @@ import { Prisma } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import {
   DonationDto,
+  DonationEvaluationSchema,
   DonationEvaluationType,
   DonationStatus,
   DonationStatusEnum,
   PaginatedDonationDto,
+  PaginatedDonationRequestByUserDto,
+  PaginatedDonationUserRequestsDto,
   PaginatedEvaluatedDonationDto,
   PostDonationDto,
   PutDonationEvaluationDto,
+  PutDonationRequestDto,
   UpdateDonationDto,
 } from '@donohub/shared';
 import { SupabaseService } from '@/Supabase/supabase.service';
 import { ImageService } from '@/Image/Service/image.service';
 import { PaginationQueryDto } from '@/Common/Dtos/pagination.dto';
 import { UserType } from '@/Auth/clerk.strategy';
+import { SseService } from '@/Common/SSE/sse.service';
 
 @Injectable()
 export class DonationService {
@@ -23,6 +28,7 @@ export class DonationService {
     private readonly prismaService: PrismaService,
     private readonly supabaseService: SupabaseService,
     private readonly imageService: ImageService,
+    private readonly sseService: SseService,
   ) {}
 
   async createDonation(
@@ -63,6 +69,7 @@ export class DonationService {
       status: createdDonation.status as unknown as DonationStatusEnum,
       category: createdDonation.category.name,
       attachements: attachementsUrls,
+      requestedUser: [],
       location: {
         city: createdDonation.location.city,
         county: createdDonation.location.county,
@@ -155,6 +162,11 @@ export class DonationService {
             filename: true,
           },
         },
+        DonationRequest: {
+          select: {
+            clerkUserId: true,
+          },
+        },
       },
     });
     const linkAttachements = await Promise.all(
@@ -162,8 +174,11 @@ export class DonationService {
         async (img) => await this.supabaseService.getPublicUrl(img.filename),
       ),
     );
+
+    const { DonationRequest, ...rest } = donation;
+
     return {
-      ...donation,
+      ...rest,
       attachements: linkAttachements,
       clerkUserId: donation.clerkUserId,
       category: donation.category.name,
@@ -175,6 +190,7 @@ export class DonationService {
         postalCode: donation.location.postal_code,
         street: donation.location.street,
       },
+      requestedUser: DonationRequest.map((r) => r.clerkUserId),
     };
   }
 
@@ -302,7 +318,7 @@ export class DonationService {
     evaluationDto: PutDonationEvaluationDto,
     user: UserType,
   ) {
-    return await this.prismaService.$transaction(async (tx) => {
+    const donation = await this.prismaService.$transaction(async (tx) => {
       const isAccepted = status === 'ACCEPTED';
       await tx.donationEvaluation.create({
         data: {
@@ -318,7 +334,7 @@ export class DonationService {
           },
         },
       });
-      await tx.donation.update({
+      return await tx.donation.update({
         where: { id: donationId },
         data: {
           status: isAccepted
@@ -327,6 +343,14 @@ export class DonationService {
         },
       });
     });
+
+    this.sseService.push$({
+      clerkId: donation.categoryId,
+      message: `Your donation: ${donation.title} was reviewed with status: ${status}`,
+      title: 'Donation evaluated',
+    });
+
+    return donation;
   }
 
   async getUnlistedDonations(
@@ -460,6 +484,229 @@ export class DonationService {
           };
         }),
       ),
+    };
+  }
+
+  async createDonationRequest(
+    donationId: string,
+    body: PutDonationRequestDto,
+    user: UserType,
+  ) {
+    const donation = await this.prismaService.donation.findFirstOrThrow({
+      where: { id: donationId },
+    });
+
+    await this.prismaService.donationRequest.create({
+      data: {
+        clerkUserId: user.id,
+        userImage: user.imageUrl,
+        userName: `${user.firstName} ${user.lastName}`,
+        comment: body.comment,
+        donationId,
+      },
+    });
+
+    this.sseService.push$({
+      clerkId: donation.clerkUserId,
+      message: `User ${user.firstName} ${user.lastName} made a request for ${donation.title}`,
+      title: `Donation request`,
+    });
+  }
+
+  async resolveDonationRequest(
+    requestId: string,
+    status: DonationEvaluationType,
+    user: UserType,
+  ) {
+    const [dr, delcinedUsers] = await this.prismaService.$transaction(
+      async (tx) => {
+        const dr = await tx.donationRequest.update({
+          where: {
+            id: requestId,
+            donation: {
+              clerkUserId: user.id,
+            },
+          },
+          data: {
+            status,
+          },
+          select: {
+            donation: {
+              select: {
+                title: true,
+                id: true,
+              },
+            },
+            clerkUserId: true,
+            id: true,
+          },
+        });
+
+        let delcinedUsers: Prisma.DonationRequestGetPayload<{
+          select: {
+            donation: {
+              select: {
+                title: true;
+              };
+            };
+            clerkUserId: true;
+          };
+        }>[] = [];
+
+        if (status === 'ACCEPTED') {
+          delcinedUsers = await tx.donationRequest.updateManyAndReturn({
+            where: {
+              donation: {
+                clerkUserId: user.id,
+                id: dr.donation.id,
+              },
+              id: {
+                notIn: [dr.id],
+              },
+            },
+            data: {
+              status: DonationEvaluationSchema.Enum.DECLINED,
+            },
+            select: {
+              donation: {
+                select: {
+                  title: true,
+                },
+              },
+              clerkUserId: true,
+            },
+          });
+        }
+
+        return [dr, delcinedUsers];
+      },
+    );
+
+    this.sseService.push$({
+      clerkId: dr.clerkUserId,
+      message: `Your request for ${dr.donation.title} has been ${status}`,
+      title: 'Donation request',
+    });
+
+    delcinedUsers.map((du) =>
+      this.sseService.push$({
+        clerkId: du.clerkUserId,
+        message: `Your request for ${du.donation.title} has been DECLINED`,
+        title: 'Donation request',
+      }),
+    );
+  }
+
+  async getSelfDonationRequests(
+    pagination: PaginationQueryDto,
+    user: UserType,
+  ): Promise<PaginatedDonationRequestByUserDto> {
+    const { page, size } = pagination;
+
+    const skip = (page - 1) * size;
+
+    const [count, items] = await this.prismaService.$transaction(async (tx) => {
+      return await Promise.all([
+        tx.donationRequest.count({ where: { clerkUserId: user.id } }),
+        tx.donationRequest.findMany({
+          take: size,
+          skip,
+          where: { clerkUserId: user.id },
+          select: {
+            id: true,
+            createdAt: true,
+            comment: true,
+            status: true,
+            donation: { select: { id: true, title: true, clerkUserId: true } },
+          },
+        }),
+      ]);
+    });
+
+    const totalPages = Math.ceil(count / size);
+    return {
+      hasNext: page < totalPages,
+      hasPrev: page > 1,
+      size,
+      page,
+      totalItems: count,
+      totalPages,
+      items: items.map((dr) => ({
+        comment: dr.comment,
+        createdAt: dr.createdAt,
+        donationId: dr.donation.id,
+        donationTitle: dr.donation.title,
+        donationUserId: dr.donation.clerkUserId,
+        id: dr.id,
+        status: dr.status as DonationEvaluationType,
+      })),
+    };
+  }
+
+  async getDonationRequests(
+    pagination: PaginationQueryDto,
+    user: UserType,
+  ): Promise<PaginatedDonationUserRequestsDto> {
+    const { page, size } = pagination;
+
+    const skip = (page - 1) * size;
+
+    const [count, items] = await this.prismaService.$transaction(async (tx) => {
+      return await Promise.all([
+        tx.donationRequest.count({
+          where: { donation: { clerkUserId: user.id } },
+        }),
+        tx.donation.findMany({
+          take: size,
+          skip,
+          where: {
+            clerkUserId: user.id,
+            DonationRequest: {
+              some: {},
+            },
+          },
+          select: {
+            id: true,
+            title: true,
+            DonationRequest: {
+              select: {
+                id: true,
+                clerkUserId: true,
+                userImage: true,
+                userName: true,
+                comment: true,
+                status: true,
+                createdAt: true,
+              },
+            },
+          },
+        }),
+      ]);
+    });
+
+    const totalPages = Math.ceil(count / size);
+    return {
+      hasNext: page < totalPages,
+      hasPrev: page > 1,
+      page,
+      size,
+      totalPages,
+      totalItems: count,
+      items: items.map((dr) => {
+        const { DonationRequest, ...rest } = dr;
+        return {
+          ...rest,
+          requests: DonationRequest.map((r) => ({
+            id: r.id,
+            createdAt: r.createdAt,
+            status: r.status as DonationEvaluationType,
+            comment: r.comment,
+            clerkUserId: r.clerkUserId,
+            userName: r.userName,
+            userImage: r.userImage,
+          })),
+        };
+      }),
     };
   }
 

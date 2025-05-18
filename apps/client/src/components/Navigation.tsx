@@ -78,7 +78,7 @@ export const Navigation = () => {
               >
                 <UserButton.MenuItems>
                   <UserButton.Action
-                    label={'Donations'}
+                    label={'My Donations'}
                     labelIcon={<Layers size={14} color="#c4c4c5" />}
                     onClick={() =>
                       navigate(`/${lang}/user/donations`, {

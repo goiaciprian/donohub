@@ -34,7 +34,10 @@ const createRequest = <TResp, TParams, TBody, TUrl extends string>(
       }, url as string),
       data: params.body,
       params: params.params,
-      headers: { Authorization: `Bearer ${accessToken}` },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'api-key': import.meta.env.VITE_API_KEY,
+      },
     });
   };
 };

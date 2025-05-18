@@ -137,6 +137,10 @@ interface Resources {
       "confirmq": "You will lose all data. Are you sure ?",
       "cancel": "No",
       "submit": "Yes"
+    },
+    "dialogRequest": {
+      "title": "Responde to request",
+      "confirm": "Are you sure ?"
     }
   }
 }

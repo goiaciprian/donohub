@@ -5,7 +5,7 @@ import { LoggerMiddleware } from '../Core/Middleware/logger.middleware';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigurationSchema, load } from '@/Common/Config';
 import { AuthModule } from '@/Auth/auth.module';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from '@anatine/zod-nestjs';
 import { HealthModule } from '@/Health/health.module';
 import { PrismaModule } from '@/Prisma/prisma.module';
@@ -19,6 +19,8 @@ import { memoryStorage } from 'multer';
 import { LocationModule } from '@/Location/location.module';
 import { UserInfoModule } from '@/UserInfo/userinfo.module';
 import { CommentsModule } from '@/Comments/comments.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ApiKeyGuard } from '@/Common/Guards/api-key.guard';
 
 @Module({
   imports: [
@@ -43,6 +45,14 @@ import { CommentsModule } from '@/Comments/comments.module';
     MulterModule.register({
       storage: memoryStorage,
     }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          limit: 100,
+          ttl: 30,
+        },
+      ],
+    }),
 
     GeneralModule,
     DonationModule,
@@ -56,6 +66,14 @@ import { CommentsModule } from '@/Comments/comments.module';
       provide: APP_PIPE,
       useClass: ZodValidationPipe,
     },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ApiKeyGuard,
+    }
   ],
 })
 export class AppModule implements NestModule {

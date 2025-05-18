@@ -6,9 +6,12 @@ import {
   DonationDto,
   LocationDto,
   PaginatedDonationDto,
+  PaginatedDonationRequestByUserDto,
+  PaginatedDonationUserRequestsDto,
   PaginatedEvaluatedDonationDto,
   PostLocationDto,
   PutDonationEvaluationDto,
+  PutDonationRequestDto,
   UpdateDonationDto,
   UserInfoDto,
 } from '@donohub/shared';
@@ -79,5 +82,21 @@ export const updateDonation = withRequest('/api/donations/update/:id')<
   undefined,
   FormData
 >('PUT');
+
+export const makeDonationRequest = withRequest(
+  '/api/donations/request/create/:donationId',
+)<void, undefined, PutDonationRequestDto>('PUT');
+
+export const getSelfDonationRequests = withRequest(
+  '/api/donations/request/self',
+)<PaginatedDonationRequestByUserDto, { page: number; size: number }>('GET');
+
+export const getDonationRequests = withRequest(
+  '/api/donations/request/donation',
+)<PaginatedDonationUserRequestsDto, { page: number; size: number }>('GET');
+
+export const resolveDonationRequest = withRequest(
+  '/api/donations/request/resolve/:requestId/:status',
+)<void>('PUT');
 
 export * from './router';
