@@ -3,7 +3,7 @@
   "build": {
     "builder": "NIXPACKS",
     "watchPatterns": ["/apps/api/*"],
-    "buildCommand": "npx nx run @donohub/api:build"
+    "buildCommand": "npx nx run @donohub/api:build --skip-nx-cache"
   },
   "deploy": {
     "preDeployCommand": "npx nx run @donohub/prisma:migrate",

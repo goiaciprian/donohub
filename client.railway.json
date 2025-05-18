@@ -3,7 +3,7 @@
   "build": {
     "builder": "NIXPACKS",
     "watchPatterns": ["/apps/client/*"],
-    "buildCommand": "npx nx run @donohub/client:build"
+    "buildCommand": "npx nx run @donohub/client:build --skip-nx-cache"
   },
   "deploy": {
     "startCommand": "npx nx run @donohub/client:preview",
