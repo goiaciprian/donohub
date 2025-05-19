@@ -7,6 +7,7 @@ import {
   DonationEvaluationType,
   DonationStatus,
   DonationStatusEnum,
+  PaginatedDeliveryDonationDto,
   PaginatedDonationDto,
   PaginatedDonationRequestByUserDto,
   PaginatedDonationUserRequestsDto,
@@ -554,6 +555,14 @@ export class DonationService {
         }>[] = [];
 
         if (status === 'ACCEPTED') {
+          await tx.donation.update({
+            where: {
+              id: dr.donation.id,
+            },
+            data: {
+              status: DonationStatus.Enum.DELIVERY,
+            },
+          });
           delcinedUsers = await tx.donationRequest.updateManyAndReturn({
             where: {
               donation: {
@@ -654,7 +663,7 @@ export class DonationService {
     const [count, items] = await this.prismaService.$transaction(async (tx) => {
       return await Promise.all([
         tx.donationRequest.count({
-          where: { donation: { clerkUserId: user.id } },
+          where: { donation: { clerkUserId: user.id }, status: 'IN_PROGRESS' },
         }),
         tx.donation.findMany({
           take: size,
@@ -662,7 +671,9 @@ export class DonationService {
           where: {
             clerkUserId: user.id,
             DonationRequest: {
-              some: {},
+              some: {
+                status: 'IN_PROGRESS',
+              },
             },
           },
           select: {
@@ -708,6 +719,129 @@ export class DonationService {
         };
       }),
     };
+  }
+
+  async getUnderrDeliveryDonations(
+    pagination: PaginationQueryDto,
+    user: UserType,
+  ): Promise<PaginatedDeliveryDonationDto> {
+    const { page, size } = pagination;
+
+    const take = size;
+    const skip = (page - 1) * size;
+
+    const [count, items] = await this.prismaService.$transaction(async (tx) => {
+      return await Promise.all([
+        tx.donation.count({
+          where: {
+            OR: [
+              {
+                clerkUserId: user.id,
+                status: 'DELIVERY',
+              },
+              {
+                status: 'DELIVERY',
+                DonationRequest: {
+                  some: {
+                    clerkUserId: user.id,
+                    status: 'ACCEPTED',
+                  },
+                },
+              },
+            ],
+          },
+        }),
+        tx.donation.findMany({
+          take,
+          skip,
+          where: {
+            OR: [
+              {
+                clerkUserId: user.id,
+                status: 'DELIVERY',
+              },
+              {
+                status: 'DELIVERY',
+                DonationRequest: {
+                  some: {
+                    clerkUserId: user.id,
+                    status: 'ACCEPTED',
+                  },
+                },
+              },
+            ],
+          },
+          select: {
+            title: true,
+            id: true,
+            clerkUserId: true,
+            status: true,
+            DonationRequest: {
+              select: {
+                clerkUserId: true,
+                comment: true,
+              },
+            },
+          },
+        }),
+      ]);
+    });
+
+    const totalPages = Math.ceil(count / size);
+    return {
+      hasNext: page < totalPages,
+      hasPrev: page > 1,
+      page,
+      size,
+      totalItems: count,
+      totalPages,
+      items: items.map((d) => ({
+        id: d.id,
+        requestComment: d.DonationRequest[0].comment,
+        requestUserId: d.DonationRequest[0].clerkUserId,
+        title: d.title,
+        clerkUserId: d.clerkUserId,
+        status: d.status as DonationStatusEnum,
+      })),
+    };
+  }
+
+  async finishAndReviewDonation(donationId: string, review: number) {
+    const donation = await this.prismaService.donation.findFirstOrThrow({
+      where: {
+        id: donationId,
+      },
+    });
+
+    await this.prismaService.$transaction(async (tx) => {
+      await tx.donation.update({
+        where: {
+          id: donationId,
+        },
+        data: {
+          status: 'RESOLVED',
+        },
+      });
+
+      const userInfo = await tx.userInfo.findFirstOrThrow({
+        where: {
+          clerkUserId: donation.clerkUserId,
+        },
+      });
+
+      await tx.userInfo.update({
+        where: {
+          id: userInfo.id,
+        },
+        data: {
+          rating: new Prisma.Decimal(
+            (userInfo.rating.toNumber() * userInfo.totalReview + review) /
+              (userInfo.totalReview + 1),
+          ),
+          totalReview: userInfo.totalReview + 1,
+        },
+      });
+    });
   }
 
   private async map(

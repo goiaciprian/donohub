@@ -18,8 +18,10 @@ import { CurrentUser } from '@/Common/Decorators/user.decorator';
 import { PaginationQueryDto } from '@/Common/Dtos/pagination.dto';
 import { EndpointResponse } from '@/Common/Decorators/endpointResponse.decorator';
 import {
+  CompleteDonationReviewPost,
   DonationDto,
   type DonationEvaluationType,
+  PaginatedDeliveryDonationDto,
   PaginatedDonationDto,
   PaginatedDonationRequestByUserDto,
   PaginatedDonationUserRequestsDto,
@@ -270,5 +272,29 @@ export class DonationController {
     @CurrentUser() user: UserType,
   ) {
     return await this.donationService.getDonationRequests(pagination, user);
+  }
+
+  @Get('delivery')
+  @HasAuth()
+  @EndpointResponse({
+    type: PaginatedDeliveryDonationDto,
+  })
+  async getDonationDelivery(
+    @Query() pagination: PaginationQueryDto,
+    @CurrentUser() user: UserType,
+  ) {
+    return await this.donationService.getUnderrDeliveryDonations(
+      pagination,
+      user,
+    );
+  }
+
+  @Post('complete/:donationId')
+  @HasAuth()
+  async completeDonation(
+    @Param('donationId') donationId: string,
+    @Body() body: CompleteDonationReviewPost,
+  ) {
+    await this.donationService.finishAndReviewDonation(donationId, body.rating);
   }
 }
