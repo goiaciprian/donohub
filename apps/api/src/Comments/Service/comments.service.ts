@@ -22,7 +22,7 @@ export class CommentsService {
 
     const donationPromise = this.prismaService.donation.findFirstOrThrow({
       where: { id: donationId },
-      select: { clerkUserId: true },
+      select: { clerkUserId: true, id: true },
     });
 
     const comment = await this.prismaService.comment.create({
@@ -39,10 +39,14 @@ export class CommentsService {
       },
     });
 
+    const d = await donationPromise;
+
     this.sseService.push$({
       title: 'Comment',
       message: `Received a comment from ${name}`,
-      clerkId: (await donationPromise)?.clerkUserId,
+      clerkId: d.clerkUserId,
+      donationId: d.id,
+      type: 'comment',
     });
 
     return this.map(comment);

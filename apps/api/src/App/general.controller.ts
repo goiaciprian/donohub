@@ -28,7 +28,7 @@ export class GeneralController {
       this.sseService.observable$.pipe(
         filter(({ data }) => data.clerkId === clerkId),
         map(({ data }) => ({
-          data: { message: data.message, title: data.title },
+          data: { message: data.message, title: data.title, donationId: data.donationId, type: data.type },
         })),
       ),
     );

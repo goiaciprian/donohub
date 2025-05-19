@@ -349,6 +349,8 @@ export class DonationService {
       clerkId: donation.categoryId,
       message: `Your donation: ${donation.title} was reviewed with status: ${status}`,
       title: 'Donation evaluated',
+      donationId: donation.id,
+      type: 'evaluation',
     });
 
     return donation;
@@ -511,6 +513,8 @@ export class DonationService {
       clerkId: donation.clerkUserId,
       message: `User ${user.firstName} ${user.lastName} made a request for ${donation.title}`,
       title: `Donation request`,
+      donationId: donation.id,
+      type: 'createRequest'
     });
   }
 
@@ -580,6 +584,7 @@ export class DonationService {
               donation: {
                 select: {
                   title: true,
+                  id: true,
                 },
               },
               clerkUserId: true,
@@ -595,6 +600,8 @@ export class DonationService {
       clerkId: dr.clerkUserId,
       message: `Your request for ${dr.donation.title} has been ${status}`,
       title: 'Donation request',
+      donationId: dr.donation.id,
+      type: 'requestResolved'
     });
 
     delcinedUsers.map((du) =>
@@ -602,6 +609,8 @@ export class DonationService {
         clerkId: du.clerkUserId,
         message: `Your request for ${du.donation.title} has been DECLINED`,
         title: 'Donation request',
+        donationId: dr.donation.id,
+        type: 'requestResolved',
       }),
     );
   }
