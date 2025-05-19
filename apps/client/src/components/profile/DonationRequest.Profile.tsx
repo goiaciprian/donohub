@@ -1,6 +1,10 @@
 import { useAuthRequest } from '@/hooks/useAuthRequest';
 import { getDonationRequests, resolveDonationRequest } from '@/support';
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -18,6 +22,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { DonationEvaluationType } from '@donohub/shared';
 import { PageConfirmDialog } from '../dialogs/PageConfirmDialog';
 import { displayEnum } from '@/lib/utils';
+import { Pagination } from '../Pagination';
 
 export const DonationRequests = () => {
   const navigate = useNavigate();
@@ -55,7 +60,8 @@ export const DonationRequests = () => {
           { key: ':status', value: status },
         ],
       }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['dontionsUserRequests'] })
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ['dontionsUserRequests'] }),
   });
 
   const donationsRequests = getDonationUserRequestsQuery.data;
@@ -83,7 +89,7 @@ export const DonationRequests = () => {
               <AccordionTrigger className="cursor-pointer">
                 <div>
                   <h3
-                    className="font-bold md:text-xl underline"
+                    className="font-semibold md:text-xl underline"
                     onClick={() =>
                       navigate(`/${lang}/donations/${r.id}`, {
                         viewTransition: true,
@@ -157,18 +163,25 @@ export const DonationRequests = () => {
           );
         })}
       </Accordion>
+      <Pagination
+        hasNext={donationsRequests.hasNext}
+        hasPrev={donationsRequests.hasPrev}
+        page={donationsRequests.page}
+        totalPages={donationsRequests.totalPages}
+        update={(page) => setPagination((prev) => ({ ...prev, page }))}
+        className={'mb-5'}
+      />
       <PageConfirmDialog
         title={t('dialogRequest.title')}
         description={t('dialogRequest.confirm')}
         onCancel={() => setSelectedItem({ id: null, state: null })}
         open={!!(selectedItem.id && selectedItem.state)}
         onSubmit={() => {
-          if(selectedItem.id && selectedItem.state) {
+          if (selectedItem.id && selectedItem.state) {
             resolveDonationRequestMutation.mutate({
               id: selectedItem.id,
-              status: selectedItem.state
-            })
-
+              status: selectedItem.state,
+            });
           }
           setSelectedItem({ id: null, state: null });
         }}

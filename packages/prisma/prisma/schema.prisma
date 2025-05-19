@@ -38,6 +38,7 @@ model UserInfo {
     id          String  @id @default(uuid())
     clerkUserId String  @map("clerk_user_id")
     rating      Decimal
+    totalReview Int     @map("total_review") @default(0)
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")

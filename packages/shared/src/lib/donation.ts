@@ -12,6 +12,7 @@ export const DonationStatus = extendApi(
     'RESOLVED',
     'NEEDS_WORK',
     'USER_UPDATED',
+    'DELIVERY',
   ]),
 );
 
@@ -75,7 +76,7 @@ export class DonationDto extends createZodDto(
       updatedAt: true,
     }),
     attachements: z.array(z.string()),
-    requestedUser: z.array(z.string())
+    requestedUser: z.array(z.string()),
   }),
 ) {}
 
@@ -153,7 +154,7 @@ export const DonationRequestByUserSchema = extendApi(
 );
 
 export class PaginatedDonationRequestByUserDto extends createZodDto(
-  createPaginatedResponse(DonationRequestByUserSchema)
+  createPaginatedResponse(DonationRequestByUserSchema),
 ) {}
 
 export const DonationUserRequestsSchema = extendApi(
@@ -170,25 +171,52 @@ export const DonationUserRequestsSchema = extendApi(
 );
 
 export class PaginatedDonationUserRequestsDto extends createZodDto(
-  createPaginatedResponse(z.object({
-    id: z.string(),
-    title: z.string(),
-    requests: z.array(z.object({
+  createPaginatedResponse(
+    z.object({
       id: z.string(),
-      createdAt: z.date(),
-      clerkUserId: z.string(),
-      userImage: z.string(),
-      userName: z.string(),
-      comment: z.string().nullable(),
-      status: DonationEvaluationSchema,
-    }))
-  })),
+      title: z.string(),
+      requests: z.array(
+        z.object({
+          id: z.string(),
+          createdAt: z.date(),
+          clerkUserId: z.string(),
+          userImage: z.string(),
+          userName: z.string(),
+          comment: z.string().nullable(),
+          status: DonationEvaluationSchema,
+        }),
+      ),
+    }),
+  ),
 ) {}
 
 export class PutDonationRequestDto extends createZodDto(
   extendApi(
     z.object({
       comment: z.string().nullable(),
+    }),
+  ),
+) {}
+
+export class PaginatedDeliveryDonationDto extends createZodDto(
+  createPaginatedResponse(
+    extendApi(
+      z.object({
+        title: z.string(),
+        id: z.string(),
+        clerkUserId: z.string(),
+        requestUserId: z.string(),
+        requestComment: z.string().nullable(),
+        status: DonationStatus,
+      }),
+    ),
+  ),
+) {}
+
+export class CompleteDonationReviewPost extends createZodDto(
+  extendApi(
+    z.object({
+      rating: z.number(),
     }),
   ),
 ) {}

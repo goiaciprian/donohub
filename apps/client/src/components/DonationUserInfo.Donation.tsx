@@ -39,7 +39,11 @@ export const DonationUserInfo = ({
   }
 
   const userInfo = userInfoQuery.data;
-  const ratingArr = [0].fill(1, 0, Math.floor(userInfo.rating ?? 0));
+  const ratingArr = [0, 0, 0, 0, 0].fill(
+    1,
+    0,
+    Math.floor(userInfo.rating ?? 0),
+  );
 
   return (
     <div className="flex flex-col md:flex-row gap-3 items-center">
@@ -71,9 +75,7 @@ export const DonationUserInfo = ({
               </div>
             </TooltipTrigger>
             <TooltipContent>
-              <p>
-                {ratingArr.reduce((total, value) => total + value, 0)} rating
-              </p>
+              <p>{userInfo.rating} rating</p>
             </TooltipContent>
           </Tooltip>
         </h4>
