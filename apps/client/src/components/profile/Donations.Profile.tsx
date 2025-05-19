@@ -14,7 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel';
 import { cn, getCategoryIcon } from '@/lib/utils';
 import { Hash, MapPin, PhoneCall } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -24,11 +24,15 @@ import { PaginatedEvaluatedDonationDto } from '@donohub/shared';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { DonationRequests } from './DonationRequest.Profile';
 import { ListSelfRequests } from './UserRequests.Profile';
+import { UnderDelivryProfileDonations } from './DeliveryDonations.Profile';
+import { Pagination } from '../Pagination';
 
 const UserDonations = () => {
   const { lang } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation(['translation', 'categories']);
+
+  const [pagination, setPagination] = useState({ page: 1, size: 10 });
 
   const [donation, setDonation] = useState<
     PaginatedEvaluatedDonationDto['items'][number] | null
@@ -36,8 +40,11 @@ const UserDonations = () => {
 
   const selfDonationsFn = useAuthRequest(selfDonations);
   const selfDonationsQuery = useSuspenseQuery({
-    queryKey: ['selfDonations'],
-    queryFn: () => selfDonationsFn({ params: { page: 1, size: 10 } }),
+    queryKey: ['selfDonations', pagination],
+    queryFn: () =>
+      selfDonationsFn({
+        params: { page: pagination.page, size: pagination.size },
+      }),
   });
 
   const donationsData = selfDonationsQuery.data;
@@ -198,6 +205,14 @@ const UserDonations = () => {
           );
         })}
       </Accordion>
+      <Pagination
+        hasNext={donationsData.hasNext}
+        hasPrev={donationsData.hasPrev}
+        page={donationsData.page}
+        totalPages={donationsData.totalPages}
+        update={(page) => setPagination((prev) => ({ ...prev, page }))}
+        className="mb-5"
+      />
       <EditDonationDialog
         donation={donation}
         onClose={() => setDonation(null)}
@@ -207,8 +222,18 @@ const UserDonations = () => {
 };
 
 export const DonationsProfile = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   return (
-    <Tabs defaultValue="myDonations">
+    <Tabs
+      value={searchParams.get('t') || 'myDonations'}
+      onValueChange={(t) =>
+        setSearchParams((prev) => {
+          prev.set('t', t);
+          return prev;
+        })
+      }
+    >
       <Page
         className="select-none"
         staticFirst={
@@ -231,6 +256,12 @@ export const DonationsProfile = () => {
             >
               My Requests
             </TabsTrigger>
+            <TabsTrigger
+              className="md:text-xl cursor-pointer data-[state=active]:underline"
+              value="delivery"
+            >
+              Under Delivery
+            </TabsTrigger>
           </TabsList>
         }
         dynamicComponent={
@@ -243,6 +274,9 @@ export const DonationsProfile = () => {
             </TabsContent>
             <TabsContent value="userRequests">
               <ListSelfRequests />
+            </TabsContent>
+            <TabsContent value="delivery">
+              <UnderDelivryProfileDonations />
             </TabsContent>
           </>
         }

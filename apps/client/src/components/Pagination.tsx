@@ -7,10 +7,13 @@ import {
   PaginationPrevious,
   Pagination as SPagination,
 } from './ui/pagination';
+import { HTMLProps } from 'react';
+import { cn } from '@/lib/utils';
 
 interface PaginationProps
   extends Omit<PaginationBaseDto, 'size' | 'totalItems'> {
   update: (page: number) => void;
+  className?: HTMLProps<HTMLElement>['className'];
 }
 
 export const Pagination = ({
@@ -19,10 +22,11 @@ export const Pagination = ({
   page,
   totalPages,
   update,
+  className,
 }: PaginationProps) => {
   return (
     <SPagination className="select-none">
-      <PaginationContent className="gap-2">
+      <PaginationContent className={cn('gap-2', className)}>
         <PaginationItem
           onClick={() => update(page - 1)}
           className={`cursor-pointer ${hasPrev ? undefined : 'opacity-0'}`}

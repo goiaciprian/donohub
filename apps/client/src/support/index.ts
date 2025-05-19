@@ -3,8 +3,10 @@ import {
   CommentDto,
   CommentPaginatedDto,
   CommentPostDto,
+  CompleteDonationReviewPost,
   DonationDto,
   LocationDto,
+  PaginatedDeliveryDonationDto,
   PaginatedDonationDto,
   PaginatedDonationRequestByUserDto,
   PaginatedDonationUserRequestsDto,
@@ -98,5 +100,13 @@ export const getDonationRequests = withRequest(
 export const resolveDonationRequest = withRequest(
   '/api/donations/request/resolve/:requestId/:status',
 )<void>('PUT');
+
+export const getDeliveryDonationsRequest = withRequest(
+  '/api/donations/delivery',
+)<PaginatedDeliveryDonationDto, { page: number; size: number }>('GET');
+
+export const reviewDonationRequest = withRequest(
+  '/api/donations/complete/:donationId',
+)<undefined, undefined, CompleteDonationReviewPost>('POST');
 
 export * from './router';
