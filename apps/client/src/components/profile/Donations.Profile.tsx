@@ -237,7 +237,7 @@ export const DonationsProfile = () => {
       <Page
         className="select-none"
         staticFirst={
-          <TabsList className="bg-white my-8">
+          <TabsList className="bg-white my-8 flex flex-wrap ">
             <TabsTrigger
               className="md:text-xl cursor-pointer data-[state=active]:underline"
               value="myDonations"
