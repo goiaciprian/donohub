@@ -1,4 +1,4 @@
-import { useUser } from '@clerk/clerk-react';
+import { ClerkLoaded, useUser } from '@clerk/clerk-react';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -17,5 +17,5 @@ export const Protect = ({ children }: ProtectProps) => {
     }
   }, [isSignedIn, navigate, isLoaded, lang]);
 
-  return children;
+  return <ClerkLoaded>{children}</ClerkLoaded>;
 };

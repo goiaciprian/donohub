@@ -1,5 +1,4 @@
 import { useAuthRequest } from '@/hooks/useAuthRequest';
-import { Page } from '../pages/Page';
 import { getSelfDonationRequests } from '@/support';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Suspense, useState } from 'react';
@@ -14,14 +13,21 @@ import { DATE_FORMAT } from '@/utils';
 import moment from 'moment';
 import { Separator } from '../ui/separator';
 import { DonationUserInfo } from '../DonationUserInfo.Donation';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { displayEnum } from '@/lib/utils';
+import { Pagination } from '../Pagination';
 
 export const ListSelfRequests = () => {
   const { t } = useTranslation();
   const [{ page, size }, setPagination] = useState({ page: 1, size: 20 });
   const { lang } = useParams();
   const navigate = useNavigate();
+
+  const [searchParams, setSerachParams] = useSearchParams();
+
+  const [openedTabs, setOpenedTabs] = useState<string[]>(
+    searchParams.get('i')?.split(',') || [],
+  );
 
   const getSelfRequestsFn = useAuthRequest(getSelfDonationRequests);
   const getSelfRequestsQuery = useSuspenseQuery({
@@ -43,7 +49,22 @@ export const ListSelfRequests = () => {
 
   return (
     <div>
-      <Accordion type="multiple" className="flex flex-col gap-3 pb-10">
+      <Accordion
+        type="multiple"
+        className="flex flex-col gap-3 pb-10"
+        value={openedTabs}
+        onValueChange={(v) => {
+          setOpenedTabs(v);
+          setSerachParams((prev) => {
+            if (v.length === 0) {
+              prev.delete('i');
+            } else {
+              prev.set('i', v.join());
+            }
+            return prev;
+          });
+        }}
+      >
         {selfDonations.items.map((r) => {
           return (
             <AccordionItem
@@ -86,6 +107,13 @@ export const ListSelfRequests = () => {
           );
         })}
       </Accordion>
+      <Pagination
+        hasNext={selfDonations.hasNext}
+        hasPrev={selfDonations.hasPrev}
+        page={selfDonations.page}
+        totalPages={selfDonations.totalPages}
+        update={(page) => setPagination((prev) => ({ ...prev, page }))}
+      />
     </div>
   );
 };

@@ -27,7 +27,7 @@ const handleSetup = ({ url, userId }) => {
   }
 
   eventSource.onmessage = (event) => {
-    const { message, title, donationId, type } = JSON.parse(event.data);
+    const { message, title, donationId, type, requestId } = JSON.parse(event.data);
     if (message === 'ping') {
       return;
     }
@@ -35,7 +35,7 @@ const handleSetup = ({ url, userId }) => {
       body: message,
       icon: '/favicon.ico',
       data: {
-        url: handleUrl(type, donationId)
+        url: handleUrl(type, donationId, requestId)
       }
     });
   };
@@ -55,19 +55,20 @@ oninstall = () => {
 /**
  * 
  * @param {string} type 
- * @param {string} donationId 
+ * @param {string} donationId
+ * @param {string} requestId
  * @returns {string | null}
  */
-const handleUrl = (type, donationId) => {
+const handleUrl = (type, donationId, requestId) => {
   switch(type) {
     case 'comment':
       return `${location.origin}/en/donations/${donationId}`
     case 'evaluation':
-      return `${location.origin}/en/user/donations?t=myDonations`
+      return `${location.origin}/en/user/donations?t=myDonations&i=${donationId}`
     case 'createRequest':
-      return `${location.origin}/en/user/donations?t=donationRequests`
+      return `${location.origin}/en/user/donations?t=donationRequests&i=${requestId}`
     case 'requestResolved':
-      return `${location.origin}/en/user/donations?t=userRequests`
+      return `${location.origin}/en/user/donations?t=userRequests&i=${requestId}`
 
     default:
       return null;

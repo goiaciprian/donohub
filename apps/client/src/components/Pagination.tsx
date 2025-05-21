@@ -27,33 +27,41 @@ export const Pagination = ({
   return (
     <SPagination className="select-none">
       <PaginationContent className={cn('gap-2', className)}>
-        <PaginationItem
-          onClick={() => update(page - 1)}
-          className={`cursor-pointer ${hasPrev ? undefined : 'opacity-0'}`}
-        >
-          <PaginationPrevious />
-        </PaginationItem>
-        <PaginationItem
-          onClick={() => update(1)}
-          className={`cursor-pointer ${page !== 1 ? '' : 'opacity-0'}`}
-        >
-          <PaginationLink>1</PaginationLink>
-        </PaginationItem>
+        {hasPrev && (
+          <PaginationItem
+            onClick={() => update(page - 1)}
+            className={`cursor-pointer`}
+          >
+            <PaginationPrevious />
+          </PaginationItem>
+        )}
+        {page !== 1 && (
+          <PaginationItem
+            onClick={() => update(1)}
+            className={`cursor-pointer`}
+          >
+            <PaginationLink>1</PaginationLink>
+          </PaginationItem>
+        )}
         <PaginationItem>
           <PaginationLink isActive>{page}</PaginationLink>
         </PaginationItem>
-        <PaginationItem
-          className={`cursor-pointer ${page !== totalPages && totalPages !== 0 ? '' : 'opacity-0'}`}
-          onClick={() => update(totalPages)}
-        >
-          <PaginationLink>{totalPages}</PaginationLink>
-        </PaginationItem>
-        <PaginationItem
-          onClick={() => update(page + 1)}
-          className={`cursor-pointer ${hasNext ? undefined : 'opacity-0'}`}
-        >
-          <PaginationNext />
-        </PaginationItem>
+        {page !== totalPages && totalPages !== 0 && (
+          <PaginationItem
+            className={`cursor-pointer`}
+            onClick={() => update(totalPages)}
+          >
+            <PaginationLink>{totalPages}</PaginationLink>
+          </PaginationItem>
+        )}
+        {hasNext && (
+          <PaginationItem
+            onClick={() => update(page + 1)}
+            className={`cursor-pointer`}
+          >
+            <PaginationNext />
+          </PaginationItem>
+        )}
       </PaginationContent>
     </SPagination>
   );

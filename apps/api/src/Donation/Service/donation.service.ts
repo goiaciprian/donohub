@@ -499,7 +499,7 @@ export class DonationService {
       where: { id: donationId },
     });
 
-    await this.prismaService.donationRequest.create({
+    const request = await this.prismaService.donationRequest.create({
       data: {
         clerkUserId: user.id,
         userImage: user.imageUrl,
@@ -513,7 +513,7 @@ export class DonationService {
       clerkId: donation.clerkUserId,
       message: `User ${user.firstName} ${user.lastName} made a request for ${donation.title}`,
       title: `Donation request`,
-      donationId: donation.id,
+      requestId: request.id,
       type: 'createRequest'
     });
   }
@@ -588,6 +588,7 @@ export class DonationService {
                 },
               },
               clerkUserId: true,
+              id: true,
             },
           });
         }
@@ -600,7 +601,7 @@ export class DonationService {
       clerkId: dr.clerkUserId,
       message: `Your request for ${dr.donation.title} has been ${status}`,
       title: 'Donation request',
-      donationId: dr.donation.id,
+      requestId: dr.id,
       type: 'requestResolved'
     });
 
@@ -609,7 +610,7 @@ export class DonationService {
         clerkId: du.clerkUserId,
         message: `Your request for ${du.donation.title} has been DECLINED`,
         title: 'Donation request',
-        donationId: dr.donation.id,
+        requestId: dr.id,
         type: 'requestResolved',
       }),
     );

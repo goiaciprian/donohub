@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Accordion, AccordionContent, AccordionTrigger } from '../ui/accordion';
 import { AccordionItem } from '@radix-ui/react-accordion';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { DonationUserInfo } from '../DonationUserInfo.Donation';
 import { useUser } from '@clerk/clerk-react';
 import { Pagination } from '../Pagination';
@@ -24,6 +24,11 @@ export const UnderDelivryProfileDonations = () => {
 
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [searchParams, setSerachParams] = useSearchParams();
+
+  const [openedTabs, setOpenedTabs] = useState<string[]>(
+    searchParams.get('i')?.split(',') || [],
+  );
 
   const getDeliveryDonationFn = useAuthRequest(getDeliveryDonationsRequest);
   const deliveryDonationsQuery = useSuspenseQuery({
@@ -48,7 +53,22 @@ export const UnderDelivryProfileDonations = () => {
 
   return (
     <div>
-      <Accordion type="multiple" className="flex flex-col gap-3 pb-10">
+      <Accordion
+        type="multiple"
+        className="flex flex-col gap-3 pb-10"
+        value={openedTabs}
+        onValueChange={(value) => {
+          setOpenedTabs(value);
+          setSerachParams((prev) => {
+            if (value.length === 0) {
+              prev.delete('i');
+            } else {
+              prev.set('i', value.join(','));
+            }
+            return prev;
+          });
+        }}
+      >
         {deliveryDonations.items.map((dr) => {
           const isRequester = dr.requestUserId === userId;
           const isResolved = dr.status === 'RESOLVED';

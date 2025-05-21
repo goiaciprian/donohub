@@ -18,7 +18,7 @@ import { DATE_FORMAT } from '@/utils';
 import { Separator } from '../ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { DonationEvaluationType } from '@donohub/shared';
 import { PageConfirmDialog } from '../dialogs/PageConfirmDialog';
 import { displayEnum } from '@/lib/utils';
@@ -32,6 +32,11 @@ export const DonationRequests = () => {
 
   const [{ size, page }, setPagination] = useState({ page: 1, size: 20 });
   const { t } = useTranslation();
+  const [searchParams, setSerachParams] = useSearchParams();
+
+  const [openedTabs, setOpenedTabs] = useState<string[]>(
+    searchParams.get('i')?.split(',') || [],
+  );
 
   const [selectedItem, setSelectedItem] = useState<{
     id: string | null;
@@ -78,7 +83,23 @@ export const DonationRequests = () => {
 
   return (
     <div>
-      <Accordion type="multiple" className="flex flex-col gap-3 pb-10">
+      <Accordion
+        type="multiple"
+        className="flex flex-col gap-3 pb-10"
+        value={openedTabs}
+        onValueChange={(value) => {
+          setOpenedTabs(value);
+          setSerachParams((prev) => {
+            if (value.length === 0) {
+              prev.delete('i');
+            } else {
+              prev.set('i', value.join(','));
+            }
+
+            return prev;
+          });
+        }}
+      >
         {donationsRequests.items.map((r) => {
           return (
             <AccordionItem

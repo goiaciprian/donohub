@@ -10,10 +10,10 @@ import { DonationPage } from '@/components/pages/DonationPage';
 import { AddDonationPage } from '@/components/pages/AddDonationPage';
 import { AdminProvider } from '@/components/AdminProvider';
 import { EvaluateDonations } from '@/components/pages/EvaluateDonations';
-import { DonationsProfile } from '@/components/profile/Donations.Profile';
 import { CommentsProfile } from '@/components/profile/Comments.Profile';
 import { Protect } from '@/components/Protect';
 import { EvaluatedDonations } from '@/components/pages/EvaluatedDonation';
+import { DonationsProfile } from '@/components/pages/ProfilePage';
 
 export const router = createBrowserRouter([
   {
