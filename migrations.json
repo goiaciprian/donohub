@@ -14,6 +14,23 @@
       "subject": "improvement: handle opened accordion as path state + fix pagination + improved notification link"
     },
     "targetVersion": "latest",
-    "confirmedPackageUpdates": true
+    "confirmedPackageUpdates": true,
+    "runningMigrations": [
+      "21-1-0-add-ignore-entries-for-nx-rule-files"
+    ],
+    "completedMigrations": {
+      "21-1-0-add-ignore-entries-for-nx-rule-files": {
+        "type": "successful",
+        "name": "21-1-0-add-ignore-entries-for-nx-rule-files",
+        "changedFiles": [
+          {
+            "path": ".gitignore",
+            "type": "UPDATE"
+          }
+        ],
+        "ref": "1dc5d31f04a85ef33771048193110f8b9598da9c",
+        "nextSteps": []
+      }
+    }
   }
 }

@@ -49,3 +49,5 @@ vitest.config.*.timestamp*
 docker-compose.yaml
 
 *.pem
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
