@@ -55,7 +55,6 @@ export type AppRouter = typeof appRouter;
 const server = createHTTPServer({
   router: appRouter,
   createContext,
-  basePath: 'trpc'
 });
 
 const PORT = ConfigService.loadConfiguration().get('PORT');

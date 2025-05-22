@@ -8,7 +8,7 @@
   "deploy": {
     "startCommand": "npx nx run @donohub/prisma:generate && npx nx run @donohub/validator:serve:production",
     "restartPolicyType": "NEVER",
-    "healthcheckPath": "/trpc/health",
+    "healthcheckPath": "/health",
     "healthcheckTimeout": 300
   }
 }
