@@ -1,0 +1,15 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "watchPatterns": ["/apps/validator/*"],
+    "buildCommand": "npx nx run @donohub/validator:build --skip-nx-cache"
+  },
+  "deploy": {
+    "startCommand": "npx nx run @donohub/prisma:generate && npx nx run @donohub/validator:serve:production",
+    "restartPolicyType": "NEVER",
+    "healthcheckPath": "/trpc/health",
+    "healthcheckTimeout": 300
+  }
+}
+
