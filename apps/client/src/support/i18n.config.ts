@@ -12,7 +12,7 @@ i18n
       loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
     defaultNS: 'translation',
-    fallbackLng: 'en',
+    fallbackLng: ['en'],
     debug: import.meta.env.DEV,
     interpolation: {
       escapeValue: false,

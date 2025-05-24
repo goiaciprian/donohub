@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { Logger } from '../common/logger';
 
 export class AiService {
   private readonly MODEL_ID: string;
@@ -34,7 +35,7 @@ export class AiService {
           content: [
             {
               type: 'text',
-              text: `Titlu: ${title}\nDescription: ${description}
+              text: `Title: ${title}\nDescription: ${description}
               `,
             },
             ...images.map((img) => ({
@@ -47,6 +48,57 @@ export class AiService {
         },
       ],
     });
+    if (completion.choices.length === 0) {
+      Logger.error('No message received from ai.');
+      return {
+        content: 'NOT OK',
+      };
+    }
+
+    return completion.choices[0].message;
+  }
+
+  async sendForConfirmation(
+    title: string,
+    description: string,
+    images: string[],
+    previousResponse: string | null,
+  ) {
+    const completion = await this.openai.chat.completions.create({
+      model: this.MODEL_ID,
+      messages: [
+        {
+          role: 'system',
+          content: [
+            {
+              type: 'text',
+              text: confirmationInstruction,
+            },
+          ],
+        },
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: `Title: ${title}\nDescription: ${description}\nPrevius agent response: ${previousResponse}`,
+            },
+            ...images.map((img) => ({
+              type: 'image_url' as const,
+              image_url: {
+                url: img,
+              },
+            })),
+          ],
+        },
+      ],
+    });
+    if (completion.choices.length === 0) {
+      Logger.error('No message received from ai.');
+      return {
+        content: 'NOT OK',
+      };
+    }
     return completion.choices[0].message;
   }
 }
@@ -59,6 +111,8 @@ You will receive an input from users about different objects they want to donate
 
 The user can input the title and description only in Romanian or English.
 
+Translate the text from Romanian to English before you do any validation.
+
 You're a very critic asistent, you need to check very carefully the following:
 
 - the received title AND description does NOT have inappropriate language, insults or bad words.
@@ -69,7 +123,20 @@ You're a very critic asistent, you need to check very carefully the following:
 - the received images match BOTH description and title
 
 Do a double check before responding.
-If you're not 85% or above sure the responde with 'NOT OK'.
+Ypu need to be 90% or above sure the responde with 'OK'.
 
 You will responde with 'OK' if you everything is all right and 'NOT OK' if not.
+`;
+
+const confirmationInstruction = `
+You are a very critic asistent that need to confirm the response another assistent gave
+
+Another agent has received the following instructions:
+${modelInstruction}
+
+You will receive the save input as the other agent and the response it gave.
+
+You need to confirm if the agent gave the correct response or not.
+
+You will responde with 'OK' if you know the agent gave the correct response and 'NOT OK' if not.
 `;

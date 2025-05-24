@@ -100,12 +100,6 @@ export const UserDonations = () => {
                         {d.title} ({moment(d.createdAt).format(DATE_FORMAT)})
                       </h3>
                     </div>
-                    {/* <Alert className="border-0">
-                      <AlertTitle className={titleColor}>{d.status}</AlertTitle>
-                      <AlertDescription>
-                        {d.title} ({moment(d.createdAt).format(DATE_FORMAT)})
-                      </AlertDescription>
-                    </Alert> */}
                   </AccordionTrigger>
                 </div>
                 <div className="flex-1 flex gap-2 justify-end">

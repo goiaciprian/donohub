@@ -146,7 +146,7 @@ export const DonationsPage = () => {
 
   return (
     <Page
-      className="mx-[5%] select-none"
+      className="lg:md:mx-[5%] select-none"
       staticFirst={
         <div>
           <div className="py-5">

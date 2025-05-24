@@ -6,6 +6,7 @@ import {
   CommentDto,
   CommentPaginatedDto,
   CommentPostDto,
+  PaginatedUserCommentsDto,
 } from '@donohub/shared';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
@@ -80,6 +81,74 @@ export class CommentsService {
       totalPages,
       totalItems: count,
       items: comments.map((comment) => this.map(comment)),
+    };
+  }
+
+  async getUserComments(
+    pagination: PaginationQueryDto,
+    user: UserType,
+  ): Promise<PaginatedUserCommentsDto> {
+    const { page, size } = pagination;
+    const take = size;
+    const skip = (page - 1) * size;
+
+    const [count, items] = await this.prismaService.$transaction(async (tx) => {
+      return await Promise.all([
+        tx.donation.count({
+          where: {
+            comments: {
+              some: {
+                clerkUserId: user.id,
+              },
+            },
+          },
+        }),
+        tx.donation.findMany({
+          take,
+          skip,
+          where: {
+            comments: {
+              some: {
+                clerkUserId: user.id,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          select: {
+            id: true,
+            title: true,
+            comments: {
+              where: {
+                clerkUserId: user.id,
+              },
+              orderBy: {
+                createdAt: 'desc',
+              },
+              select: {
+                id: true,
+                full_name: true,
+                text: true,
+                createdAt: true,
+                userImage: true,
+              },
+            },
+          },
+        }),
+      ]);
+    });
+
+    const totalPages = Math.ceil(count / size);
+
+    return {
+      hasNext: page < totalPages,
+      hasPrev: page > 1,
+      page,
+      size,
+      totalItems: count,
+      totalPages,
+      items,
     };
   }
 

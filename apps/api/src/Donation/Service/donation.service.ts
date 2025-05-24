@@ -22,6 +22,7 @@ import { ImageService } from '@/Image/Service/image.service';
 import { PaginationQueryDto } from '@/Common/Dtos/pagination.dto';
 import { UserType } from '@/Auth/clerk.strategy';
 import { SseService } from '@/Common/SSE/sse.service';
+import { ValidatorService } from '@/Validator/validator.service';
 
 @Injectable()
 export class DonationService {
@@ -30,6 +31,7 @@ export class DonationService {
     private readonly supabaseService: SupabaseService,
     private readonly imageService: ImageService,
     private readonly sseService: SseService,
+    private readonly validatorService: ValidatorService,
   ) {}
 
   async createDonation(
@@ -65,6 +67,15 @@ export class DonationService {
     });
     const attachementsUrls =
       await this.supabaseService.uploadAndGetPubliUrl(attachements);
+
+    await this.validatorService.sendToValidation({
+      clerkUserId: clerkUserId,
+      id: createdDonation.id,
+      description: createdDonation.description,
+      images: attachementsUrls,
+      title: createdDonation.title,
+    });
+
     return {
       ...createdDonation,
       status: createdDonation.status as unknown as DonationStatusEnum,
@@ -514,7 +525,7 @@ export class DonationService {
       message: `User ${user.firstName} ${user.lastName} made a request for ${donation.title}`,
       title: `Donation request`,
       requestId: request.id,
-      type: 'createRequest'
+      type: 'createRequest',
     });
   }
 
@@ -602,7 +613,7 @@ export class DonationService {
       message: `Your request for ${dr.donation.title} has been ${status}`,
       title: 'Donation request',
       requestId: dr.id,
-      type: 'requestResolved'
+      type: 'requestResolved',
     });
 
     delcinedUsers.map((du) =>

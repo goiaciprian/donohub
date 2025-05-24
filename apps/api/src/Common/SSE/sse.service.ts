@@ -11,6 +11,8 @@ interface BaseSseEventMessage<Type extends SseEventMessageType> {
   message: string;
   title: string;
   clerkId: string;
+  donationId?: string;
+  requestId?: string;
 }
 
 type CommentSseEventMessage = BaseSseEventMessage<'comment' | 'evaluation'> & {
@@ -24,14 +26,6 @@ type RestSseEventMessage = BaseSseEventMessage<
 };
 
 type SseEventMessage = CommentSseEventMessage | RestSseEventMessage;
-
-const a: SseEventMessage = {
-  type: 'comment',
-  clerkId: '',
-  donationId: '',
-  message: '',
-  title: '',
-};
 
 @Injectable()
 export class SseService {

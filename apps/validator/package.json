@@ -27,8 +27,6 @@
     }
   },
   "dependencies": {
-    "@trpc/server": "^11.1.2",
-    "envalid": "^8.0.0",
-    "openai": "^4.102.0"
+    "@trpc/server": "^11.1.2"
   }
 }

@@ -17,6 +17,9 @@
     },
     {
       "path": "./apps/validator"
+    },
+    {
+      "path": "./packages/validatorLib"
     }
   ]
 }

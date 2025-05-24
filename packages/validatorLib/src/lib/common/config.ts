@@ -4,7 +4,8 @@ const env = cleanEnv(process.env, {
   PORT: num({ default: 3005 }),
   DATABASE_URL: str(),
   OPEN_ROUTER_KEY: str(),
-  MODEL_ID: str()
+  MODEL_ID: str(),
+  MAIN_URL: str(),
 });
 
 type Configuration = typeof env;

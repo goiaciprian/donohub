@@ -6,6 +6,11 @@
     "rootDir": "src",
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo"
   },
-  "include": ["src/**/*.ts"],
-  "exclude": []
+  "include": ["src/**/*.ts", "../../packages/validatorLib/src/lib/main.ts"],
+  "exclude": [],
+  "references": [
+    {
+      "path": "../../packages/validatorLib/tsconfig.lib.json"
+    }
+  ]
 }

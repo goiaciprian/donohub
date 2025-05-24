@@ -25,3 +25,23 @@ export const CommentPaginatedSchema = createPaginatedResponse(CommentSchema);
 
 export class CommentDto extends createZodDto(CommentSchema) {}
 export class CommentPaginatedDto extends createZodDto(CommentPaginatedSchema) {}
+
+export class PaginatedUserCommentsDto extends createZodDto(
+  createPaginatedResponse(
+    extendApi(
+      z.object({
+        id: z.string(),
+        title: z.string(),
+        comments: z.array(
+          z.object({
+            createdAt: z.date(),
+            id: z.string(),
+            text: z.string(),
+            full_name: z.string(),
+            userImage: z.string(),
+          }),
+        ),
+      }),
+    ),
+  ),
+) {}

@@ -11,6 +11,7 @@ import {
   PaginatedDonationRequestByUserDto,
   PaginatedDonationUserRequestsDto,
   PaginatedEvaluatedDonationDto,
+  PaginatedUserCommentsDto,
   PostLocationDto,
   PutDonationEvaluationDto,
   PutDonationRequestDto,
@@ -108,5 +109,10 @@ export const getDeliveryDonationsRequest = withRequest(
 export const reviewDonationRequest = withRequest(
   '/api/donations/complete/:donationId',
 )<undefined, undefined, CompleteDonationReviewPost>('POST');
+
+export const getUserCommentsRequest = withRequest('/api/comments/user/self')<
+  PaginatedUserCommentsDto,
+  { page: number; size: number }
+>('GET');
 
 export * from './router';
