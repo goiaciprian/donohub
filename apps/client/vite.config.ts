@@ -19,6 +19,11 @@ export default defineConfig(({ mode }) => {
       host: '0.0.0.0',
       proxy: {
         '/api': env.VITE_API_URL,
+        '/ph': {
+          target: env.VITE_PUBLIC_POSTHOG_HOST,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/ph/, ''),
+        },
       },
       allowedHosts: ['donohub.srv-lab.work', 'future.donohub.srv-lab.work'],
     },
@@ -27,6 +32,11 @@ export default defineConfig(({ mode }) => {
       host: '0.0.0.0',
       proxy: {
         '/api': env.VITE_API_URL,
+        '/ph': {
+          target: env.VITE_PUBLIC_POSTHOG_HOST,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/ph/, ''),
+        },
       },
       allowedHosts: ['donohub.srv-lab.work', 'future.donohub.srv-lab.work'],
     },
