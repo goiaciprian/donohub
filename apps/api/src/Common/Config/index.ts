@@ -11,6 +11,7 @@ export const ConfigurationSchema = z.object({
   createWebhookKey: z.string(),
   apiKey: z.string(),
   validatorUrl: z.string(),
+  updateWebhookKey: z.string(),
 });
 
 export type Configuration = z.infer<typeof ConfigurationSchema>;
@@ -29,6 +30,7 @@ const getConfig = (): Configuration => {
     deleteWebhookKey: process.env.DELETE_WEBHOOK_KEY,
     apiKey: process.env.API_KEY,
     validatorUrl: process.env.VALIDATOR_URL,
+    updateWebhookKey: process.env.UPDATE_WEBHOOK_KEY,
   };
 };
 

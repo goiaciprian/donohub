@@ -21,7 +21,6 @@ export class ImageService {
 
     let imageEntity = await this.prismaService.image.findFirst({
       where: {
-        filename: image.originalname,
         hash,
       },
       select: {

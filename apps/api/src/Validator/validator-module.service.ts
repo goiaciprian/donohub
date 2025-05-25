@@ -1,9 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ValidatorService } from './validator.service';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   providers: [
-    ValidatorService,
+    {
+      provide: ValidatorService,
+      inject: [ConfigService],
+      useFactory: (configService) => new ValidatorService(configService),
+    },
   ],
   exports: [ValidatorService],
 })

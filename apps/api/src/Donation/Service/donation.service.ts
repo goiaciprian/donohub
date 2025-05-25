@@ -56,13 +56,11 @@ export class DonationService {
         locationId: donation.locationId,
         userInfoId: userInfoId,
         status: DonationStatus.Enum.UNLISTED,
-        images: {
-          connect: (
-            await this.imageService.uploadImages(attachements, clerkUserId)
-          ).map((fh) => ({
-            filename_hash: { filename: fh.filename, hash: fh.hash },
-          })),
-        },
+        DonationImage: {
+          createMany: {
+            data: (await this.imageService.uploadImages(attachements, clerkUserId)).map(fh => ({ imageFilename: fh.filename, imageHash: fh.hash }))
+          }
+        }
       },
     });
     const attachementsUrls =
@@ -109,9 +107,9 @@ export class DonationService {
             category: true,
             location: true,
             DonationEvaluation: true,
-            images: {
+            DonationImage: {
               select: {
-                filename: true,
+                imageFilename: true,
               },
             },
           },
@@ -169,9 +167,9 @@ export class DonationService {
       include: {
         category: true,
         location: true,
-        images: {
+        DonationImage: {
           select: {
-            filename: true,
+            imageFilename: true,
           },
         },
         DonationRequest: {
@@ -182,8 +180,8 @@ export class DonationService {
       },
     });
     const linkAttachements = await Promise.all(
-      donation.images.map(
-        async (img) => await this.supabaseService.getPublicUrl(img.filename),
+      donation.DonationImage.map(
+        async (img) => this.supabaseService.getPublicUrl(img.imageFilename),
       ),
     );
 
@@ -254,9 +252,9 @@ export class DonationService {
           include: {
             category: true,
             location: true,
-            images: {
+            DonationImage: {
               select: {
-                filename: true,
+                imageFilename: true,
               },
             },
           },
@@ -293,13 +291,13 @@ export class DonationService {
         clerkUserId: user.id,
       },
       include: {
-        images: true,
+        DonationImage: true,
       },
     });
 
     const newAttachements: Express.Multer.File[] = [];
     if (attachements) {
-      const existingLength = donationEntity.images.length;
+      const existingLength = donationEntity.DonationImage.length;
       newAttachements.concat(attachements.slice(0, 4 - existingLength));
     }
 
@@ -311,12 +309,12 @@ export class DonationService {
       data: {
         ...partialDonation,
         status: DonationStatus.Enum.USER_UPDATED,
-        images: {
-          connect: (
-            await this.imageService.uploadImages(newAttachements, user.id)
-          ).map((fh) => ({
-            filename_hash: { filename: fh.filename, hash: fh.hash },
-          })),
+        DonationImage: {
+          createMany: {
+            data: (
+              await this.imageService.uploadImages(newAttachements, user.id)
+            ).map((fh) => ({ imageFilename: fh.filename, imageHash: fh.hash })),
+          },
         },
       },
     });
@@ -404,9 +402,9 @@ export class DonationService {
             include: {
               category: true,
               location: true,
-              images: {
+              DonationImage: {
                 select: {
-                  filename: true,
+                  imageFilename: true,
                 },
               },
             },
@@ -459,9 +457,9 @@ export class DonationService {
             category: true,
             location: true,
             DonationEvaluation: true,
-            images: {
+            DonationImage: {
               select: {
-                filename: true,
+                imageFilename: true,
               },
             },
           },
@@ -870,15 +868,16 @@ export class DonationService {
       include: {
         category: true;
         location: true;
-        images: {
+        DonationImage: {
           select: {
-            filename: true;
+            imageFilename: true;
           };
         };
       };
     }>,
   ) {
-    const { images, status, category, location, ...rest } = donationEntity;
+    const { DonationImage, status, category, location, ...rest } =
+      donationEntity;
     return {
       ...rest,
       location: {
@@ -890,8 +889,8 @@ export class DonationService {
       },
       category: category.name,
       status: status as DonationStatusEnum,
-      attachements: images.map((img) =>
-        this.supabaseService.getPublicUrl(img.filename),
+      attachements: DonationImage.map((img) =>
+        this.supabaseService.getPublicUrl(img.imageFilename),
       ),
     };
   }

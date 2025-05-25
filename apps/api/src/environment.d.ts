@@ -12,6 +12,7 @@ declare global {
       CREATE_WEBHOOK_KEY: string;
       API_KEY: string;
       VALIDATOR_URL: string;
+      UPDATE_WEBHOOK_KEY: string;
     }
   }
 }

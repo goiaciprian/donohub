@@ -43,13 +43,13 @@ ee.on('validate', async (data: ValidationInput & { requestId: string }) => {
     `AiSecondResponse [${data.requestId}] Start Ai validation for donation {${data.id}} - ${start2.toISOString()}`,
   );
 
-  const isFirstOk = !aiResponse.content?.includes('NOT OK');
+  const isFirstOk = aiResponse.content?.includes('APPROVED') || false;
 
   const aiConfirmation = await aiService.sendForConfirmation(
     data.title,
     data.description,
     data.images,
-    isFirstOk ? 'OK' : 'NOT OK',
+    isFirstOk ? 'APPROVED' : 'DECLINED',
   );
 
   const end2 = new Date();
@@ -58,10 +58,10 @@ ee.on('validate', async (data: ValidationInput & { requestId: string }) => {
     `AiSecondResponse [${data.requestId}] Donation {${data.id}} confirmed as ${aiConfirmation.content} took ${ms(end2Unix - start2Unix)} - ${end2.toISOString()}`,
   );
 
-  const isSecondOk = !aiConfirmation.content?.includes('NOT OK');
-  const verdict = isFirstOk && isSecondOk ? 'OK' : 'NOT OK';
+  const isSecondOk = aiConfirmation.content?.includes('APPROVED') || false;
+  const verdict = isFirstOk && isSecondOk ? 'APPROVED' : 'DECLINED';
 
-  if (verdict === 'OK') {
+  if (verdict === 'APPROVED') {
     await prismaService.donation.update({
       where: { id: data.id },
       data: { status: 'LISTED' },

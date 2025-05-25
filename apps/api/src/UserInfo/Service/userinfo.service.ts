@@ -1,4 +1,5 @@
 import { CLERK_CLIENT } from '@/Auth/clerk.provider';
+import { UserUpdateEvent } from '@/Common/Dtos/userupdated.events';
 import { PrismaService } from '@/Prisma/prisma.service';
 import { type ClerkClient } from '@clerk/backend';
 import { Inject, Injectable, Logger } from '@nestjs/common';
@@ -75,5 +76,39 @@ export class UserInfoService {
         clerkUserId: clerkId,
       },
     });
+  }
+
+  async updateUser(body: UserUpdateEvent) {
+    await this.prismaService.$transaction(async (tx) => {
+      await Promise.all([
+        await tx.comment.updateMany({
+          where: {
+            clerkUserId: body.data.id
+          },
+          data: {
+            full_name: `${body.data.first_name} ${body.data.last_name || ''}`,
+            userImage: body.data.image_url,
+          }
+        }),
+        await tx.donationEvaluation.updateMany({
+          where: {
+            clerkUserId: body.data.id
+          },
+          data: {
+            userImage: body.data.image_url,
+            userName: `${body.data.first_name} ${body.data.last_name || ''}`
+          }
+        }),
+        await tx.donationRequest.updateMany({
+          where: {
+            clerkUserId: body.data.id
+          },
+          data: {
+            userImage: body.data.image_url,
+            userName: `${body.data.first_name} ${body.data.last_name || ''}`
+          }
+        })
+      ])
+    })
   }
 }

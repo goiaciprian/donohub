@@ -51,7 +51,7 @@ export class AiService {
     if (completion.choices.length === 0) {
       Logger.error('No message received from ai.');
       return {
-        content: 'NOT OK',
+        content: 'DECLINED',
       };
     }
 
@@ -96,7 +96,7 @@ export class AiService {
     if (completion.choices.length === 0) {
       Logger.error('No message received from ai.');
       return {
-        content: 'NOT OK',
+        content: 'DECLINED',
       };
     }
     return completion.choices[0].message;
@@ -120,23 +120,22 @@ You're a very critic asistent, you need to check very carefully the following:
 - the received title AND description are in the same language
 - the reveiced title match the description
 - the received description match the title
-- the received images match BOTH description and title
-
+- the received images match BOTH description and title, if the images have other objects or peoples in the background that's fine, make sure that the main object in the photo matches the title and the description
 Do a double check before responding.
-Ypu need to be 90% or above sure the responde with 'OK'.
+Ypu need to be 90% or above sure the responde with *APPROVED*.
 
-You will responde with 'OK' if you everything is all right and 'NOT OK' if not.
+You will responde with exaclty *APPROVED* if you everything is all right and *DECLINED* if not.
 `;
 
 const confirmationInstruction = `
 You are a very critic asistent that need to confirm the response another assistent gave
 
-Another agent has received the following instructions:
+The other agent has received the following instructions:
 ${modelInstruction}
 
-You will receive the save input as the other agent and the response it gave.
+You will receive the save input as the other agent and the response it gave. If the previus agent has responded with *APPROVED* than you can safetly assume that he thinks the input matches all conditions.
 
 You need to confirm if the agent gave the correct response or not.
 
-You will responde with 'OK' if you know the agent gave the correct response and 'NOT OK' if not.
+You will responde with exaclty *APPROVED* if you know the agent gave the correct response and *DECLINED* if not.
 `;
