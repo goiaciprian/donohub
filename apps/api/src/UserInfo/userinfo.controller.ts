@@ -8,7 +8,9 @@ import { UserDeletedEvent } from '@/Common/Dtos/userdeleted.event';
 import {
   WebhookDeleteGuard,
   WebhookRegisterGuard,
+  WebhookUpdatedGuard,
 } from '@/Common/Guards/webhook.guard';
+import { UserUpdatedEvent } from '@/Common/Dtos/userupdated.events';
 
 @Controller('userInfo')
 @ApiTags('userInfo')
@@ -48,4 +50,14 @@ export class UserInfoController {
   async completeDeletion(@Body() body: UserDeletedEvent) {
     await this.userInfoService.completeDeletion(body.data.id);
   }
+
+  @Post('update')
+  @ApiBody({
+    type: UserUpdatedEvent
+  })
+  @UseGuards(WebhookUpdatedGuard)
+  async updateUser(@Body() body: UserUpdatedEvent) {
+    await this.userInfoService.updateUser(body);
+  }
+
 }
