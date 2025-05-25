@@ -19,6 +19,8 @@ import {
   Hash,
   PhoneCall,
   ArrowLeft,
+  Loader,
+  Loader2,
 } from 'lucide-react';
 import {
   Carousel,
@@ -147,7 +149,11 @@ export const DetailedDonation = ({ donationId }: DetailedDonationProps) => {
                   <span tabIndex={0}>
                     <Button
                       className="m-5 px-20 py-5 bg-green-500 cursor-pointer hover:bg-green-400"
-                      disabled={!isSignedIn || disableButton || donation.requestedUser.includes(user.id)}
+                      disabled={
+                        !isSignedIn ||
+                        disableButton ||
+                        donation.requestedUser.includes(user.id)
+                      }
                       onClick={() => setOpenRequestDialog(donationData.data.id)}
                     >
                       Request

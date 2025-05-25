@@ -82,12 +82,13 @@ export const ReviewDialog = ({ donationId, onClose }: ReviewDialogProps) => {
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant={'ghost'} className="cursor-pointer">
+            <Button variant={'ghost'} className="cursor-pointer" disabled={reviewDonationMutation.isPending} >
               Close
             </Button>
           </DialogClose>
           <Button
             className="cursor-pointer"
+            loading={reviewDonationMutation.isPending}
             onClick={() => {
               if (selectedReview > 0) {
                 handleClose(false);

@@ -128,7 +128,7 @@ export const CommentRequestDialog = ({
                     <commentForm.Button
                       variant="ghost"
                       className="hover:bg-green-200 cursor-pointer"
-                      disabled={!!isSubmitting || isLoading}
+                      loading={!!isSubmitting || isLoading}
                       onClick={() =>
                         commentForm.handleSubmit({ submitAction: 'ACCEPTED' })
                       }

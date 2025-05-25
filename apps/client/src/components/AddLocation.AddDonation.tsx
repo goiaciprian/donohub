@@ -109,12 +109,11 @@ export const AddLocation = ({
                       id={field.name}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
-                    {field.state.meta.isDirty &&
-                      field.state.meta.errors.map((e, index) => (
-                        <p className="text-red-600" key={index}>
-                          {e}
-                        </p>
-                      ))}
+                    {field.state.meta.errors.map((e, index) => (
+                      <p className="text-red-600" key={index}>
+                        {e}
+                      </p>
+                    ))}
                   </div>
                 )}
               />
@@ -137,12 +136,11 @@ export const AddLocation = ({
                       id={field.name}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
-                    {field.state.meta.isDirty &&
-                      field.state.meta.errors.map((e, index) => (
-                        <p className="text-red-600" key={index}>
-                          {e}
-                        </p>
-                      ))}
+                    {field.state.meta.errors.map((e, index) => (
+                      <p className="text-red-600" key={index}>
+                        {e}
+                      </p>
+                    ))}
                   </div>
                 )}
               />
@@ -209,7 +207,7 @@ export const AddLocation = ({
                         </Button>
                       </SheetClose>
                       <Button
-                        disabled={locationMutation.isPending || isSubmitting}
+                        loading={locationMutation.isPending || isSubmitting}
                         type="submit"
                       >
                         {t('internal.submit')}

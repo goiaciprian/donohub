@@ -95,7 +95,8 @@ export const EditDonationDialog = ({
       phone: undefined as string | undefined,
       categoryId: undefined as string | undefined,
       locationId: undefined as string | undefined,
-      attachements: undefined as FileList | undefined,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      attachements: undefined as any,
     },
     onSubmitMeta: initialMetadata,
     onSubmit: ({ value, meta }) => {
@@ -382,7 +383,7 @@ export const EditDonationDialog = ({
                     {t('internal.close')}
                   </form.Button>
                   <form.Button
-                    disabled={updateDonationMutation.isPending}
+                    loading={updateDonationMutation.isPending}
                     className="cursor-pointer"
                     onClick={() => form.handleSubmit({ submitType: 'SUBMIT' })}
                   >

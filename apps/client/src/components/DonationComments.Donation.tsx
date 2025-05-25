@@ -113,7 +113,7 @@ export const DonationComments = ({ donationId }: { donationId: string }) => {
             <form.Button
               className="w-min"
               type="submit"
-              disabled={commentMutation.isPending}
+              loading={commentMutation.isPending}
             >
               {t('donation.post')}
             </form.Button>

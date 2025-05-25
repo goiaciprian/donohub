@@ -58,13 +58,14 @@ export const AddDonationForm = () => {
 
   const form = useAppForm({
     defaultValues: {
-      title: '',
-      description: '',
-      quantity: null as null | string,
-      phone: null as null | string,
-      locationId: '',
-      categoryId: '',
-      attachements: null as FileList | null,
+      title: '' as string,
+      description: '' as string,
+      quantity: null as string | null,
+      phone: null as string | null,
+      locationId: '' as string,
+      categoryId: '' as string,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      attachements: null as any,
     },
     onSubmit: ({ value }) => {
       if (value.attachements === null) {
@@ -144,7 +145,6 @@ export const AddDonationForm = () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                {/* {field.state.meta.isBlurred && */}
                 {field.state.meta.errors.map((e, index) => {
                   return (
                     <p key={index} className="text-red-600">
@@ -179,7 +179,6 @@ export const AddDonationForm = () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                {/* {field.state.meta.isBlurred && */}
                 {field.state.meta.errors.map((e, index) => (
                   <p key={index} className="text-red-600">
                     {e}
@@ -347,10 +346,6 @@ export const AddDonationForm = () => {
                 (value?.length ?? 0) === 0
                   ? t('internal.validations.required')
                   : undefined,
-              // onChange: ({ value }) =>
-              //   (value?.length ?? 0) === 0
-              //     ? t('internal.validations.required')
-              //     : undefined,
             }}
             children={(field) => {
               const length = field.state.value?.length ?? 0;
@@ -433,7 +428,7 @@ export const AddDonationForm = () => {
                 <form.Button
                   className="w-max self-end"
                   type="submit"
-                  disabled={isSubmitting || postDonationMutation.isPending}
+                  loading={isSubmitting || postDonationMutation.isPending}
                 >
                   {t('internal.submit')}
                 </form.Button>
