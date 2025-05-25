@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
 import { CommentsService } from "./Service/comments.service";
 import { EndpointResponse } from "@/Common/Decorators/endpointResponse.decorator";
-import { CommentPaginatedDto, CommentPostDto } from "@donohub/shared";
+import { CommentPaginatedDto, CommentPostDto, PaginatedUserCommentsDto } from "@donohub/shared";
 import { HasAuth } from "@/Common/Decorators/hasAuth.decorator";
 import { CurrentUser } from "@/Common/Decorators/user.decorator";
 import { type UserType } from "@/Auth/clerk.strategy";
@@ -19,6 +19,15 @@ export class CommentsController {
   })
   async getCommentsByDonation(@Param("donationId") donationId: string, @Query() pagination: PaginationQueryDto) {
     return this.commentsService.getCommentsByDonation(donationId, pagination);
+  }
+
+  @Get('user/self')
+  @HasAuth()
+  @EndpointResponse({
+    type: PaginatedUserCommentsDto
+  })
+  async getUserComments(@Query() pagination: PaginationQueryDto, @CurrentUser() user: UserType) {
+    return this.commentsService.getUserComments(pagination, user);
   }
 
   @Post(":donationId")

@@ -45,7 +45,7 @@ export const AppSidebar = () => {
     return null;
   }
 
-  const { commentsPermissions, donationsPermissions } =
+  const { donationsPermissions } =
     permissionsConfiguration();
 
   return (
@@ -79,7 +79,7 @@ export const AppSidebar = () => {
                     </SidebarMenuItem>
                   </SidebarMenu>
 
-                  <SidebarMenu>
+                  {/* <SidebarMenu>
                     <SidebarMenuItem>
                       <SidebarMenuButton asChild className="text-white">
                         <NavLink
@@ -90,14 +90,14 @@ export const AppSidebar = () => {
                         </NavLink>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
-                  </SidebarMenu>
+                  </SidebarMenu> */}
                 </>
               )}
             </SidebarGroupContent>
           </SidebarGroup>
         )}
 
-        {commentsPermissions.length !== 0 && (
+        {/* {commentsPermissions.length !== 0 && (
           <SidebarGroup>
             <SidebarGroupLabel>
               {t('internal.evaluation.comment.title')}
@@ -119,7 +119,7 @@ export const AppSidebar = () => {
               )}
             </SidebarGroupContent>
           </SidebarGroup>
-        )}
+        )} */}
       </SidebarContent>
     </Sidebar>
   );

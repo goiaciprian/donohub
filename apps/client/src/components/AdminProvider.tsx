@@ -1,4 +1,5 @@
 import { useHasPermissions } from '@/hooks/useHasPermissions';
+import { ClerkLoaded } from '@clerk/clerk-react';
 import { PermissionsType } from '@donohub/shared';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -19,5 +20,5 @@ export const AdminProvider = ({ permission, children }: AdminProviderProps) => {
     }
   }, [permissions, isLoggedIn, permission, navigate, lang]);
 
-  return children;
+  return <ClerkLoaded>{children}</ClerkLoaded>;
 };

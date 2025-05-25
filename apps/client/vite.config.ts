@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => {
   return {
     root: __dirname,
     cacheDir: '../../node_modules/.vite/apps/client',
+    assetsInclude: ['**/*.svg'],
     server: {
       port: parseInt(env.PORT || '4200'),
       host: '0.0.0.0',

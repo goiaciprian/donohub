@@ -1,0 +1,32 @@
+{
+  "name": "@donohub/validator",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "targets": {
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "@donohub/validator:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "@donohub/validator:build:development"
+          },
+          "production": {
+            "buildTarget": "@donohub/validator:build:production"
+          }
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@trpc/server": "^11.1.2"
+  }
+}

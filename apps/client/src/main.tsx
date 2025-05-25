@@ -43,7 +43,7 @@ root.render(
           baseTheme: dark,
         }}
         publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}
-        afterSignOutUrl="/"
+        afterSignOutUrl={`/${localStorage.getItem('i18nextLng') || 'en'}`}
       >
         <QueryClientProvider client={queryClient}>
           <SidebarProvider defaultOpen={false}>
@@ -54,5 +54,3 @@ root.render(
     </PostHogProvider>
   </StrictMode>,
 );
-
-

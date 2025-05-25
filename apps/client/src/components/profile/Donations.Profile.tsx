@@ -1,5 +1,4 @@
 import { useAuthRequest } from '@/hooks/useAuthRequest';
-import { Page } from '../pages/Page';
 import {
   Accordion,
   AccordionContent,
@@ -10,7 +9,6 @@ import { selfDonations } from '@/support';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import moment from 'moment';
 import { DATE_FORMAT } from '@/utils';
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel';
 import { cn, getCategoryIcon } from '@/lib/utils';
 import { Hash, MapPin, PhoneCall } from 'lucide-react';
@@ -21,16 +19,17 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { EditDonationDialog } from '../dialogs/EditDonationDialog';
 import { useState } from 'react';
 import { PaginatedEvaluatedDonationDto } from '@donohub/shared';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
-import { DonationRequests } from './DonationRequest.Profile';
-import { ListSelfRequests } from './UserRequests.Profile';
-import { UnderDelivryProfileDonations } from './DeliveryDonations.Profile';
 import { Pagination } from '../Pagination';
 
-const UserDonations = () => {
+export const UserDonations = () => {
   const { lang } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation(['translation', 'categories']);
+  const [searchParams, setSerachParams] = useSearchParams();
+
+  const [openedTabs, setOpenedTabs] = useState<string[]>(
+    searchParams.get('i')?.split(',') || [],
+  );
 
   const [pagination, setPagination] = useState({ page: 1, size: 10 });
 
@@ -61,7 +60,22 @@ const UserDonations = () => {
 
   return (
     <>
-      <Accordion type="multiple" className="flex flex-col gap-3 pb-10">
+      <Accordion
+        type="multiple"
+        className="flex flex-col gap-3 pb-10"
+        onValueChange={(e) =>
+          setSerachParams((prev) => {
+            if (e.length === 0) {
+              prev.delete('i');
+            } else {
+              prev.set('i', e.join(','));
+            }
+            setOpenedTabs(e);
+            return prev;
+          })
+        }
+        value={openedTabs}
+      >
         {donationsData.items.map((d) => {
           const titleColor =
             d.status === 'NEEDS_WORK'
@@ -86,12 +100,6 @@ const UserDonations = () => {
                         {d.title} ({moment(d.createdAt).format(DATE_FORMAT)})
                       </h3>
                     </div>
-                    {/* <Alert className="border-0">
-                      <AlertTitle className={titleColor}>{d.status}</AlertTitle>
-                      <AlertDescription>
-                        {d.title} ({moment(d.createdAt).format(DATE_FORMAT)})
-                      </AlertDescription>
-                    </Alert> */}
                   </AccordionTrigger>
                 </div>
                 <div className="flex-1 flex gap-2 justify-end">
@@ -221,66 +229,3 @@ const UserDonations = () => {
   );
 };
 
-export const DonationsProfile = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  return (
-    <Tabs
-      value={searchParams.get('t') || 'myDonations'}
-      onValueChange={(t) =>
-        setSearchParams((prev) => {
-          prev.set('t', t);
-          return prev;
-        })
-      }
-    >
-      <Page
-        className="select-none"
-        staticFirst={
-          <TabsList className="bg-white my-8">
-            <TabsTrigger
-              className="md:text-xl cursor-pointer data-[state=active]:underline"
-              value="myDonations"
-            >
-              My donations
-            </TabsTrigger>
-            <TabsTrigger
-              className="md:text-xl cursor-pointer data-[state=active]:underline"
-              value="donationRequests"
-            >
-              Donation Requests
-            </TabsTrigger>
-            <TabsTrigger
-              className="md:text-xl cursor-pointer data-[state=active]:underline"
-              value="userRequests"
-            >
-              My Requests
-            </TabsTrigger>
-            <TabsTrigger
-              className="md:text-xl cursor-pointer data-[state=active]:underline"
-              value="delivery"
-            >
-              Under Delivery
-            </TabsTrigger>
-          </TabsList>
-        }
-        dynamicComponent={
-          <>
-            <TabsContent value="myDonations">
-              <UserDonations />
-            </TabsContent>
-            <TabsContent value="donationRequests">
-              <DonationRequests />
-            </TabsContent>
-            <TabsContent value="userRequests">
-              <ListSelfRequests />
-            </TabsContent>
-            <TabsContent value="delivery">
-              <UnderDelivryProfileDonations />
-            </TabsContent>
-          </>
-        }
-      />
-    </Tabs>
-  );
-};

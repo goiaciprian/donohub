@@ -22,6 +22,7 @@ import { ImageService } from '@/Image/Service/image.service';
 import { PaginationQueryDto } from '@/Common/Dtos/pagination.dto';
 import { UserType } from '@/Auth/clerk.strategy';
 import { SseService } from '@/Common/SSE/sse.service';
+import { ValidatorService } from '@/Validator/validator.service';
 
 @Injectable()
 export class DonationService {
@@ -30,6 +31,7 @@ export class DonationService {
     private readonly supabaseService: SupabaseService,
     private readonly imageService: ImageService,
     private readonly sseService: SseService,
+    private readonly validatorService: ValidatorService,
   ) {}
 
   async createDonation(
@@ -65,6 +67,15 @@ export class DonationService {
     });
     const attachementsUrls =
       await this.supabaseService.uploadAndGetPubliUrl(attachements);
+
+    await this.validatorService.sendToValidation({
+      clerkUserId: clerkUserId,
+      id: createdDonation.id,
+      description: createdDonation.description,
+      images: attachementsUrls,
+      title: createdDonation.title,
+    });
+
     return {
       ...createdDonation,
       status: createdDonation.status as unknown as DonationStatusEnum,
@@ -349,6 +360,8 @@ export class DonationService {
       clerkId: donation.categoryId,
       message: `Your donation: ${donation.title} was reviewed with status: ${status}`,
       title: 'Donation evaluated',
+      donationId: donation.id,
+      type: 'evaluation',
     });
 
     return donation;
@@ -497,7 +510,7 @@ export class DonationService {
       where: { id: donationId },
     });
 
-    await this.prismaService.donationRequest.create({
+    const request = await this.prismaService.donationRequest.create({
       data: {
         clerkUserId: user.id,
         userImage: user.imageUrl,
@@ -511,6 +524,8 @@ export class DonationService {
       clerkId: donation.clerkUserId,
       message: `User ${user.firstName} ${user.lastName} made a request for ${donation.title}`,
       title: `Donation request`,
+      requestId: request.id,
+      type: 'createRequest',
     });
   }
 
@@ -580,9 +595,11 @@ export class DonationService {
               donation: {
                 select: {
                   title: true,
+                  id: true,
                 },
               },
               clerkUserId: true,
+              id: true,
             },
           });
         }
@@ -595,6 +612,8 @@ export class DonationService {
       clerkId: dr.clerkUserId,
       message: `Your request for ${dr.donation.title} has been ${status}`,
       title: 'Donation request',
+      requestId: dr.id,
+      type: 'requestResolved',
     });
 
     delcinedUsers.map((du) =>
@@ -602,6 +621,8 @@ export class DonationService {
         clerkId: du.clerkUserId,
         message: `Your request for ${du.donation.title} has been DECLINED`,
         title: 'Donation request',
+        requestId: dr.id,
+        type: 'requestResolved',
       }),
     );
   }
