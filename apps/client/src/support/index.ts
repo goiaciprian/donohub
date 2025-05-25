@@ -15,7 +15,6 @@ import {
   PostLocationDto,
   PutDonationEvaluationDto,
   PutDonationRequestDto,
-  UpdateDonationDto,
   UserInfoDto,
 } from '@donohub/shared';
 

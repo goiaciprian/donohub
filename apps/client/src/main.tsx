@@ -33,7 +33,7 @@ root.render(
     <PostHogProvider
       apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
       options={{
-        api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+        api_host: '/ph', // import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
         debug: false, // import.meta.env.MODE === 'development',
         capture_pageview: false,
       }}
