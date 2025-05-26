@@ -8,7 +8,7 @@
   "deploy": {
     "preDeployCommand": "npx nx run @donohub/prisma:migrate",
     "startCommand": "npx nx run @donohub/prisma:generate && npx nx run @donohub/api:serve:production",
-    "restartPolicyType": "NEVER",
+    "restartPolicyType": "ALWAYS",
     "healthcheckPath": "/api/health",
     "healthcheckTimeout": 300
   }

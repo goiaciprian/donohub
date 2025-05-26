@@ -7,6 +7,6 @@
   },
   "deploy": {
     "startCommand": "npx nx run @donohub/client:preview",
-    "restartPolicyType": "NEVER"
+    "restartPolicyType": "ALWAYS"
   }
 }
