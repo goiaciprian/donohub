@@ -15,6 +15,7 @@ import { EvaluatedDonations } from '@/components/pages/EvaluatedDonation';
 import { DonationsProfile } from '@/components/pages/ProfilePage';
 import i18n from 'i18next';
 import { LanguageWrapper } from '@/components/LanguageWrapper';
+import { PushNotificationManager } from '@/app/Notifications';
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
         path: '',
         element: (
           <Providers>
+            <PushNotificationManager />
             <div className="flex flex-col min-h-screen">
               <Navigation />
               <Outlet />

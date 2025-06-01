@@ -114,4 +114,12 @@ export const getUserCommentsRequest = withRequest('/api/comments/user/self')<
   { page: number; size: number }
 >('GET');
 
+export const subscribeRequest = withRequest('/api/subscribe')<
+  undefined,
+  undefined,
+  string
+>('POST');
+
+export const unsubscribeRequest = withRequest('/api/unsubscribe')('POST');
+
 export * from './router';

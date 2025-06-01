@@ -1,13 +1,15 @@
-import { useSearchParams } from "react-router-dom";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Page } from "./Page";
-import { UserDonations } from "../profile/Donations.Profile";
-import { DonationRequests } from "../profile/DonationRequest.Profile";
-import { ListSelfRequests } from "../profile/UserRequests.Profile";
-import { UnderDelivryProfileDonations } from "../profile/DeliveryDonations.Profile";
+import { useSearchParams } from 'react-router-dom';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { Page } from './Page';
+import { UserDonations } from '../profile/Donations.Profile';
+import { DonationRequests } from '../profile/DonationRequest.Profile';
+import { ListSelfRequests } from '../profile/UserRequests.Profile';
+import { UnderDelivryProfileDonations } from '../profile/DeliveryDonations.Profile';
+import { useTranslation } from 'react-i18next';
 
 export const DonationsProfile = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -28,25 +30,25 @@ export const DonationsProfile = () => {
               className="md:text-xl cursor-pointer data-[state=active]:underline"
               value="myDonations"
             >
-              My donations
+              {t('tabs.userDonations')}
             </TabsTrigger>
             <TabsTrigger
               className="md:text-xl cursor-pointer data-[state=active]:underline"
               value="donationRequests"
             >
-              Donation Requests
+              {t('tabs.donationRequests')}
             </TabsTrigger>
             <TabsTrigger
               className="md:text-xl cursor-pointer data-[state=active]:underline"
               value="userRequests"
             >
-              My Requests
+              {t('tabs.myRequests')}
             </TabsTrigger>
             <TabsTrigger
               className="md:text-xl cursor-pointer data-[state=active]:underline"
               value="delivery"
             >
-              Under Delivery
+              {t('tabs.underDelivery')}
             </TabsTrigger>
           </TabsList>
         }

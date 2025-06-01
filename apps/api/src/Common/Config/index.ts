@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { string, z } from 'zod';
 
 export const ConfigurationSchema = z.object({
   clerkPublishableKey: z.string(),
@@ -12,6 +12,11 @@ export const ConfigurationSchema = z.object({
   apiKey: z.string(),
   validatorUrl: z.string(),
   updateWebhookKey: z.string(),
+  vapid: z.object({
+    sender: z.string(),
+    privateKey: z.string(),
+    publicKey: string(),
+  })
 });
 
 export type Configuration = z.infer<typeof ConfigurationSchema>;
@@ -31,6 +36,11 @@ const getConfig = (): Configuration => {
     apiKey: process.env.API_KEY,
     validatorUrl: process.env.VALIDATOR_URL,
     updateWebhookKey: process.env.UPDATE_WEBHOOK_KEY,
+    vapid: {
+      privateKey: process.env.VAPID_PRIVATE_KEY,
+      publicKey: process.env.VAPID_PUBLIC_KEY,
+      sender: process.env.VAPID_SENDER,
+    }
   };
 };
 

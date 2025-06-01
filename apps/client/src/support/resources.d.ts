@@ -25,6 +25,10 @@ interface Resources {
       "deny": "Deny",
       "error": "Failed to create",
       "smtWrong": "Something went wrong",
+      "edit": "Edit",
+      "evaluate": "Verify",
+      "previous": "Inapoi",
+      "next": "Inainte",
       "validations": {
         "comments": "Empty comments are not allowed",
         "required": "Required",
@@ -141,6 +145,16 @@ interface Resources {
     "dialogRequest": {
       "title": "Responde to request",
       "confirm": "Are you sure ?"
+    },
+    "editDialog": {
+      "title": "Edit donation",
+      "description": "We recomend editing only the fields mentioned by the reviewer"
+    },
+    "tabs": {
+      "userDonations": "Donatiile mele",
+      "donationRequests": "Cereri la donatiile mele",
+      "myRequests": "Cererile mele",
+      "underDelivery": "In livrare"
     }
   }
 }

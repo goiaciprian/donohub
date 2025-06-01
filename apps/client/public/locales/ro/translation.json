@@ -15,9 +15,13 @@
     "create": "Creat",
     "success": "Succes",
     "approve": "Aproba",
-    "deny": "Respoinge",
+    "deny": "Respinge",
     "error": "Eroare la creare",
     "smtWrong": "Ceva nu a mers",
+    "edit": "Modifica",
+    "evaluate": "Verifica",
+    "previous": "Inapoi",
+    "next": "Inainte",
     "validations": {
       "comments": "Comentariile goale nu sunt permise",
       "required": "Obligatoriu",
@@ -106,7 +110,7 @@
     "phone": "Telefon",
     "attachements": "Atasamente",
     "location": "Location",
-    "category": "Category",
+    "category": "Categorie",
     "status": "Status"
   },
   "location": {
@@ -137,5 +141,15 @@
   "dialogRequest": {
     "title": "Raspunde cererii",
     "confirm": "Esti sigur ?"
+  },
+  "editDialog": {
+    "title": "Modifica donatia",
+    "description": "Recomandam doar modificarea compurilor specificate de reviewer"
+  },
+  "tabs": {
+    "userDonations": "Donatiile mele",
+    "donationRequests": "Cereri la donatiile mele",
+    "myRequests": "Cererile mele",
+    "underDelivery": "In livrare"
   }
 }

@@ -132,14 +132,14 @@ export const UnlistedDonations = () => {
             <div className="flex flwx-row gap-2">
               <Button
                 variant={'ghost'}
-                className="hover:bg-amber-200"
+                className="hover:bg-amber-200 cursor-pointer "
                 onClick={() => setSelectedId(info.row.original.id)}
               >
-                Evaluate
+                {t('internal.evaluate')}
               </Button>
               <Button
                 variant="ghost"
-                className="hover:bg-gray-200"
+                className="hover:bg-gray-200 cursor-pointer"
                 onClick={() =>
                   navigate(`/${lang}/donations/${info.row.original.id}`, {
                     viewTransition: true,

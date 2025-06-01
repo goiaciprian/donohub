@@ -10,7 +10,6 @@ import { ZodValidationPipe } from '@anatine/zod-nestjs';
 import { HealthModule } from '@/Health/health.module';
 import { PrismaModule } from '@/Prisma/prisma.module';
 import { SupabaseModule } from '@/Supabase/supanase.module';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import { SseModule } from '@/Common/SSE/sse.module';
 import { GeneralModule } from './general.module';
 import { DonationModule } from '@/Donation/donation.module';
@@ -21,6 +20,8 @@ import { UserInfoModule } from '@/UserInfo/userinfo.module';
 import { CommentsModule } from '@/Comments/comments.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ApiKeyGuard } from '@/Common/Guards/api-key.guard';
+import { EventModule } from '@/Common/Event/event.module';
+import { NotificationModule } from '@/Notifications/notification.module';
 
 @Module({
   imports: [
@@ -40,7 +41,6 @@ import { ApiKeyGuard } from '@/Common/Guards/api-key.guard';
     HealthModule,
     PrismaModule,
     SupabaseModule,
-    EventEmitterModule.forRoot(),
     SseModule,
     MulterModule.register({
       storage: memoryStorage,
@@ -54,6 +54,8 @@ import { ApiKeyGuard } from '@/Common/Guards/api-key.guard';
       ],
     }),
 
+    EventModule,
+    NotificationModule,
     GeneralModule,
     DonationModule,
     LocationModule,
@@ -73,7 +75,7 @@ import { ApiKeyGuard } from '@/Common/Guards/api-key.guard';
     {
       provide: APP_GUARD,
       useClass: ApiKeyGuard,
-    }
+    },
   ],
 })
 export class AppModule implements NestModule {
