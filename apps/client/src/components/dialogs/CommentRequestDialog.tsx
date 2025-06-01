@@ -42,7 +42,7 @@ export const CommentRequestDialog = ({
 }: CommentRequestDialogProps) => {
   const { t } = useTranslation();
 
-  const description = descriptionRaw || 'Comment required when denying';
+  const description = descriptionRaw || t('internal.evaluation.dialog.description');
   const closeText = closeTextRaw || t('internal.deny');
   const submitText = submitTextRaw || t('internal.approve');
 

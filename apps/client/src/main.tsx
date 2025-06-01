@@ -19,11 +19,6 @@ const queryClient = new QueryClient({
   },
 });
 
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js');
-}
-
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );

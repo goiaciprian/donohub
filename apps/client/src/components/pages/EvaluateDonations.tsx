@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Page } from './Page';
-import { UnlistedDonations } from '@/admin/UnlistedDonation.EvaluateDonation';
+import { UnlistedDonations } from '@/components/admin/UnlistedDonation.EvaluateDonation';
 
 export const EvaluateDonations = () => {
   const { t } = useTranslation();

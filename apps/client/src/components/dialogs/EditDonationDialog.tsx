@@ -150,9 +150,9 @@ export const EditDonationDialog = ({
       <Dialog open={!!donation} onOpenChange={closeWrapper}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit donation</DialogTitle>
+            <DialogTitle>{t('editDialog.title')}</DialogTitle>
             <DialogDescription>
-              We recomend editing only the fields mentioned by the reviewer
+              {t('editDialog.description')}
             </DialogDescription>
           </DialogHeader>
           <div>
@@ -322,7 +322,7 @@ export const EditDonationDialog = ({
                   return (
                     <div>
                       <div className="pb-3">
-                        <p className="font-semibold">Images</p>
+                        <p className="font-semibold">{t('addDonation.attachements')}</p>
                         <div className={'flex flex-row gap-2'}>
                           <div className="flex flex-row gap-2">
                             {images().map((url) => (

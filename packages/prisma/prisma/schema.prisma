@@ -134,12 +134,12 @@ model Comment {
 model DonationImage {
     id String @id @default(uuid())
 
-    donationId String @map("donation_id")
+    donationId    String @map("donation_id")
     imageFilename String @map("image_filename")
     imageHash     String @map("image_hash")
 
-    donation      Donation @relation(fields: [donationId], references: [id])
-    image         Image    @relation(fields: [imageFilename, imageHash], references: [filename, hash])
+    donation Donation @relation(fields: [donationId], references: [id])
+    image    Image    @relation(fields: [imageFilename, imageHash], references: [filename, hash])
 
     @@map("donation_image")
 }
@@ -154,4 +154,17 @@ model Image {
 
     @@id([filename, hash])
     @@map("image")
+}
+
+model Subscription {
+    id String @id @default(uuid())
+
+    endpoint  String @unique()
+    authKey   String @map("auth_key")
+    p256dhkey String @map("p256dh_key")
+
+    clerkUserId String @map("clerk_user_id")
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updateAt  DateTime @updatedAt @map("update_at")
 }

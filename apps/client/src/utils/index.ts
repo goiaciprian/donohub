@@ -35,6 +35,7 @@ const createRequest = <TResp, TParams, TBody, TUrl extends string>(
       data: params.body,
       params: params.params,
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
         'api-key': import.meta.env.VITE_API_KEY,
       },
