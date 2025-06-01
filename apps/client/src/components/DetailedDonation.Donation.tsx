@@ -19,8 +19,6 @@ import {
   Hash,
   PhoneCall,
   ArrowLeft,
-  Loader,
-  Loader2,
 } from 'lucide-react';
 import {
   Carousel,

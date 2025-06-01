@@ -155,6 +155,11 @@ interface Resources {
       "donationRequests": "Cereri la donatiile mele",
       "myRequests": "Cererile mele",
       "underDelivery": "In livrare"
+    },
+    "subscription": {
+      "message": "Receive notifications for all activities for your donations. You can activate notification later in your settings",
+      "dontAsk": "Don't ask again",
+      "subscribe": "Subscribe"
     }
   }
 }

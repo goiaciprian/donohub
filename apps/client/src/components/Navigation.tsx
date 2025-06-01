@@ -40,7 +40,7 @@ export const Navigation = () => {
                 size={'icon'}
                 variant="ghost"
                 onClick={toggleSidebar}
-                className="text-lg"
+                className="text-lg cursor-pointer"
               >
                 {open ? <PanelLeftClose /> : <PanelLeftOpen />}
               </Button>
@@ -64,7 +64,7 @@ export const Navigation = () => {
                 {t('navigation.create')}
               </NavLink>
               <UserButton
-                showName
+                showName={!isMobile}
                 appearance={{
                   elements: {
                     userButtonOuterIdentifier: {
