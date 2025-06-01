@@ -111,7 +111,7 @@ export const UserDonations = () => {
                         setDonation(d);
                       }}
                     >
-                      Edit
+                      {t('internal.edit')}
                     </Button>
                   )}
                   <Button

@@ -13,6 +13,9 @@ declare global {
       API_KEY: string;
       VALIDATOR_URL: string;
       UPDATE_WEBHOOK_KEY: string;
+      VAPID_SENDER: string;
+      VAPID_PRIVATE_KEY: string;
+      VAPID_PUBLIC_KEY: string;
     }
   }
 }

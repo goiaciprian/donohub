@@ -9,6 +9,7 @@ import {
 } from './ui/pagination';
 import { HTMLProps } from 'react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface PaginationProps
   extends Omit<PaginationBaseDto, 'size' | 'totalItems'> {
@@ -24,6 +25,7 @@ export const Pagination = ({
   update,
   className,
 }: PaginationProps) => {
+  const { t } = useTranslation();
   return (
     <SPagination className="select-none">
       <PaginationContent className={cn('gap-2', className)}>
@@ -32,7 +34,7 @@ export const Pagination = ({
             onClick={() => update(page - 1)}
             className={`cursor-pointer`}
           >
-            <PaginationPrevious />
+            <PaginationPrevious text={t('internal.previous')} />
           </PaginationItem>
         )}
         {page !== 1 && (
@@ -59,7 +61,7 @@ export const Pagination = ({
             onClick={() => update(page + 1)}
             className={`cursor-pointer`}
           >
-            <PaginationNext />
+            <PaginationNext text={t('internal.next')} />
           </PaginationItem>
         )}
       </PaginationContent>

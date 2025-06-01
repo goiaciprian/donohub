@@ -1,0 +1,102 @@
+import { Button } from '@/components/ui/button';
+import { useAuthRequest } from '@/hooks/useAuthRequest';
+import { urlBase64ToUint8Array } from '@/lib/utils';
+import { subscribeRequest } from '@/support';
+import { useUser } from '@clerk/clerk-react';
+import { useEffect, useState } from 'react';
+
+export function PushNotificationManager() {
+  const { isLoaded, isSignedIn } = useUser();
+
+  const alreadyRequested =
+    localStorage.getItem('notificationsRequest') === 'never';
+
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isSupported, setIsSupported] = useState(true);
+
+  const subscribeRequestFn = useAuthRequest(subscribeRequest);
+
+  useEffect(() => {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      setIsSupported(false);
+      return;
+    }
+
+    checkSubscription();
+  }, []);
+
+  const checkSubscription = async () => {
+    try {
+      const registration = await navigator.serviceWorker.ready;
+      const existingSubscription =
+        await registration.pushManager.getSubscription();
+
+      if (existingSubscription) {
+        setIsSubscribed(true);
+      }
+    } catch (error) {
+      console.error('Eroare la verificarea abonamentului:', error);
+    }
+  };
+
+  const subscribe = async () => {
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        return;
+      }
+
+      const registration = await navigator.serviceWorker.ready;
+
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(
+          import.meta.env.VITE_VAPID_PUBLIC_KEY,
+        ),
+      });
+
+      await subscribeRequestFn({ body: JSON.stringify(subscription) });
+      localStorage.setItem('notificationsRequest', 'approved');
+      setIsSubscribed(true);
+    } catch (error) {
+      console.error('Eroare la abonare:', error);
+    }
+  };
+
+  const setNeverShow = () => {
+    localStorage.setItem('notificationsRequest', 'never');
+  };
+
+  if (
+    !isSupported ||
+    isSubscribed ||
+    !isLoaded ||
+    !isSignedIn ||
+    alreadyRequested
+  ) {
+    return null;
+  }
+
+  return (
+    <div className="sticky bottom-0 z-10 flex items-center text-white h-[50px] px-6 bg-clerk-page">
+      <div className="flex-1">
+        <p className="font-semibold">
+          Received notifications for all activities happening on your donations.
+          You can activate notification later in your settings
+        </p>
+      </div>
+      <div className="flex justify-end gap-4">
+        <Button
+          variant="secondary"
+          onClick={setNeverShow}
+          className="cursor-pointer"
+        >
+          Don't ask again
+        </Button>
+        <Button onClick={subscribe} className="cursor-pointer">
+          Subscribe
+        </Button>
+      </div>
+    </div>
+  );
+}
