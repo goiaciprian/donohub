@@ -151,5 +151,10 @@
     "donationRequests": "Cereri la donatiile mele",
     "myRequests": "Cererile mele",
     "underDelivery": "In livrare"
+  },
+  "subscription": {
+    "message": "Primeste notificari pentru activitatea de pe donatiile tale. Poti sa activezi notificarile oricand din setari",
+    "dontAsk": "Nu mai intreba",
+    "subscribe": "Aboneaza-te"
   }
 }
