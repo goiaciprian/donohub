@@ -78,14 +78,14 @@ export function PushNotificationManager() {
   }
 
   return (
-    <div className="sticky bottom-0 z-10 flex items-center text-white h-[50px] px-6 bg-clerk-page">
-      <div className="flex-1">
-        <p className="font-semibold">
-          Received notifications for all activities happening on your donations.
-          You can activate notification later in your settings
+    <div className="md:flex items-center text-white px-6 py-2 bg-clerk-page">
+      <div className="flex-1 ">
+        <p className="font-semibold text-sm text-center md:text-left ">
+          Receive notifications for all activities for your donations. You can
+          activate notification later in your settings
         </p>
       </div>
-      <div className="flex justify-end gap-4">
+      <div className="flex flex-wrap justify-center py-3 md:py-0 md:justify-end gap-4">
         <Button
           variant="secondary"
           onClick={setNeverShow}
