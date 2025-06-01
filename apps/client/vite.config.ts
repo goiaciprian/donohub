@@ -46,7 +46,8 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         injectRegister: 'auto',
         strategies: 'injectManifest',
-        filename: 'service-worker.js',
+        srcDir: 'src',
+        filename: 'service-worker.ts',
         devOptions: { enabled: true },
         injectManifest: {
           injectionPoint: undefined,

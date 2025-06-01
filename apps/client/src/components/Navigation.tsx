@@ -6,12 +6,14 @@ import { useTranslation } from 'react-i18next';
 import { useSidebar } from './ui/sidebar';
 import { Button } from './ui/button';
 import {
+  Bell,
   Layers,
   MessagesSquare,
   PanelLeftClose,
   PanelLeftOpen,
 } from 'lucide-react';
 import { useHasPermissions } from '@/hooks/useHasPermissions';
+import { NotificationsProfile } from './profile/Notifications.Profile';
 
 export const Navigation = () => {
   const { t } = useTranslation();
@@ -76,6 +78,13 @@ export const Navigation = () => {
                   },
                 }}
               >
+                <UserButton.UserProfilePage
+                  label="Notifications"
+                  labelIcon={<Bell size={16} />}
+                  url={'notifications'}
+                >
+                  <NotificationsProfile />
+                </UserButton.UserProfilePage>
                 <UserButton.MenuItems>
                   <UserButton.Action
                     label={'My Donations'}

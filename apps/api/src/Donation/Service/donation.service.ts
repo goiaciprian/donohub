@@ -21,8 +21,8 @@ import { SupabaseService } from '@/Supabase/supabase.service';
 import { ImageService } from '@/Image/Service/image.service';
 import { PaginationQueryDto } from '@/Common/Dtos/pagination.dto';
 import { UserType } from '@/Auth/clerk.strategy';
-import { SseService } from '@/Common/SSE/sse.service';
 import { ValidatorService } from '@/Validator/validator.service';
+import { EventService } from '@/Common/Event/event.service';
 
 @Injectable()
 export class DonationService {
@@ -30,8 +30,8 @@ export class DonationService {
     private readonly prismaService: PrismaService,
     private readonly supabaseService: SupabaseService,
     private readonly imageService: ImageService,
-    private readonly sseService: SseService,
     private readonly validatorService: ValidatorService,
+    private readonly eventService: EventService
   ) {}
 
   async createDonation(
@@ -354,7 +354,7 @@ export class DonationService {
       });
     });
 
-    this.sseService.push$({
+    this.eventService.sendNotification({
       clerkId: donation.categoryId,
       message: `Your donation: ${donation.title} was reviewed with status: ${status}`,
       title: 'Donation evaluated',
@@ -508,7 +508,7 @@ export class DonationService {
       where: { id: donationId },
     });
 
-    const request = await this.prismaService.donationRequest.create({
+     await this.prismaService.donationRequest.create({
       data: {
         clerkUserId: user.id,
         userImage: user.imageUrl,
@@ -518,11 +518,11 @@ export class DonationService {
       },
     });
 
-    this.sseService.push$({
+    this.eventService.sendNotification({
       clerkId: donation.clerkUserId,
       message: `User ${user.firstName} ${user.lastName} made a request for ${donation.title}`,
       title: `Donation request`,
-      requestId: request.id,
+      donationId: donation.id,
       type: 'createRequest',
     });
   }
@@ -606,7 +606,7 @@ export class DonationService {
       },
     );
 
-    this.sseService.push$({
+    this.eventService.sendNotification({
       clerkId: dr.clerkUserId,
       message: `Your request for ${dr.donation.title} has been ${status}`,
       title: 'Donation request',
@@ -615,7 +615,7 @@ export class DonationService {
     });
 
     delcinedUsers.map((du) =>
-      this.sseService.push$({
+      this.eventService.sendNotification({
         clerkId: du.clerkUserId,
         message: `Your request for ${du.donation.title} has been DECLINED`,
         title: 'Donation request',
