@@ -9,23 +9,21 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { interval, map } from 'rxjs';
-import { SseService } from '@/Common/SSE/sse.service';
 import { CategoryService } from '@/Category/category.service';
 import { CategoryDto } from '@donohub/shared';
 import { EndpointResponse } from '@/Common/Decorators/endpointResponse.decorator';
-import { type ResponseOutput } from '@donohub/validatorLib';
 import { NotificationServie } from '@/Notifications/service/notification.service';
 import { SubscriptionDto } from '@/Notifications/dto/subscription.dto';
 import { EventService } from '@/Common/Event/event.service';
 import { HasAuth } from '@/Common/Decorators/hasAuth.decorator';
 import { type UserType } from '@/Auth/clerk.strategy';
 import { CurrentUser } from '@/Common/Decorators/user.decorator';
+import { type ValidationInput } from '@/Validator/validator.service';
 
 @Controller()
 @ApiTags('general')
 export class GeneralController {
   constructor(
-    private readonly sseService: SseService,
     private readonly categoryService: CategoryService,
     private readonly eventService: EventService,
     private readonly notificationService: NotificationServie,
@@ -93,14 +91,7 @@ export class GeneralController {
   }
 
   @Post('validatorResponse')
-  async validatorResponse(@Body() response: ResponseOutput) {
-    console.log(response);
-    this.sseService.push$({
-      type: 'evaluation',
-      clerkId: response.clerkUserId,
-      donationId: response.id,
-      message: `Your donation: ${response.title} was reviewed with status: ${response.content?.includes('NOT OK') ? 'DECLINED' : 'ACCEPTED'}`,
-      title: response.title,
-    });
+  async validatorResponse(@Body() response: ValidationInput) {
+    this.eventService.sendToValidation(response)
   }
 }

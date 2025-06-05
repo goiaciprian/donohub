@@ -20,7 +20,9 @@ export type RequestVars<
       pathParams: { key: ExtractPathParams<TUrl>; value: string }[];
     }) &
   (TParams extends undefined ? { params?: undefined } : { params: TParams }) &
-  (TBody extends undefined ? { body?: undefined } : { body: TBody });
+  (TBody extends undefined ? { body?: undefined } : { body: TBody }) & {
+    headers?: Record<string, string>;
+  };
 
 const createRequest = <TResp, TParams, TBody, TUrl extends string>(
   url: TUrl,
@@ -38,6 +40,7 @@ const createRequest = <TResp, TParams, TBody, TUrl extends string>(
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
         'api-key': import.meta.env.VITE_API_KEY,
+        ...(params.headers || {}),
       },
     });
   };

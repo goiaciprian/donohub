@@ -10,7 +10,7 @@
   "include": [],
   "references": [
     {
-      "path": "../../packages/validatorLib"
+      "path": "../../packages/validator"
     },
     {
       "path": "../../packages/shared"

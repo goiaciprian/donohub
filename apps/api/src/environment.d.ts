@@ -11,7 +11,6 @@ declare global {
       DELETE_WEBHOOK_KEY: string;
       CREATE_WEBHOOK_KEY: string;
       API_KEY: string;
-      VALIDATOR_URL: string;
       UPDATE_WEBHOOK_KEY: string;
       VAPID_SENDER: string;
       VAPID_PRIVATE_KEY: string;

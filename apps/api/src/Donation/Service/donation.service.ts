@@ -21,7 +21,6 @@ import { SupabaseService } from '@/Supabase/supabase.service';
 import { ImageService } from '@/Image/Service/image.service';
 import { PaginationQueryDto } from '@/Common/Dtos/pagination.dto';
 import { UserType } from '@/Auth/clerk.strategy';
-import { ValidatorService } from '@/Validator/validator.service';
 import { EventService } from '@/Common/Event/event.service';
 
 @Injectable()
@@ -30,8 +29,7 @@ export class DonationService {
     private readonly prismaService: PrismaService,
     private readonly supabaseService: SupabaseService,
     private readonly imageService: ImageService,
-    private readonly validatorService: ValidatorService,
-    private readonly eventService: EventService
+    private readonly eventService: EventService,
   ) {}
 
   async createDonation(
@@ -58,17 +56,18 @@ export class DonationService {
         status: DonationStatus.Enum.UNLISTED,
         DonationImage: {
           createMany: {
-            data: (await this.imageService.uploadImages(attachements, clerkUserId)).map(fh => ({ imageFilename: fh.filename, imageHash: fh.hash }))
-          }
-        }
+            data: (
+              await this.imageService.uploadImages(attachements, clerkUserId)
+            ).map((fh) => ({ imageFilename: fh.filename, imageHash: fh.hash })),
+          },
+        },
       },
     });
     const attachementsUrls =
       await this.supabaseService.uploadAndGetPubliUrl(attachements);
 
-    await this.validatorService.sendToValidation({
-      clerkUserId: clerkUserId,
-      id: createdDonation.id,
+    this.eventService.sendToValidation({
+      donationId: createdDonation.id,
       description: createdDonation.description,
       images: attachementsUrls,
       title: createdDonation.title,
@@ -180,8 +179,8 @@ export class DonationService {
       },
     });
     const linkAttachements = await Promise.all(
-      donation.DonationImage.map(
-        async (img) => this.supabaseService.getPublicUrl(img.imageFilename),
+      donation.DonationImage.map(async (img) =>
+        this.supabaseService.getPublicUrl(img.imageFilename),
       ),
     );
 
@@ -508,7 +507,7 @@ export class DonationService {
       where: { id: donationId },
     });
 
-     await this.prismaService.donationRequest.create({
+    await this.prismaService.donationRequest.create({
       data: {
         clerkUserId: user.id,
         userImage: user.imageUrl,

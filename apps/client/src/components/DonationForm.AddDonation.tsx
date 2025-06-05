@@ -47,7 +47,11 @@ export const AddDonationForm = () => {
   const postDonationFn = useAuthRequest(postDonations);
   const postDonationMutation = useMutation({
     mutationKey: ['donation'],
-    mutationFn: (body: FormData) => postDonationFn({ body }),
+    mutationFn: (body: FormData) =>
+      postDonationFn({
+        body,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }),
     onSuccess: (resp) => {
       form.reset();
       toast.success(t('internal.create'));
@@ -426,7 +430,7 @@ export const AddDonationForm = () => {
               selector={(s) => s.isSubmitting}
               children={(isSubmitting) => (
                 <form.Button
-                  className="w-max self-end"
+                  className="w-max self-end cursor-pointer"
                   type="submit"
                   loading={isSubmitting || postDonationMutation.isPending}
                 >
