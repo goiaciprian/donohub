@@ -16,10 +16,7 @@
       "path": "./packages/prisma"
     },
     {
-      "path": "./apps/validator"
-    },
-    {
-      "path": "./packages/validatorLib"
+      "path": "./packages/validator"
     }
   ]
 }

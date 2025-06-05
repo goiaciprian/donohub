@@ -10,7 +10,6 @@ export const ConfigurationSchema = z.object({
   deleteWebhookKey: z.string(),
   createWebhookKey: z.string(),
   apiKey: z.string(),
-  validatorUrl: z.string(),
   updateWebhookKey: z.string(),
   vapid: z.object({
     sender: z.string(),
@@ -34,7 +33,6 @@ const getConfig = (): Configuration => {
     createWebhookKey: process.env.CREATE_WEBHOOK_KEY,
     deleteWebhookKey: process.env.DELETE_WEBHOOK_KEY,
     apiKey: process.env.API_KEY,
-    validatorUrl: process.env.VALIDATOR_URL,
     updateWebhookKey: process.env.UPDATE_WEBHOOK_KEY,
     vapid: {
       privateKey: process.env.VAPID_PRIVATE_KEY,
