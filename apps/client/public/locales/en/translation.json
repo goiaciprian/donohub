@@ -59,7 +59,7 @@
     "banner3": "Log in and donate now",
     "or": "or",
     "latestDonation": {
-      "title": "Latest 5 donations",
+      "title": "Latest 6 donations",
       "seeAll": "See all",
       "error": "Something went wrong loading latest donations"
     },
