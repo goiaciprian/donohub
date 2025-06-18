@@ -2,6 +2,7 @@ import { EventType } from '@/Common/Event/event.service';
 import { PrismaService } from '@/Prisma/prisma.service';
 import { DonationStatus } from '@donohub/shared';
 import { validateDonation } from '@donohub/validator';
+import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
 export type ValidationInput = {
@@ -11,6 +12,7 @@ export type ValidationInput = {
   donationId: string;
 };
 
+@Injectable()
 export class ValidatorService {
   constructor(private readonly prismaService: PrismaService) {}
 
