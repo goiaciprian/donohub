@@ -14,7 +14,7 @@ export class AiService extends Context.Tag('AiService')<
       title: string,
       description: string,
       images: string[],
-      previous: 'ACCEPTED' | 'DECLINED',
+      previous: 'APPROVED' | 'DECLINED',
     ) => Effect.Effect<OpenAI.Chat.ChatCompletion, GenerationError>;
   }
 >() {}
