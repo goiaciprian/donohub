@@ -30,16 +30,16 @@ const _validateDonationProgram = (
     }
 
     const message = initialResponse.choices[0].message;
-    const isInitial = message.content?.includes('ACCEPTED') || false;
+    const isInitial = message.content?.includes('APPROVED') || false;
     yield* Effect.logInfo(
-      `Initial reposonse is ${isInitial ? 'ACCEPTED' : 'DECLINED'}\n${message.content}`,
+      `Initial reposonse is ${isInitial ? 'APPROVED' : 'DECLINED'}\n${message.content}`,
     );
 
     const confirmResponse = yield* aiService.getConfirmedResponse(
       title,
       description,
       images,
-      isInitial ? 'ACCEPTED' : 'DECLINED',
+      isInitial ? 'APPROVED' : 'DECLINED',
     );
     if (
       !confirmResponse ||
@@ -51,9 +51,9 @@ const _validateDonationProgram = (
     }
 
     const confirmMessage = confirmResponse.choices[0].message;
-    const isConfirmed = message.content?.includes('ACCEPTED') || false;
+    const isConfirmed = message.content?.includes('APPROVED') || false;
     yield* Effect.logInfo(
-      `Confirm reposonse is ${isConfirmed ? 'ACCEPTED' : 'DECLINED'}\n${confirmMessage.content}`,
+      `Confirm reposonse is ${isConfirmed ? 'APPROVED' : 'DECLINED'}\n${confirmMessage.content}`,
     );
     return isConfirmed && isInitial
       ? ('ACCEPTED' as const)
