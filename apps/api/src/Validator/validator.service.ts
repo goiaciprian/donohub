@@ -2,7 +2,7 @@ import { EventType } from '@/Common/Event/event.service';
 import { PrismaService } from '@/Prisma/prisma.service';
 import { DonationStatus } from '@donohub/shared';
 import { validateDonation } from '@donohub/validator';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
 export type ValidationInput = {
@@ -18,13 +18,15 @@ export class ValidatorService {
 
   @OnEvent(EventType.Validation)
   async handleValidation(input: ValidationInput) {
+    Logger.log(`validator: ${JSON.stringify(input)}`);
     const verdict = await validateDonation(
       input.title,
       input.description,
       input.images,
     );
+    Logger.log(`validator: verdict ${verdict}`);
     if (verdict === 'ACCEPTED') {
-      this.prismaService.donation.update({
+      await this.prismaService.donation.update({
         where: {
           id: input.donationId,
         },
