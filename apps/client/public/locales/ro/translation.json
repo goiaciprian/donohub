@@ -60,7 +60,7 @@
     "banner3": "Logheaza-te si doneaza acum",
     "or": "sau",
     "latestDonation": {
-      "title": "Ultimele 5 donatii",
+      "title": "Ultimele 6 donatii",
       "seeAll": "Vezi toate",
       "noData": "Nu sunt date",
       "error": "A aparut o eroare cand incarcam donatiile"
